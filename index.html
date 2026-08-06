@@ -1,0 +1,3255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KRONOS - Operational Time Intelligence Platform</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Cinzel:wght@600;700;900&family=Inter:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    :root {
+      --bg-main: #050608;
+      --bg-sidebar: #0a0c10;
+      --bg-card: #0f121a;
+      --bg-input: #07080b;
+      --gold-metallic: #d4af37;
+      --gold-dark: #aa840a;
+      --gold-glow: rgba(212, 175, 55, 0.15);
+      --electric-blue: #00f0ff;
+      --blue-glow: rgba(0, 240, 255, 0.2);
+      --text-primary: #f5f6fa;
+      --text-muted: #8491a5;
+      --border-gold: rgba(212, 175, 55, 0.15);
+      --border-color: rgba(255, 255, 255, 0.05);
+      --color-elite: #ffd700;
+      --color-excelente: #00e676;
+      --color-ok: #00b0ff;
+      --color-atencao: #ffeb3b;
+      --color-critico: #ff1744;
+      --radius-lg: 10px;
+      --radius-md: 6px;
+      --transition-premium: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      background-image: radial-gradient(circle at 5% 5%, rgba(0, 240, 255, 0.02) 0%, transparent 35%), radial-gradient(circle at 95% 95%, rgba(212, 175, 55, 0.02) 0%, transparent 35%);
+    }
+
+    aside {
+      width: 250px;
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border-gold);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .brand-section {
+      padding: 20px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-gold);
+    }
+
+    .brand-gear-container {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-gear {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 3px dashed var(--gold-metallic);
+      border-radius: 50%;
+      animation: rotateCog 15s linear infinite;
+    }
+
+    .brand-gear-center {
+      width: 8px;
+      height: 8px;
+      background-color: var(--electric-blue);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--electric-blue);
+      z-index: 2;
+    }
+
+    .brand-title h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.15rem;
+      letter-spacing: 1.5px;
+      color: #fff;
+      text-shadow: 0 0 10px var(--gold-glow);
+    }
+
+    .brand-title span {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: block;
+    }
+
+    .nav-menu {
+      list-style: none;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-grow: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.8rem;
+      transition: var(--transition-premium);
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(212, 175, 55, 0.08), transparent);
+      color: var(--text-primary);
+      border-left-color: var(--gold-metallic);
+      font-weight: 600;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid var(--border-gold);
+    }
+
+    .conn-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: rgba(0, 230, 118, 0.08);
+      border: 1px solid rgba(0, 230, 118, 0.2);
+      color: var(--color-excelente);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+
+    .conn-status::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      background-color: var(--color-excelente);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--color-excelente);
+    }
+
+    .sidebar-footer p {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border-gold);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      background-color: rgba(10, 12, 16, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    .page-title h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+    }
+
+    .page-title p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .workspace {
+      padding: 16px 24px;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    .view-panel {
+      display: none;
+    }
+
+    .view-panel.active {
+      display: block;
+      animation: viewFadeIn 0.3s ease-out;
+    }
+
+    .grid-layout {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .cols-5 { grid-template-columns: repeat(5, 1fr); }
+    .cols-4 { grid-template-columns: repeat(4, 1fr); }
+    .cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+    @media (max-width: 1400px) {
+      .cols-5 { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .kronos-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      padding: 12px 16px;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      transition: var(--transition-premium);
+    }
+
+    .kronos-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--gold-metallic);
+    }
+
+    .kronos-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px var(--gold-glow);
+    }
+
+    .kronos-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .kronos-card-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      font-weight: bold;
+    }
+
+    .gauge-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 0;
+    }
+
+    .gauge-svg {
+      width: 150px;
+      height: 85px;
+    }
+
+    .gauge-track {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.03);
+      stroke-width: 12;
+      stroke-linecap: round;
+    }
+
+    .gauge-fill {
+      fill: none;
+      stroke: url(#gauge-gold-grad);
+      stroke-width: 12;
+      stroke-linecap: round;
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      transition: stroke-dashoffset 1s ease-in-out;
+    }
+
+    .gauge-value {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 2.2rem;
+      font-weight: 700;
+      fill: #fff;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-elite { background-color: rgba(212, 175, 55, 0.15); color: var(--color-elite); border: 1px solid rgba(212, 175, 55, 0.3); }
+    .badge-excelente { background-color: rgba(0, 230, 118, 0.15); color: var(--color-excelente); border: 1px solid rgba(0, 230, 118, 0.3); }
+    .badge-ok { background-color: rgba(0, 176, 255, 0.15); color: var(--color-ok); border: 1px solid rgba(0, 176, 255, 0.3); }
+    .badge-atencao { background-color: rgba(255, 235, 59, 0.15); color: var(--color-atencao); border: 1px solid rgba(255, 23, 59, 0.3); }
+    .badge-critico { background-color: rgba(255, 23, 68, 0.15); color: var(--color-critico); border: 1px solid rgba(255, 23, 68, 0.3); }
+
+    .timeline-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .timeline-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      color: var(--gold-metallic);
+    }
+
+    .timeline-track-container {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      padding: 10px 0;
+    }
+
+    .timeline-track-container::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold-metallic), var(--electric-blue), rgba(255, 255, 255, 0.05));
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+
+    .timeline-node-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      width: 20%;
+    }
+
+    .timeline-bullet {
+      width: 16px;
+      height: 16px;
+      background-color: var(--bg-card);
+      border: 3px solid var(--gold-metallic);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--gold-glow);
+      transition: var(--transition-premium);
+    }
+
+    .timeline-node-step.active .timeline-bullet {
+      border-color: var(--electric-blue);
+      box-shadow: 0 0 12px var(--blue-glow);
+    }
+
+    .timeline-node-label {
+      font-size: 0.7rem;
+      font-weight: bold;
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .timeline-node-time {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .matrix-wrapper {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .matrix-title-bar {
+      background-color: #121824;
+      color: white;
+      padding: 8px 16px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--border-gold);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .matrix-table-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+
+    .matrix-table th {
+      background-color: rgba(255, 255, 255, 0.01);
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 6px;
+      border: 1px solid var(--border-gold);
+      text-align: center;
+    }
+
+    .matrix-table td {
+      padding: 4px 6px;
+      border: 1px solid var(--border-gold);
+      text-align: center;
+    }
+
+    .matrix-table td.row-header {
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding-left: 12px;
+      background-color: rgba(255, 255, 255, 0.02);
+      width: 180px;
+    }
+
+    .matrix-table input {
+      width: 100%;
+      background-color: var(--bg-input);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: #fff;
+      padding: 4px;
+      border-radius: 4px;
+      text-align: center;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      outline: none;
+    }
+
+    .matrix-table input:focus {
+      border-color: var(--gold-metallic);
+    }
+
+    .pct-calc-cell {
+      font-family: 'Share Tech Mono', monospace;
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .form-group label {
+      font-size: 0.7rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    input, select, textarea {
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      outline: none;
+      transition: var(--transition-premium);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold-metallic);
+      box-shadow: 0 0 8px var(--gold-glow);
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+
+    th {
+      background-color: rgba(255, 255, 255, 0.01);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-size: 0.65rem;
+      letter-spacing: 0.5px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-gold);
+      text-align: left;
+    }
+
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    tr:hover td {
+      background-color: rgba(255, 255, 255, 0.01);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition-premium);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold-metallic), var(--gold-dark));
+      color: var(--bg-main);
+      box-shadow: 0 3px 10px var(--gold-glow);
+    }
+
+    .btn-gold:hover {
+      filter: brightness(1.1);
+      transform: translateY(-0.5px);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-gold);
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+      border-color: var(--electric-blue);
+    }
+
+    .btn-secondary.active-tab {
+      background-color: rgba(212, 175, 55, 0.15);
+      border-color: var(--gold-metallic);
+    }
+
+    .btn-danger {
+      background-color: rgba(255, 23, 68, 0.1);
+      color: var(--color-critico);
+      border: 1px solid rgba(255, 23, 68, 0.2);
+    }
+
+    .btn-danger:hover {
+      background-color: rgba(255, 23, 68, 0.15);
+    }
+
+    .chart-box {
+      height: 200px;
+      position: relative;
+    }
+
+    .flow-panel-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 1100px) {
+      .flow-panel-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .flow-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .flow-header {
+      border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+      color: var(--electric-blue);
+    }
+
+    .flow-footer {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.05);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      text-align: center;
+    }
+
+    .flow-footer-metric {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    .flow-footer-value {
+      font-family: 'Share Tech Mono', monospace;
+      font-weight: bold;
+      font-size: 0.85rem;
+      color: #fff;
+    }
+
+    @keyframes rotateCog {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes viewFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .toast-container {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10000;
+    }
+
+    .toast {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-left: 4px solid var(--electric-blue);
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: viewFadeIn 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: opacity 0.25s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <aside>
+    <div>
+      <div class="brand-section">
+        <div class="brand-gear-container">
+          <div class="brand-gear"></div>
+          <div class="brand-gear-center"></div>
+        </div>
+        <div class="brand-title">
+          <h1>KRONOS</h1>
+          <span>Time Intelligence</span>
+        </div>
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item active" onclick="switchView('dashboard')">
+          Dashboard Geral
+        </li>
+        <li class="nav-item" onclick="switchView('registrar')">
+          Registrar Turno / PS
+        </li>
+        <li class="nav-item" onclick="switchView('historico')">
+          Histórico Temporal
+        </li>
+        <li class="nav-item" onclick="switchView('ranking')">
+          Ranking Operacional
+        </li>
+        <li class="nav-item" onclick="switchView('warroom')">
+          War Room
+        </li>
+        <li class="nav-item" onclick="switchView('tendencias')">
+          Tendências
+        </li>
+        <li class="nav-item" onclick="switchView('exportacoes')">
+          Exportações & APIs
+        </li>
+      </ul>
+    </div>
+    <div class="sidebar-footer">
+      <div class="conn-status" id="connectionBadge">Conectando...</div>
+      <p>KRONOS Engine v2.0 • BRFPE1</p>
+      <p style="opacity: 0.5;">Controle do tempo. Domínio da operação.</p>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <div class="page-title">
+        <h2 id="viewHeaderTitle">Dashboard Geral</h2>
+        <p id="viewHeaderSubtitle">Visão geral do turno ativo e controle de SLA em tempo real.</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <div class="form-group" style="margin-bottom:0;">
+          <input type="date" id="headerFilterDate" style="padding: 4px 8px; font-size: 0.75rem;" onchange="loadActiveData()">
+        </div>
+        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" onclick="syncWithGoogleSheets()">
+          Sincronizar Planilha
+        </button>
+      </div>
+    </header>
+
+    <div class="workspace">
+      
+      <!-- VIEW: DASHBOARD -->
+      <div id="view-dashboard" class="view-panel active">
+        
+        <!-- HIGH-DENSITY NOC KEY METRICS (5 COLS REQUIRED BY NOC STANDARD) -->
+        <div class="grid-layout cols-5" id="dashboardKPIsContainer">
+          
+          <!-- CARD 1: SCORE KRONOS -->
+          <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">SCORE KRONOS</span>
+              <span id="scoreBadge" class="badge-status badge-elite" style="font-size: 0.55rem;">-</span>
+            </div>
+            <div class="gauge-wrapper" style="margin: -6px 0;">
+              <svg class="gauge-svg" viewBox="0 0 200 120">
+                <defs>
+                  <linearGradient id="gauge-gold-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#ff1744" />
+                    <stop offset="60%" stop-color="#ffeb3b" />
+                    <stop offset="100%" stop-color="#ffd700" />
+                  </linearGradient>
+                </defs>
+                <path class="gauge-track" d="M 20 100 A 80 80 0 0 1 180 100" />
+                <path id="gaugeFill" class="gauge-fill" d="M 20 100 A 80 80 0 0 1 180 100" />
+                <text id="gaugeTextValue" x="100" y="95" class="gauge-value" text-anchor="middle">0</text>
+              </svg>
+            </div>
+            <div style="font-size: 0.6rem; color: var(--text-muted); text-align: center; margin-top: -4px;">STATUS OPERACIONAL ACTV</div>
+          </div>
+
+          <!-- CARD 2: INBOUND ATUAL -->
+          <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">INBOUND ATUAL</span>
+              <span class="badge-status badge-ok" id="inboundBadgeStatus" style="font-size: 0.55rem;">-</span>
+            </div>
+            <div>
+              <div style="font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: bold; line-height: 1.1;" id="dashKpiInboundPct">0%</div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 4px;">
+                Plan: <span id="dashKpiInboundMeta">0</span> | Real: <span id="dashKpiInboundReal">0</span>
+              </div>
+            </div>
+            <div style="font-size: 0.6rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2px;">META TARGET: 100% THP</div>
+          </div>
+
+          <!-- CARD 3: OUTBOUND ATUAL -->
+          <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">OUTBOUND ATUAL</span>
+              <span class="badge-status badge-excelente" id="outboundBadgeStatus" style="font-size: 0.55rem;">-</span>
+            </div>
+            <div>
+              <div style="font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: bold; line-height: 1.1;" id="dashKpiOutboundPct">0%</div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 4px;">
+                Plan: <span id="dashKpiOutboundMeta">0</span> | Real: <span id="dashKpiOutboundReal">0</span>
+              </div>
+            </div>
+            <div style="font-size: 0.6rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2px;">META TARGET: 100% THP</div>
+          </div>
+
+          <!-- CARD 4: FAST START -->
+          <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">FAST START</span>
+              <span class="badge-status badge-excelente" id="fastBadgeStatus" style="font-size: 0.55rem;">-</span>
+            </div>
+            <div>
+              <div style="font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: bold; line-height: 1.1;" id="dashKpiFast">0%</div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 4px;">Tolerância: 85% Mínimo</div>
+            </div>
+            <div style="font-size: 0.6rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2px;">CHECK START COLETIVO</div>
+          </div>
+
+          <!-- CARD 5: STRONG FINISH -->
+          <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">STRONG FINISH</span>
+              <span class="badge-status badge-excelente" id="strongBadgeStatus" style="font-size: 0.55rem;">-</span>
+            </div>
+            <div>
+              <div style="font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: bold; line-height: 1.1;" id="dashKpiStrong">0%</div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 4px;">Tolerância: 85% Mínimo</div>
+            </div>
+            <div style="font-size: 0.6rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2px;">CONTROLE DE ENCERRAMENTO</div>
+          </div>
+
+        </div>
+
+        <!-- DETALHAMENTO POR FLUXO SECTION -->
+        <h3 style="font-family: 'Cinzel', serif; font-size: 0.95rem; letter-spacing: 1px; color: var(--gold-metallic); margin-bottom: 8px; margin-top: 4px;">DETALHAMENTO POR FLUXO</h3>
+        
+        <div class="flow-panel-container">
+          <!-- INBOUND FLOW CARD -->
+          <div class="flow-card">
+            <div>
+              <div class="flow-header">INBOUND COMMAND CENTER</div>
+              <table style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th>Indicador</th>
+                    <th style="text-align: center;">Meta</th>
+                    <th style="text-align: center;">Real</th>
+                    <th style="text-align: center;">Variação</th>
+                    <th style="text-align: right;">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="inboundFlowTableBody">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+            <div class="flow-footer">
+              <div class="flow-footer-metric">
+                <div>Utilização</div>
+                <div class="flow-footer-value" id="inboundUtilVal">0%</div>
+              </div>
+              <div class="flow-footer-metric">
+                <div>Eficiência</div>
+                <div class="flow-footer-value" id="inboundEfVal">0%</div>
+              </div>
+              <div class="flow-footer-metric">
+                <div>Gap Plan→Start</div>
+                <div class="flow-footer-value" id="inboundGapStartVal">0%</div>
+              </div>
+              <div class="flow-footer-metric">
+                <div>Gap Plan→Real</div>
+                <div class="flow-footer-value" id="inboundGapRealVal">0%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- OUTBOUND FLOW CARD -->
+          <div class="flow-card">
+            <div>
+              <div class="flow-header">OUTBOUND COMMAND CENTER</div>
+              <table style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th>Indicador</th>
+                    <th style="text-align: center;">Meta</th>
+                    <th style="text-align: center;">Real</th>
+                    <th style="text-align: center;">Variação</th>
+                    <th style="text-align: right;">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="outboundFlowTableBody">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+            <div class="flow-footer">
+              <div class="flow-footer-metric">
+                <div>Utilização</div>
+                <div class="flow-footer-value" id="outboundUtilVal">0%</div>
+              </div>
+              <div class="flow-footer-metric">
+                <div>Eficiência</div>
+                <div class="flow-footer-value" id="outboundEfVal">0%</div>
+              </div>
+              <div class="flow-footer-metric">
+                <div>Gap Plan→Start</div>
+                <div class="flow-footer-value" id="outboundGapStartVal">0%</div>
+              </div>
+              <div class="flow-footer-metric">
+                <div>Gap Plan→Real</div>
+                <div class="flow-footer-value" id="outboundGapRealVal">0%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-layout cols-3">
+          <!-- Left Col: Total Records / Quick Information -->
+          <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Turnos Arquivados</span>
+            </div>
+            <div style="font-family: 'Share Tech Mono', monospace; font-size: 2rem; font-weight: bold; margin: 4px 0;" id="dashKpiTotal">0</div>
+            <div style="font-size: 0.65rem; color: var(--text-muted);">Banco de dados integrado KRONOS</div>
+          </div>
+
+          <!-- Right: Volume Realizado vs Meta (THP) Chart (Span 2) -->
+          <div class="kronos-card" style="grid-column: span 2; display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Volume Realizado vs Meta (THP)</span>
+            </div>
+            <div style="height: 90px;">
+              <canvas id="headerVolumeChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- TIMELINE COMPONENT -->
+        <div class="timeline-card">
+          <div class="timeline-header">
+            <span class="timeline-title">LINHA DO TEMPO OPERACIONAL KRONOS (SLA TARGET)</span>
+            <span style="font-family: 'Share Tech Mono', monospace; color: var(--electric-blue); font-size: 0.8rem;" id="kronosTimerCountdown">00:00:00</span>
+          </div>
+          <div class="timeline-track-container">
+            <div class="timeline-node-step active">
+              <div class="timeline-bullet"></div>
+              <span class="timeline-node-label">Setup Inicial</span>
+              <span class="timeline-node-time" id="tlTimeAbertura">06:00</span>
+            </div>
+            <div class="timeline-node-step active">
+              <div class="timeline-bullet"></div>
+              <span class="timeline-node-label">Fast Start Check</span>
+              <span class="timeline-node-time" id="tlTimeFast">07:30</span>
+            </div>
+            <div class="timeline-node-step">
+              <div class="timeline-bullet"></div>
+              <span class="timeline-node-label">Ponto de Controle</span>
+              <span class="timeline-node-time" id="tlTimeControle">10:00</span>
+            </div>
+            <div class="timeline-node-step">
+              <div class="timeline-bullet"></div>
+              <span class="timeline-node-label">Strong Finish</span>
+              <span class="timeline-node-time" id="tlTimeFinish">13:30</span>
+            </div>
+            <div class="timeline-node-step">
+              <div class="timeline-bullet"></div>
+              <span class="timeline-node-label">Fechamento</span>
+              <span class="timeline-node-time" id="tlTimeFechamento">14:30</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- OPERATIONAL TABS (Inbound & Outbound Analytic Tables with Filters) -->
+        <div class="kronos-card" style="margin-bottom: 16px;">
+          <div style="display: flex; gap: 8px; margin-bottom: 8px; border-bottom: 1px solid var(--border-gold); padding-bottom: 6px; align-items: center; justify-content: space-between;">
+            <span class="kronos-card-title">Abas de Fluxo Operacional (Visão Analítica)</span>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn btn-secondary active-tab" style="padding: 4px 10px; font-size: 0.7rem;" id="tabBtnInbound" onclick="switchOpTab('inbound')">INBOUND</button>
+              <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.7rem;" id="tabBtnOutbound" onclick="switchOpTab('outbound')">OUTBOUND</button>
+            </div>
+          </div>
+
+          <div class="grid-layout cols-4" style="gap: 8px; margin-bottom: 8px;">
+            <div class="form-group">
+              <label>Filtrar Turno</label>
+              <select id="tabFilterShift" style="padding: 4px;" onchange="renderOpTabs()">
+                <option value="">Todos os Turnos</option>
+                <option value="T1">T1</option>
+                <option value="T2">T2</option>
+                <option value="T3">T3</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Nome PS</label>
+              <input type="text" id="tabFilterPS" style="padding: 4px;" placeholder="Filtrar por PS..." oninput="renderOpTabs()">
+            </div>
+            <div class="form-group">
+              <label>Data</label>
+              <input type="date" id="tabFilterDate" style="padding: 4px;" onchange="renderOpTabs()">
+            </div>
+            <div class="form-group">
+              <label>Área / Função</label>
+              <input type="text" id="tabFilterArea" style="padding: 4px;" placeholder="Filtrar Função..." oninput="renderOpTabs()">
+            </div>
+          </div>
+
+          <div id="tabContentInbound">
+            <div class="table-responsive">
+              <table id="opTabInboundTable">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Responsável (PS)</th>
+                    <th>Turno</th>
+                    <th>Área / Função</th>
+                    <th>Meta Inbound (THP)</th>
+                    <th>Real Inbound (THP)</th>
+                    <th>Performance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="tabContentOutbound" style="display: none;">
+            <div class="table-responsive">
+              <table id="opTabOutboundTable">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Responsável (PS)</th>
+                    <th>Turno</th>
+                    <th>Área / Função</th>
+                    <th>Meta Outbound (THP)</th>
+                    <th>Real Outbound (THP)</th>
+                    <th>Performance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- VIEW: REGISTRAR TURNO / PS -->
+      <div id="view-registrar" class="view-panel">
+        <form id="registrarTurnoForm" onsubmit="handleFormSubmit(event)">
+          
+          <!-- REGISTRO DO TURNO: CORE INFO -->
+          <div class="kronos-card" style="margin-bottom: 16px;">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">REGISTRO DO TURNO - Configurações Gerais</span>
+            </div>
+            <div class="grid-layout cols-4" style="gap: 10px;">
+              <div class="form-group">
+                <label>Data</label>
+                <input type="date" id="regDate" required onchange="calculateLiveScores()">
+              </div>
+              <div class="form-group">
+                <label>Turno Operacional</label>
+                <select id="regShift" required onchange="onShiftChange()">
+                  <option value="T1">T1 - 06h00 às 14h30</option>
+                  <option value="T2">T2 - 14h30 às 22h00</option>
+                  <option value="T3">T3 - 22h00 às 06h00</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Nome PS (Obrigatório)</label>
+                <input type="text" id="regPSName" placeholder="Identificação do PS" required oninput="calculateLiveScores()">
+              </div>
+              <div class="form-group">
+                <label>Site</label>
+                <input type="text" id="regSite" value="BRFPE1" readonly style="background-color: rgba(255,255,255,0.02); color: var(--text-muted);">
+              </div>
+            </div>
+
+            <div class="grid-layout cols-3" style="gap: 10px; margin-top: 8px;">
+              <div class="form-group">
+                <label>Área de Atuação</label>
+                <input type="text" id="regArea" value="" required oninput="calculateLiveScores()">
+              </div>
+              <div class="form-group">
+                <label>Volume Planejado (Total)</label>
+                <input type="number" id="regVolPlan" value="" oninput="calculateLiveScores()">
+              </div>
+              <div class="form-group">
+                <label>Volume Real (Total)</label>
+                <input type="number" id="regVolReal" value="" oninput="calculateLiveScores()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Matriz Dinâmica Programável de THP, IDLE e COT -->
+          <div class="matrix-wrapper">
+            <div class="matrix-title-bar">
+              <span>Acompanhamento Diário — Matriz de Pontos de Controle Horários</span>
+            </div>
+            <div class="matrix-table-scroll">
+              <table class="matrix-table" id="thpMatrixTable">
+                <thead>
+                  <tr id="matrixHeaderRow">
+                    <th>Indicador / Hora</th>
+                    <!-- Rendered Dynamically -->
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr id="thpRowMeta">
+                    <td class="row-header">Meta THP/h</td>
+                  </tr>
+                  <tr id="thpRowReal">
+                    <td class="row-header">Real THP/h</td>
+                  </tr>
+                  <tr id="thpRowPct">
+                    <td class="row-header">% vs Meta THP</td>
+                  </tr>
+                  <tr id="idleRowMeta">
+                    <td class="row-header">Meta IDLE %</td>
+                  </tr>
+                  <tr id="idleRowReal">
+                    <td class="row-header">Real IDLE %</td>
+                  </tr>
+                  <tr id="idleRowPct">
+                    <td class="row-header">Diferença IDLE</td>
+                  </tr>
+                  <tr id="cotRowMeta">
+                    <td class="row-header">Meta COT %</td>
+                  </tr>
+                  <tr id="cotRowReal">
+                    <td class="row-header">Real COT %</td>
+                  </tr>
+                  <tr id="cotRowPct">
+                    <td class="row-header">Diferença COT</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="grid-layout cols-2">
+            <!-- CONSOLIDATED METRICS METRIC PANEL -->
+            <div class="kronos-card">
+              <div class="kronos-card-header">
+                <span class="kronos-card-title">Métricas Acumuladas Consolidadas</span>
+              </div>
+              <div class="grid-layout cols-2" style="gap: 8px;">
+                <div class="form-group">
+                  <label>Meta Inbound THP</label>
+                  <input type="number" id="metaInboundTHP" value="" oninput="calculateLiveScores()">
+                </div>
+                <div class="form-group">
+                  <label>Real Inbound THP</label>
+                  <input type="number" id="realInboundTHP" placeholder="Real de Entrada" oninput="calculateLiveScores()">
+                </div>
+                <div class="form-group">
+                  <label>Meta Outbound THP</label>
+                  <input type="number" id="metaOutboundTHP" value="" oninput="calculateLiveScores()">
+                </div>
+                <div class="form-group">
+                  <label>Real Outbound THP</label>
+                  <input type="number" id="realOutboundTHP" placeholder="Real de Saída" oninput="calculateLiveScores()">
+                </div>
+              </div>
+            </div>
+
+            <!-- WEIGHT CONTROLLER AND PENALTIES -->
+            <div class="kronos-card">
+              <div class="kronos-card-header">
+                <span class="kronos-card-title">Configurações da Pontuação Ponderada</span>
+                <span id="weightTotalBadge" class="badge-status badge-ok">Soma: 100%</span>
+              </div>
+              <div class="table-responsive">
+                <table style="width: 100%; font-size: 0.75rem; border-collapse: collapse;">
+                  <thead>
+                    <tr>
+                      <th style="padding: 4px; text-align: left;">Indicador</th>
+                      <th style="padding: 4px; text-align: center;">Meta</th>
+                      <th style="padding: 4px; text-align: center;">Real</th>
+                      <th style="padding: 4px; width: 60px; text-align: center;">Peso (%)</th>
+                      <th style="padding: 4px; text-align: center;">Resultado</th>
+                      <th style="padding: 4px; text-align: right;">Impacto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="padding: 4px; text-align: left;">THP (Produtividade)</td>
+                      <td style="padding: 4px; text-align: center;" id="wtMetaThp">100%</td>
+                      <td style="padding: 4px; text-align: center;" id="wtRealThp">0%</td>
+                      <td style="padding: 4px;"><input type="number" id="pesoThp" value="25" style="width: 100%; padding: 2px;" oninput="calculateLiveScores()"></td>
+                      <td style="padding: 4px; text-align: center;" id="wtResThp">-</td>
+                      <td style="padding: 4px; text-align: right;" id="wtImpactThp">-</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 4px; text-align: left;">Fast Start</td>
+                      <td style="padding: 4px; text-align: center;" id="wtMetaFast">85%</td>
+                      <td style="padding: 4px; text-align: center;" id="wtRealFast">0%</td>
+                      <td style="padding: 4px;"><input type="number" id="pesoFast" value="15" style="width: 100%; padding: 2px;" oninput="calculateLiveScores()"></td>
+                      <td style="padding: 4px; text-align: center;" id="wtResFast">-</td>
+                      <td style="padding: 4px; text-align: right;" id="wtImpactFast">-</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 4px; text-align: left;">COT (Cut Off Time)</td>
+                      <td style="padding: 4px; text-align: center;" id="wtMetaCot">100%</td>
+                      <td style="padding: 4px; text-align: center;" id="wtRealCot">0%</td>
+                      <td style="padding: 4px;"><input type="number" id="pesoCot" value="20" style="width: 100%; padding: 2px;" oninput="calculateLiveScores()"></td>
+                      <td style="padding: 4px; text-align: center;" id="wtResCot">-</td>
+                      <td style="padding: 4px; text-align: right;" id="wtImpactCot">-</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 4px; text-align: left;">Strong Finish</td>
+                      <td style="padding: 4px; text-align: center;" id="wtMetaStrong">85%</td>
+                      <td style="padding: 4px; text-align: center;" id="wtRealStrong">0%</td>
+                      <td style="padding: 4px;"><input type="number" id="pesoStrong" value="15" style="width: 100%; padding: 2px;" oninput="calculateLiveScores()"></td>
+                      <td style="padding: 4px; text-align: center;" id="wtResStrong">-</td>
+                      <td style="padding: 4px; text-align: right;" id="wtImpactStrong">-</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 4px; text-align: left;">Auditoria 5S</td>
+                      <td style="padding: 4px; text-align: center;" id="wtMeta5s">100%</td>
+                      <td style="padding: 4px; text-align: center;" id="wtReal5s">0%</td>
+                      <td style="padding: 4px;"><input type="number" id="peso5s" value="10" style="width: 100%; padding: 2px;" oninput="calculateLiveScores()"></td>
+                      <td style="padding: 4px; text-align: center;" id="wtRes5s">-</td>
+                      <td style="padding: 4px; text-align: right;" id="wtImpact5s">-</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 4px; text-align: left;">Idle Compliance</td>
+                      <td style="padding: 4px; text-align: center;" id="wtMetaIdle">95%</td>
+                      <td style="padding: 4px; text-align: center;" id="wtRealIdle">0%</td>
+                      <td style="padding: 4px;"><input type="number" id="pesoIdle" value="15" style="width: 100%; padding: 2px;" oninput="calculateLiveScores()"></td>
+                      <td style="padding: 4px; text-align: center;" id="wtResIdle">-</td>
+                      <td style="padding: 4px; text-align: right;" id="wtImpactIdle">-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-layout cols-3">
+            <div class="kronos-card">
+              <div class="kronos-card-header">
+                <span class="kronos-card-title">Fast Start Check</span>
+              </div>
+              <div class="form-group">
+                <label>Atingimento Real (%)</label>
+                <input type="number" id="realFastStart" placeholder="Ex.: 92" oninput="calculateLiveScores()">
+              </div>
+              <div class="form-group">
+                <label>Justificativa do Desvio</label>
+                <textarea id="justFastStart" rows="2" placeholder="Desvio < 85%..."></textarea>
+              </div>
+            </div>
+
+            <div class="kronos-card">
+              <div class="kronos-card-header">
+                <span class="kronos-card-title">Strong Finish Control</span>
+              </div>
+              <div class="form-group">
+                <label>Atingimento Real (%)</label>
+                <input type="number" id="realStrongFinish" placeholder="Ex.: 95" oninput="calculateLiveScores()">
+              </div>
+              <div class="form-group">
+                <label>Justificativa do Desvio</label>
+                <textarea id="justStrongFinish" rows="2" placeholder="Desvio < 85%..."></textarea>
+              </div>
+            </div>
+
+            <div class="kronos-card">
+              <div class="kronos-card-header">
+                <span class="kronos-card-title">Auditoria 5S Coletiva</span>
+              </div>
+              <div class="grid-layout cols-2" style="gap: 8px; margin-bottom: 0;">
+                <div class="form-group" style="margin-bottom:0;">
+                  <label style="font-size:0.6rem;">Utilização</label>
+                  <input type="number" id="s5Seiri" value="" min="0" max="100" style="padding: 4px;" oninput="calculateLiveScores()">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label style="font-size:0.6rem;">Organização</label>
+                  <input type="number" id="s5Seiton" value="" min="0" max="100" style="padding: 4px;" oninput="calculateLiveScores()">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label style="font-size:0.6rem;">Limpeza</label>
+                  <input type="number" id="s5Seiso" value="" min="0" max="100" style="padding: 4px;" oninput="calculateLiveScores()">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label style="font-size:0.6rem;">Disciplina</label>
+                  <input type="number" id="s5Shitsuke" value="" min="0" max="100" style="padding: 4px;" oninput="calculateLiveScores()">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- OBSERVATIONS & CONTEXT FIELD -->
+          <div class="kronos-card" style="margin-bottom: 16px;">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Resumo Geral da Operação</span>
+            </div>
+            <div class="form-group">
+              <label>Contexto Operacional (Intercorrências, planos de ação, desvios e observações de turno)</label>
+              <textarea id="regGeneralNotes" rows="4" style="resize: vertical; font-family: sans-serif; line-height: 1.3;" placeholder="Anotações gerais..." required oninput="calculateLiveScores()"></textarea>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button class="btn btn-secondary" type="button" onclick="resetForm()">Limpar Tudo</button>
+            <button class="btn btn-gold" type="submit">Gravar Dados de Turno</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- VIEW: HISTORICO TEMPORAL -->
+      <div id="view-historico" class="view-panel">
+        <div class="kronos-card">
+          <div class="kronos-card-header">
+            <span class="kronos-card-title">Registro Histórico de Fechamentos</span>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Turno</th>
+                  <th>PS Responsável</th>
+                  <th>Área / Função</th>
+                  <th>Inbound THP</th>
+                  <th>Outbound THP</th>
+                  <th>Score de Turno</th>
+                  <th style="text-align: right;">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="historicoTableBody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: RANKING OPERACIONAL -->
+      <div id="view-ranking" class="view-panel">
+        <div class="grid-layout cols-2">
+          <div class="kronos-card">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Performance de Líderes PS (Média Geral)</span>
+            </div>
+            <div class="table-responsive">
+              <table id="rankingLeadersTable">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">Posição</th>
+                    <th>Nome PS</th>
+                    <th>Score Médio</th>
+                    <th>Registros</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="kronos-card">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Performance por Turno (Média Consolidada)</span>
+            </div>
+            <div class="table-responsive">
+              <table id="rankingShiftsTable">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">Posição</th>
+                    <th>Turno</th>
+                    <th>Score Médio</th>
+                    <th>Registros</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: WAR ROOM -->
+      <div id="view-warroom" class="view-panel">
+        <!-- WAR ROOM EXECUTIVE CARDS -->
+        <div class="grid-layout cols-4" style="gap: 12px; margin-bottom: 16px;">
+          <!-- CARD A: MELHOR KPI -->
+          <div class="kronos-card">
+            <div class="kronos-card-header" style="border-bottom: 1px solid rgba(0, 230, 118, 0.2); padding-bottom: 4px;">
+              <span class="kronos-card-title" style="color: var(--color-excelente);">Melhor KPI</span>
+            </div>
+            <div style="margin-top: 8px;">
+              <div id="wrBestKpiName" style="font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: bold; color: #fff;">-</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+                Meta: <span id="wrBestKpiMeta">-</span> | Real: <span id="wrBestKpiReal">-</span>
+              </div>
+              <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">
+                Impacto: <span id="wrBestKpiImpact" class="badge-status badge-excelente" style="font-size: 0.55rem;">POSITIVO</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD B: PIOR KPI -->
+          <div class="kronos-card">
+            <div class="kronos-card-header" style="border-bottom: 1px solid rgba(255, 23, 68, 0.2); padding-bottom: 4px;">
+              <span class="kronos-card-title" style="color: var(--color-critico);">Pior KPI</span>
+            </div>
+            <div style="margin-top: 8px;">
+              <div id="wrWorstKpiName" style="font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: bold; color: #fff;">-</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+                Meta: <span id="wrWorstKpiMeta">-</span> | Real: <span id="wrWorstKpiReal">-</span>
+              </div>
+              <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">
+                Impacto: <span id="wrWorstKpiImpact" class="badge-status badge-critico" style="font-size: 0.55rem;">NEGATIVO</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD C: RESULTADO INBOUND CONSOLIDADO -->
+          <div class="kronos-card">
+            <div class="kronos-card-header" style="border-bottom: 1px solid rgba(0, 176, 255, 0.2); padding-bottom: 4px;">
+              <span class="kronos-card-title">Resultado Inbound</span>
+            </div>
+            <div style="margin-top: 8px;">
+              <div id="wrInboundConsolidated" style="font-family: 'Share Tech Mono', monospace; font-size: 1.4rem; font-weight: bold; color: var(--color-ok);">0%</div>
+              <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Aproveitamento consolidado das metas Inbound</p>
+            </div>
+          </div>
+
+          <!-- CARD D: RESULTADO OUTBOUND CONSOLIDADO -->
+          <div class="kronos-card">
+            <div class="kronos-card-header" style="border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 4px;">
+              <span class="kronos-card-title">Resultado Outbound</span>
+            </div>
+            <div style="margin-top: 8px;">
+              <div id="wrOutboundConsolidated" style="font-family: 'Share Tech Mono', monospace; font-size: 1.4rem; font-weight: bold; color: var(--gold-metallic);">0%</div>
+              <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Aproveitamento consolidado das metas Outbound</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-layout cols-3">
+          <!-- CARD E: FAST ATUAL -->
+          <div class="kronos-card">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">FAST ATUAL</span>
+              <span class="badge-status badge-elite" id="wrFastStatus">SLA OK</span>
+            </div>
+            <div style="margin-top: 10px;">
+              <div style="font-size: 1.6rem; font-weight: bold; font-family: 'Share Tech Mono', monospace;" id="wrFastActual">0%</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Meta de Tolerância Coletiva: 85%</div>
+            </div>
+          </div>
+
+          <!-- CARD F: MELHOR PS -->
+          <div class="kronos-card">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Melhor PS do Período</span>
+              <span class="badge-status badge-excelente">Top Score</span>
+            </div>
+            <div style="margin-top: 10px;">
+              <div style="font-size: 1.2rem; font-weight: bold; font-family: 'Cinzel', serif;" id="wrBestPsName">-</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Score Médio: <span id="wrBestPsScore" style="font-family: 'Share Tech Mono', monospace;">0%</span></div>
+            </div>
+          </div>
+
+          <!-- CARD G: MÉDIA OPERACIONAL KRONOS -->
+          <div class="kronos-card">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Média Móvel KRONOS</span>
+            </div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: var(--color-ok); margin-top: 10px;" id="warRoomTrend">
+              -
+            </div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Média histórica global acumulada</p>
+          </div>
+        </div>
+
+        <!-- LEADERBOARDS & RANKINGS -->
+        <div class="grid-layout cols-2" style="margin-top: 12px;">
+          <div class="kronos-card">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Ranking de PS (Líderes)</span>
+            </div>
+            <div class="table-responsive">
+              <table id="wrPsRankingTable">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>PS</th>
+                    <th>SLA Médio</th>
+                    <th>Participações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Injected Dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="kronos-card">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Ranking de Turnos</span>
+            </div>
+            <div class="table-responsive">
+              <table id="wrShiftRankingTable">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Turno</th>
+                    <th>SLA Médio</th>
+                    <th>Medições</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Injected Dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: TENDENCIAS -->
+      <div id="view-tendencias" class="view-panel">
+        <div class="grid-layout cols-2">
+          <div class="kronos-card">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">SLA KRONOS — Últimos 7 Turnos</span>
+            </div>
+            <div class="chart-box">
+              <canvas id="chartTrendScore"></canvas>
+            </div>
+          </div>
+          <div class="kronos-card">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Evolução do Fluxo de Produtividade vs Metas</span>
+            </div>
+            <div class="chart-box">
+              <canvas id="chartTrendTHP"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: EXPORTACOES -->
+      <div id="view-exportacoes" class="view-panel">
+        <div class="grid-layout cols-4">
+          <div class="kronos-card" style="cursor: pointer;" onclick="exportCardExecutivo()">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Card Executivo</span>
+            </div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Gera imagem de alta resolução otimizada para envio em grupos executivos.</p>
+          </div>
+          <div class="kronos-card" style="cursor: pointer;" onclick="exportToExcel()">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Exportar CSV</span>
+            </div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Gera e baixa a base tática compatível com o Google Sheets.</p>
+          </div>
+          <div class="kronos-card" style="cursor: pointer;" onclick="copiarResSummary()">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Copiar WhatsApp</span>
+            </div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Copia resumo formatado para transmissão direta.</p>
+          </div>
+          <div class="kronos-card" style="cursor: pointer;" onclick="toggleConfigModal()">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Integração WebApp</span>
+            </div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Parametrização avançada de comunicação direta do Apps Script.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- MODAL DE CONFIGURACAO DA API -->
+  <div id="configModal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; place-items:center;">
+    <div class="kronos-card" style="width: 500px; max-width: 90%;">
+      <div class="kronos-card-header">
+        <span class="kronos-card-title">Configurar Google Apps Script</span>
+      </div>
+      <div class="form-group" style="margin-top: 10px;">
+        <label>URL Web App do Script</label>
+        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbxSwaxxrF8t3jBzAc4oMQqNtDtWoz6b3eslGVUzb4Uzmok5ZVBEDvvate8Fk4yVsMLZ/exec">
+      </div>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 20px;">Insira a URL obtida ao realizar a implantação tática de Web App na sua planilha oficial para ativação de ponte.</p>
+      <div style="display: flex; gap:12px; justify-content:flex-end;">
+        <button class="btn btn-secondary" onclick="toggleConfigModal()">Cancelar</button>
+        <button class="btn btn-gold" onclick="saveApiConfig()">Salvar Integração</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Master structure of scheduled and configured shifts
+    // ATENÇÃO: mantido como configuração operacional fixa (metas/horários definidos pelo negócio),
+    // não como "dados de turno realizados" — decisão pendente de confirmação (ver auditoria).
+    const turnos = {
+      T1: {
+        inicio: "06:00",
+        fim: "14:30",
+        horarios: ["06h", "07h", "08h", "09h", "10h", "11h", "12h", "13h", "14h"],
+        area: "Fulfillment Inbound",
+        metaInboundTHP: 2200,
+        metaOutboundTHP: 1000,
+        matrixThpMeta: [200, 250, 300, 300, 250, 250, 200, 250, 200],
+        matrixIdleMeta: [5, 5, 5, 5, 10, 10, 5, 5, 5],
+        matrixCotMeta: [100, 100, 100, 100, 100, 100, 100, 100, 100],
+        timeline: { abertura: "06:00", fast: "07:30", controle: "10:00", finish: "13:30", fechamento: "14:30" }
+      },
+      T2: {
+        inicio: "14:30",
+        fim: "22:00",
+        horarios: ["14h30", "15h", "16h", "17h", "18h", "19h", "20h", "21h"],
+        area: "Fulfillment Outbound",
+        metaInboundTHP: 800,
+        metaOutboundTHP: 4500,
+        matrixThpMeta: [100, 500, 600, 700, 700, 650, 650, 600],
+        matrixIdleMeta: [5, 8, 8, 8, 12, 8, 8, 5],
+        matrixCotMeta: [100, 100, 100, 100, 100, 100, 100, 100],
+        timeline: { abertura: "14:30", fast: "15:30", controle: "18:00", finish: "21:00", fechamento: "22:00" }
+      },
+      T3: {
+        inicio: "22:00",
+        fim: "06:00",
+        horarios: ["22h", "23h", "00h", "01h", "02h", "03h", "04h", "05h"],
+        area: "Fulfillment Triagem Noturna",
+        metaInboundTHP: 1500,
+        metaOutboundTHP: 2000,
+        matrixThpMeta: [300, 450, 450, 500, 400, 400, 300, 200],
+        matrixIdleMeta: [10, 10, 12, 12, 15, 10, 10, 10],
+        matrixCotMeta: [100, 98, 98, 100, 100, 95, 95, 98],
+        timeline: { abertura: "22:00", fast: "23:00", controle: "02:00", finish: "05:00", fechamento: "06:00" }
+      }
+    };
+
+    // Google Sheets Integration Configuration
+    const SPREADSHEET_ID = "170QXtRi1CvkiBl0BuRmtZ1eScSZzHc6xJLj4AUAqhWU";
+    const SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json";
+
+    let records = [];
+    let activeOpTab = 'inbound';
+    let volumeChart = null;
+    let trendScoreChart = null;
+    let trendThpChart = null;
+    let configApiUrl = localStorage.getItem("kronos_config_api_url") || "";
+
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("regDate").value = new Date().toISOString().split('T')[0];
+      document.getElementById("headerFilterDate").value = new Date().toISOString().split('T')[0];
+      
+      // Cache local: guarda apenas o ÚLTIMO snapshot já confirmado vindo da planilha,
+      // usado só como fallback offline enquanto a sincronização real não responde.
+      // Nunca é preenchido com dados fictícios — apenas com o que a própria
+      // syncWithGoogleSheets() já validou e gravou anteriormente.
+      records = JSON.parse(localStorage.getItem("kronos_records")) || [];
+
+      const autoShift = detectAutoShift();
+      document.getElementById("regShift").value = autoShift;
+
+      onShiftChange();
+      loadActiveData();
+      startSystemCountdown();
+      checkApiConnection();
+
+      // Sincronização inicial dinâmica
+      syncWithGoogleSheets();
+
+      // Monitor de atualização em segundo plano (Sincronização Tática a cada 30 segundos)
+      setInterval(syncWithGoogleSheets, 30000);
+    });
+
+    function detectAutoShift() {
+      const now = new Date();
+      const hrs = now.getHours();
+      const mins = now.getMinutes();
+      const decTime = hrs + mins / 60;
+
+      if (decTime >= 6.0 && decTime < 14.5) {
+        return "T1";
+      } else if (decTime >= 14.5 && decTime < 22.0) {
+        return "T2";
+      } else {
+        return "T3";
+      }
+    }
+
+    function onShiftChange() {
+      const selectedShift = document.getElementById("regShift").value;
+      const template = turnos[selectedShift];
+      if (!template) return;
+
+      document.getElementById("regArea").value = template.area;
+      document.getElementById("metaInboundTHP").value = template.metaInboundTHP;
+      document.getElementById("metaOutboundTHP").value = template.metaOutboundTHP;
+
+      // Sincronizar Linha do tempo visual
+      document.getElementById("tlTimeAbertura").innerText = template.timeline.abertura;
+      document.getElementById("tlTimeFast").innerText = template.timeline.fast;
+      document.getElementById("tlTimeControle").innerText = template.timeline.controle;
+      document.getElementById("tlTimeFinish").innerText = template.timeline.finish;
+      document.getElementById("tlTimeFechamento").innerText = template.timeline.fechamento;
+
+      renderHourlyMatrixForms(template);
+      calculateLiveScores();
+    }
+
+    function renderHourlyMatrixForms(template) {
+      const headerRow = document.getElementById("matrixHeaderRow");
+      const thpMeta = document.getElementById("thpRowMeta");
+      const thpReal = document.getElementById("thpRowReal");
+      const thpPct = document.getElementById("thpRowPct");
+      
+      const idleMeta = document.getElementById("idleRowMeta");
+      const idleReal = document.getElementById("idleRowReal");
+      const idlePct = document.getElementById("idleRowPct");
+
+      const cotMeta = document.getElementById("cotRowMeta");
+      const cotReal = document.getElementById("cotRowReal");
+      const cotPct = document.getElementById("cotRowPct");
+
+      headerRow.innerHTML = "<th>Indicador / Hora</th>";
+      while (thpMeta.cells.length > 1) thpMeta.deleteCell(1);
+      while (thpReal.cells.length > 1) thpReal.deleteCell(1);
+      while (thpPct.cells.length > 1) thpPct.deleteCell(1);
+
+      while (idleMeta.cells.length > 1) idleMeta.deleteCell(1);
+      while (idleReal.cells.length > 1) idleReal.deleteCell(1);
+      while (idlePct.cells.length > 1) idlePct.deleteCell(1);
+
+      while (cotMeta.cells.length > 1) cotMeta.deleteCell(1);
+      while (cotReal.cells.length > 1) cotReal.deleteCell(1);
+      while (cotPct.cells.length > 1) cotPct.deleteCell(1);
+
+      template.horarios.forEach((hour, i) => {
+        headerRow.innerHTML += `<th>${hour}</th>`;
+        
+        thpMeta.innerHTML += `<td><input type="number" id="thp_meta_${i}" value="${template.matrixThpMeta[i] || 0}" oninput="calculateLiveScores()"></td>`;
+        thpReal.innerHTML += `<td><input type="number" id="thp_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
+        thpPct.innerHTML += `<td id="thp_pct_${i}" class="pct-calc-cell">0%</td>`;
+
+        idleMeta.innerHTML += `<td><input type="number" id="idle_meta_${i}" value="${template.matrixIdleMeta[i] || 0}" oninput="calculateLiveScores()"></td>`;
+        idleReal.innerHTML += `<td><input type="number" id="idle_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
+        idlePct.innerHTML += `<td id="idle_pct_${i}" class="pct-calc-cell">0%</td>`;
+
+        cotMeta.innerHTML += `<td><input type="number" id="cot_meta_${i}" value="${template.matrixCotMeta[i] || 0}" oninput="calculateLiveScores()"></td>`;
+        cotReal.innerHTML += `<td><input type="number" id="cot_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
+        cotPct.innerHTML += `<td id="cot_pct_${i}" class="pct-calc-cell">0%</td>`;
+      });
+    }
+
+    // Calculations Engine with dynamic synchronization
+    function calculateLiveScores() {
+      const selectedShift = document.getElementById("regShift").value;
+      const template = turnos[selectedShift];
+      if (!template) return;
+
+      const len = template.horarios.length;
+      
+      // THP Loop
+      let totalMetaThp = 0;
+      let totalRealThp = 0;
+      for (let i = 0; i < len; i++) {
+        const metaVal = parseFloat(document.getElementById(`thp_meta_${i}`).value) || 0;
+        const realVal = parseFloat(document.getElementById(`thp_real_${i}`).value) || 0;
+        totalMetaThp += metaVal;
+        totalRealThp += realVal;
+
+        let pct = 0;
+        if (metaVal > 0) pct = Math.round((realVal / metaVal) * 100);
+        else if (realVal > 0) pct = 100;
+        
+        const cell = document.getElementById(`thp_pct_${i}`);
+        if (cell) {
+          cell.innerText = `${pct}%`;
+          cell.style.color = pct >= 100 ? "var(--color-excelente)" : "var(--color-critico)";
+        }
+      }
+      
+      const realThpPerformance = totalMetaThp > 0 ? Math.min(100, Math.round((totalRealThp / totalMetaThp) * 100)) : 100;
+      document.getElementById("wtRealThp").innerText = `${realThpPerformance}%`;
+
+      // IDLE Loop
+      let totalMetaIdle = 0;
+      let totalRealIdle = 0;
+      let idleControlHours = 0;
+      for (let i = 0; i < len; i++) {
+        const metaVal = parseFloat(document.getElementById(`idle_meta_${i}`).value) || 0;
+        const realVal = parseFloat(document.getElementById(`idle_real_${i}`).value) || 0;
+        totalMetaIdle += metaVal;
+        totalRealIdle += realVal;
+        if (metaVal > 0 || realVal > 0) idleControlHours++;
+
+        const diff = realVal - metaVal;
+        const cell = document.getElementById(`idle_pct_${i}`);
+        
+        if (cell) {
+          if (realVal <= metaVal) {
+            cell.innerText = "OK";
+            cell.style.color = "var(--color-excelente)";
+          } else {
+            cell.innerText = `+${diff.toFixed(1)}%`;
+            cell.style.color = "var(--color-critico)";
+          }
+        }
+      }
+      const avgRealIdle = idleControlHours > 0 ? (totalRealIdle / idleControlHours) : 0;
+      const avgMetaIdle = idleControlHours > 0 ? (totalMetaIdle / idleControlHours) : 0;
+      const idleAproveitamento = avgRealIdle <= avgMetaIdle ? 100 : Math.max(0, Math.round(100 - (avgRealIdle - avgMetaIdle) * 5));
+      document.getElementById("wtRealIdle").innerText = `${avgRealIdle.toFixed(1)}% Real (Meta: ${avgMetaIdle.toFixed(1)}%)`;
+
+      // COT Loop
+      let totalMetaCot = 0;
+      let totalRealCot = 0;
+      let cotHours = 0;
+      for (let i = 0; i < len; i++) {
+        const metaVal = parseFloat(document.getElementById(`cot_meta_${i}`).value) || 0;
+        const realVal = parseFloat(document.getElementById(`cot_real_${i}`).value) || 0;
+        totalMetaCot += metaVal;
+        totalRealCot += realVal;
+        if (metaVal > 0 || realVal > 0) cotHours++;
+
+        const diff = realVal - metaVal;
+        const cell = document.getElementById(`cot_pct_${i}`);
+        if (cell) {
+          if (realVal >= metaVal) {
+            cell.innerText = "SLA OK";
+            cell.style.color = "var(--color-excelente)";
+          } else {
+            cell.innerText = `${diff.toFixed(1)}%`;
+            cell.style.color = "var(--color-critico)";
+          }
+        }
+      }
+      const avgRealCot = cotHours > 0 ? Math.round(totalRealCot / cotHours) : 100;
+      const avgMetaCot = cotHours > 0 ? Math.round(totalMetaCot / cotHours) : 100;
+      document.getElementById("wtRealCot").innerText = `${avgRealCot}%`;
+
+      const pInboundMeta = parseFloat(document.getElementById("metaInboundTHP").value) || 0;
+      const pInboundReal = parseFloat(document.getElementById("realInboundTHP").value) || 0;
+      const pOutboundMeta = parseFloat(document.getElementById("metaOutboundTHP").value) || 0;
+      const pOutboundReal = parseFloat(document.getElementById("realOutboundTHP").value) || 0;
+
+      const realFast = parseFloat(document.getElementById("realFastStart").value) || 0;
+      const realStrong = parseFloat(document.getElementById("realStrongFinish").value) || 0;
+      document.getElementById("wtRealFast").innerText = `${realFast}%`;
+      document.getElementById("wtRealStrong").innerText = `${realStrong}%`;
+
+      const s5Seiri = parseFloat(document.getElementById("s5Seiri").value) || 0;
+      const s5Seiton = parseFloat(document.getElementById("s5Seiton").value) || 0;
+      const s5Seiso = parseFloat(document.getElementById("s5Seiso").value) || 0;
+      const s5Shitsuke = parseFloat(document.getElementById("s5Shitsuke").value) || 0;
+      const avg5S = Math.round((s5Seiri + s5Seiton + s5Seiso + s5Shitsuke) / 4);
+      document.getElementById("wtReal5s").innerText = `${avg5S}%`;
+
+      const wThp = parseFloat(document.getElementById("pesoThp").value) || 0;
+      const wFast = parseFloat(document.getElementById("pesoFast").value) || 0;
+      const wCot = parseFloat(document.getElementById("pesoCot").value) || 0;
+      const wStrong = parseFloat(document.getElementById("pesoStrong").value) || 0;
+      const w5s = parseFloat(document.getElementById("peso5s").value) || 0;
+      const wIdle = parseFloat(document.getElementById("pesoIdle").value) || 0;
+
+      const sumWeights = wThp + wFast + wCot + wStrong + w5s + wIdle;
+      const wBadge = document.getElementById("weightTotalBadge");
+      wBadge.innerText = `Soma: ${sumWeights}%`;
+      if (sumWeights !== 100) {
+        wBadge.className = "badge-status badge-critico";
+      } else {
+        wBadge.className = "badge-status badge-excelente";
+      }
+
+      const evaluateImpact = (real, meta, isNegativeTarget = false) => {
+        if (isNegativeTarget) {
+          return real <= meta ? { res: "SLA OK", imp: "POSITIVO", style: "color: var(--color-excelente);" } 
+                               : { res: "Acima", imp: "NEGATIVO", style: "color: var(--color-critico);" };
+        } else {
+          return real >= meta ? { res: "Atingido", imp: "POSITIVO", style: "color: var(--color-excelente);" } 
+                               : { res: "Desvio", imp: "NEGATIVO", style: "color: var(--color-critico);" };
+        }
+      };
+
+      const impThp = evaluateImpact(realThpPerformance, 100);
+      const impFast = evaluateImpact(realFast, 85);
+      const impCot = evaluateImpact(avgRealCot, avgMetaCot);
+      const impStrong = evaluateImpact(realStrong, 85);
+      const imp5s = evaluateImpact(avg5S, 100);
+      const impIdle = evaluateImpact(avgRealIdle, avgMetaIdle, true);
+
+      const updateRowVisuals = (idRes, idImp, data) => {
+        const elRes = document.getElementById(idRes);
+        const elImp = document.getElementById(idImp);
+        if (elRes) elRes.innerText = data.res;
+        if (elImp) {
+          elImp.innerText = data.imp;
+          elImp.setAttribute("style", data.style);
+        }
+      };
+
+      updateRowVisuals("wtResThp", "wtImpactThp", impThp);
+      updateRowVisuals("wtResFast", "wtImpactFast", impFast);
+      updateRowVisuals("wtResCot", "wtImpactCot", impCot);
+      updateRowVisuals("wtResStrong", "wtImpactStrong", impStrong);
+      updateRowVisuals("wtRes5s", "wtImpact5s", imp5s);
+      updateRowVisuals("wtResIdle", "wtImpactIdle", impIdle);
+
+      // Score Engine calculations
+      let calculatedScore = 0;
+      calculatedScore += (realThpPerformance * (wThp / 100));
+      calculatedScore += (realFast * (wFast / 100));
+      calculatedScore += (avg5S * (w5s / 100));
+      calculatedScore += (realStrong * (wStrong / 100));
+
+      if (avgRealCot >= avgMetaCot) {
+        calculatedScore += wCot; 
+      } else {
+        const cotPenalty = ((avgMetaCot - avgRealCot) / 10) * 10;
+        calculatedScore += Math.max(0, wCot - cotPenalty);
+      }
+
+      if (avgRealIdle <= avgMetaIdle) {
+        calculatedScore += wIdle;
+      } else {
+        const idlePenalty = (avgRealIdle - avgMetaIdle) * 5;
+        calculatedScore += Math.max(0, wIdle - idlePenalty);
+      }
+
+      const finalScore = Math.min(100, Math.max(0, Math.round(calculatedScore)));
+      
+      const resData = {
+        score: finalScore,
+        avg5S: avg5S,
+        avgRealIdle: avgRealIdle,
+        avgRealCot: avgRealCot,
+        inboundPerformance: pInboundMeta > 0 ? Math.round((pInboundReal / pInboundMeta) * 100) : 100,
+        outboundPerformance: pOutboundMeta > 0 ? Math.round((pOutboundReal / pOutboundMeta) * 100) : 100
+      };
+
+      // Perform a direct UI synchronization on current active widgets
+      updateDashboardDataLive(resData, selectedShift, template);
+      return resData;
+    }
+
+    // High Density Command Center Live Synchronization without page reload
+    function updateDashboardDataLive(resData, shiftCode, template) {
+      // 1. Score Kronos Sync
+      const score = resData.score;
+      const classification = score >= 95 ? "Elite" : (score >= 90 ? "Excelente" : (score >= 80 ? "OK" : "Atenção"));
+      updateGauge(score, classification);
+
+      // 2. Inbound / Outbound / Fast / Strong widgets
+      document.getElementById("dashKpiInboundPct").innerText = `${resData.inboundPerformance}%`;
+      const inReal = parseFloat(document.getElementById("realInboundTHP").value) || 0;
+      const inMeta = parseFloat(document.getElementById("metaInboundTHP").value) || 0;
+      document.getElementById("dashKpiInboundMeta").innerText = inMeta;
+      document.getElementById("dashKpiInboundReal").innerText = inReal;
+      
+      const inBadge = document.getElementById("inboundBadgeStatus");
+      inBadge.innerText = resData.inboundPerformance >= 100 ? "SLA OK" : "DESVIO";
+      inBadge.className = "badge-status " + (resData.inboundPerformance >= 100 ? "badge-excelente" : "badge-critico");
+
+      document.getElementById("dashKpiOutboundPct").innerText = `${resData.outboundPerformance}%`;
+      const outReal = parseFloat(document.getElementById("realOutboundTHP").value) || 0;
+      const outMeta = parseFloat(document.getElementById("metaOutboundTHP").value) || 0;
+      document.getElementById("dashKpiOutboundMeta").innerText = outMeta;
+      document.getElementById("dashKpiOutboundReal").innerText = outReal;
+
+      const outBadge = document.getElementById("outboundBadgeStatus");
+      outBadge.innerText = resData.outboundPerformance >= 100 ? "SLA OK" : "DESVIO";
+      outBadge.className = "badge-status " + (resData.outboundPerformance >= 100 ? "badge-excelente" : "badge-critico");
+
+      const realFast = parseFloat(document.getElementById("realFastStart").value) || 0;
+      document.getElementById("dashKpiFast").innerText = `${realFast}%`;
+      const fastBadge = document.getElementById("fastBadgeStatus");
+      fastBadge.innerText = realFast >= 85 ? "SLA OK" : "DESVIO";
+      fastBadge.className = "badge-status " + (realFast >= 85 ? "badge-excelente" : "badge-critico");
+
+      const realStrong = parseFloat(document.getElementById("realStrongFinish").value) || 0;
+      document.getElementById("dashKpiStrong").innerText = `${realStrong}%`;
+      const strongBadge = document.getElementById("strongBadgeStatus");
+      strongBadge.innerText = realStrong >= 85 ? "SLA OK" : "DESVIO";
+      strongBadge.className = "badge-status " + (realStrong >= 85 ? "badge-excelente" : "badge-critico");
+
+      // 3. Detalhamento por Fluxo Rendering
+      renderDetailedFlowPanelsLive(resData, realFast, realStrong);
+    }
+
+    // Detailed Flow Panels Renderer Engine
+    function renderDetailedFlowPanelsLive(resData, realFast, realStrong) {
+      const inboundBody = document.getElementById("inboundFlowTableBody");
+      const avgIdle = resData.avgRealIdle;
+      
+      if (inboundBody) {
+        inboundBody.innerHTML = `
+          <tr>
+            <td>Idle Indicator</td>
+            <td style="text-align: center;">5.0%</td>
+            <td style="text-align: center;">${avgIdle.toFixed(1)}%</td>
+            <td style="text-align: center;">${(avgIdle - 5.0).toFixed(1)}%</td>
+            <td style="text-align: right;"><span class="badge-status ${avgIdle <= 5.0 ? 'badge-excelente' : 'badge-critico'}">${avgIdle <= 5.0 ? 'SLA OK' : 'DESVIO'}</span></td>
+          </tr>
+          <tr>
+            <td>Fast Start</td>
+            <td style="text-align: center;">85%</td>
+            <td style="text-align: center;">${realFast}%</td>
+            <td style="text-align: center;">${realFast - 85}%</td>
+            <td style="text-align: right;"><span class="badge-status ${realFast >= 85 ? 'badge-excelente' : 'badge-critico'}">${realFast >= 85 ? 'SLA OK' : 'DESVIO'}</span></td>
+          </tr>
+          <tr>
+            <td>Strong Finish</td>
+            <td style="text-align: center;">85%</td>
+            <td style="text-align: center;">${realStrong}%</td>
+            <td style="text-align: center;">${realStrong - 85}%</td>
+            <td style="text-align: right;"><span class="badge-status ${realStrong >= 85 ? 'badge-excelente' : 'badge-critico'}">${realStrong >= 85 ? 'SLA OK' : 'DESVIO'}</span></td>
+          </tr>
+        `;
+      }
+
+      // Footer Inbound Calculations
+      const inUtil = Math.max(0, 100 - avgIdle);
+      const inGapStart = 85 - realFast;
+      const inRealVol = parseFloat(document.getElementById("realInboundTHP").value) || 0;
+      const inMetaVol = parseFloat(document.getElementById("metaInboundTHP").value) || 1;
+      const inGapReal = Math.round(((inRealVol - inMetaVol) / inMetaVol) * 100);
+
+      const elInboundUtil = document.getElementById("inboundUtilVal");
+      const elInboundEf = document.getElementById("inboundEfVal");
+      const elInboundGapStart = document.getElementById("inboundGapStartVal");
+      const elInboundGapReal = document.getElementById("inboundGapRealVal");
+
+      if (elInboundUtil) elInboundUtil.innerText = `${inUtil.toFixed(1)}%`;
+      if (elInboundEf) elInboundEf.innerText = `${resData.inboundPerformance}%`;
+      if (elInboundGapStart) elInboundGapStart.innerText = `${inGapStart > 0 ? '+' : ''}${inGapStart}%`;
+      if (elInboundGapReal) elInboundGapReal.innerText = `${inGapReal >= 0 ? '+' : ''}${inGapReal}%`;
+
+      const outboundBody = document.getElementById("outboundFlowTableBody");
+      const avgCot = resData.avgRealCot;
+      
+      if (outboundBody) {
+        outboundBody.innerHTML = `
+          <tr>
+            <td>COT Performance</td>
+            <td style="text-align: center;">100%</td>
+            <td style="text-align: center;">${avgCot}%</td>
+            <td style="text-align: center;">${avgCot - 100}%</td>
+            <td style="text-align: right;"><span class="badge-status ${avgCot >= 100 ? 'badge-excelente' : 'badge-critico'}">${avgCot >= 100 ? 'SLA OK' : 'DESVIO'}</span></td>
+          </tr>
+          <tr>
+            <td>Idle Indicator</td>
+            <td style="text-align: center;">8.0%</td>
+            <td style="text-align: center;">${avgIdle.toFixed(1)}%</td>
+            <td style="text-align: center;">${(avgIdle - 8.0).toFixed(1)}%</td>
+            <td style="text-align: right;"><span class="badge-status ${avgIdle <= 8.0 ? 'badge-excelente' : 'badge-critico'}">${avgIdle <= 8.0 ? 'SLA OK' : 'DESVIO'}</span></td>
+          </tr>
+          <tr>
+            <td>Fast Start</td>
+            <td style="text-align: center;">85%</td>
+            <td style="text-align: center;">${realFast}%</td>
+            <td style="text-align: center;">${realFast - 85}%</td>
+            <td style="text-align: right;"><span class="badge-status ${realFast >= 85 ? 'badge-excelente' : 'badge-critico'}">${realFast >= 85 ? 'SLA OK' : 'DESVIO'}</span></td>
+          </tr>
+          <tr>
+            <td>Strong Finish</td>
+            <td style="text-align: center;">85%</td>
+            <td style="text-align: center;">${realStrong}%</td>
+            <td style="text-align: center;">${realStrong - 85}%</td>
+            <td style="text-align: right;"><span class="badge-status ${realStrong >= 85 ? 'badge-excelente' : 'badge-critico'}">${realStrong >= 85 ? 'SLA OK' : 'DESVIO'}</span></td>
+          </tr>
+        `;
+      }
+
+      // Footer Outbound Calculations
+      const outUtil = Math.max(0, 100 - avgIdle);
+      const outGapStart = 85 - realFast;
+      const outRealVol = parseFloat(document.getElementById("realOutboundTHP").value) || 0;
+      const outMetaVol = parseFloat(document.getElementById("metaOutboundTHP").value) || 1;
+      const outGapReal = Math.round(((outRealVol - outMetaVol) / outMetaVol) * 100);
+
+      const elOutboundUtil = document.getElementById("outboundUtilVal");
+      const elOutboundEf = document.getElementById("outboundEfVal");
+      const elOutboundGapStart = document.getElementById("outboundGapStartVal");
+      const elOutboundGapReal = document.getElementById("outboundGapRealVal");
+
+      if (elOutboundUtil) elOutboundUtil.innerText = `${outUtil.toFixed(1)}%`;
+      if (elOutboundEf) elOutboundEf.innerText = `${resData.outboundPerformance}%`;
+      if (elOutboundGapStart) elOutboundGapStart.innerText = `${outGapStart > 0 ? '+' : ''}${outGapStart}%`;
+      if (elOutboundGapReal) elOutboundGapReal.innerText = `${outGapReal >= 0 ? '+' : ''}${outGapReal}%`;
+    }
+
+    function handleFormSubmit(event) {
+      event.preventDefault();
+
+      const psName = document.getElementById("regPSName").value.trim();
+      if (!psName) {
+        showToast("Identificação do PS responsável é obrigatória.", "error");
+        return;
+      }
+
+      const selectedShift = document.getElementById("regShift").value;
+      const template = turnos[selectedShift];
+      const len = template.horarios.length;
+
+      const live = calculateLiveScores();
+
+      const matrixThpReal = [];
+      const matrixIdleReal = [];
+      const matrixCotReal = [];
+
+      for (let i = 0; i < len; i++) {
+        matrixThpReal.push(parseFloat(document.getElementById(`thp_real_${i}`).value) || 0);
+        matrixIdleReal.push(parseFloat(document.getElementById(`idle_real_${i}`).value) || 0);
+        matrixCotReal.push(parseFloat(document.getElementById(`cot_real_${i}`).value) || 0);
+      }
+
+      const newRecord = {
+        id: Date.now().toString(),
+        date: document.getElementById("regDate").value,
+        psName: psName,
+        shift: selectedShift,
+        area: document.getElementById("regArea").value,
+        metaInbound: parseFloat(document.getElementById("metaInboundTHP").value) || 0,
+        realInbound: parseFloat(document.getElementById("realInboundTHP").value) || 0,
+        metaOutbound: parseFloat(document.getElementById("metaOutboundTHP").value) || 0,
+        realOutbound: parseFloat(document.getElementById("realOutboundTHP").value) || 0,
+        realFastStart: parseFloat(document.getElementById("realFastStart").value) || 0,
+        realStrongFinish: parseFloat(document.getElementById("realStrongFinish").value) || 0,
+        volPlan: parseFloat(document.getElementById("regVolPlan").value) || 0,
+        volReal: parseFloat(document.getElementById("regVolReal").value) || 0,
+        weights: {
+          thp: parseFloat(document.getElementById("pesoThp").value) || 0,
+          fast: parseFloat(document.getElementById("pesoFast").value) || 0,
+          cot: parseFloat(document.getElementById("pesoCot").value) || 0,
+          strong: parseFloat(document.getElementById("pesoStrong").value) || 0,
+          s5: parseFloat(document.getElementById("peso5s").value) || 0,
+          idle: parseFloat(document.getElementById("pesoIdle").value) || 0
+        },
+        realIdle: Math.round(live.avgRealIdle),
+        realCot: Math.round(live.avgRealCot),
+        s5: {
+          seiri: parseFloat(document.getElementById("s5Seiri").value) || 0,
+          seiton: parseFloat(document.getElementById("s5Seiton").value) || 0,
+          seiso: parseFloat(document.getElementById("s5Seiso").value) || 0,
+          shitsuke: parseFloat(document.getElementById("s5Shitsuke").value) || 0
+        },
+        notes: document.getElementById("regGeneralNotes").value,
+        score: live.score,
+        classification: live.score >= 95 ? "Elite" : (live.score >= 90 ? "Excelente" : (live.score >= 80 ? "OK" : "Atenção")),
+        hourlyTHPMeta: template.matrixThpMeta,
+        hourlyTHPReal: matrixThpReal,
+        hourlyIdleMeta: template.matrixIdleMeta,
+        hourlyIdleReal: matrixIdleReal,
+        hourlyCOTMeta: template.matrixCotMeta,
+        hourlyCOTReal: matrixCotReal
+      };
+
+      // Gravação local preventiva
+      records = records.filter(r => !(r.date === newRecord.date && r.shift === newRecord.shift));
+      records.push(newRecord);
+      localStorage.setItem("kronos_records", JSON.stringify(records));
+
+      showToast("Gravando dados...");
+      
+      // Envio para o Google Sheets caso configurado
+      if (configApiUrl) {
+        sendToGoogleSheets(newRecord);
+      } else {
+        showToast("Dados salvos localmente. configure o WebApp para salvar em nuvem.", "warning");
+        loadActiveData();
+      }
+
+      switchView("dashboard");
+    }
+
+    function resetForm() {
+      document.getElementById("registrarTurnoForm").reset();
+      document.getElementById("regSite").value = "BRFPE1";
+      onShiftChange();
+    }
+
+    function switchView(viewId) {
+      document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
+      const activeNav = Array.from(document.querySelectorAll(".nav-menu .nav-item")).find(i => i.outerHTML.includes(viewId));
+      if (activeNav) activeNav.classList.add("active");
+
+      document.querySelectorAll(".view-panel").forEach(panel => panel.classList.remove("active"));
+      const targetPanel = document.getElementById(`view-${viewId}`);
+      if (targetPanel) targetPanel.classList.add("active");
+
+      const titles = {
+        dashboard: ["Dashboard Geral", "Visão geral do turno ativo e controle de SLA em tempo real."],
+        registrar: ["Registrar Turno / PS", "Configure metas, pesos operacionais e registre a volumetria horária."],
+        historico: ["Histórico Temporal", "Relação cronológica completa dos turnos e fechamentos operacionais."],
+        ranking: ["Ranking Operacional", "Desempenho comparativo de equipes, PS responsáveis e turnos."],
+        warroom: ["War Room", "Métricas analíticas táticas de controle e planos de contingência operacional."],
+        tendencias: ["Análise de Tendências", "Gráficos de evolução histórica do Score e THP operacional."],
+        exportacoes: ["Exportações & Configurações de API", "Extraia relatórios formatados ou integre o KRONOS com planilhas corporativas."]
+      };
+
+      if (titles[viewId]) {
+        document.getElementById("viewHeaderTitle").innerText = titles[viewId][0];
+        document.getElementById("viewHeaderSubtitle").innerText = titles[viewId][1];
+      }
+
+      if (viewId === 'dashboard') {
+        loadActiveData();
+      } else if (viewId === 'tendencias') {
+        renderTrendCharts();
+      } else if (viewId === 'ranking') {
+        renderRankings();
+      } else if (viewId === 'warroom') {
+        renderWarRoom();
+      } else if (viewId === 'historico') {
+        renderHistory();
+      }
+    }
+
+    function loadActiveData() {
+      const filterDate = document.getElementById("headerFilterDate").value;
+      let active = records.find(r => r.date === filterDate);
+      
+      if (!active && records.length > 0) {
+        active = records[records.length - 1]; 
+      }
+
+      const kpiTotal = document.getElementById("dashKpiTotal");
+      if (kpiTotal) kpiTotal.innerText = records.length;
+
+      if (active) {
+        document.getElementById("regDate").value = active.date;
+        document.getElementById("regShift").value = active.shift;
+        document.getElementById("regPSName").value = active.psName || "";
+        document.getElementById("regVolPlan").value = active.volPlan !== undefined ? active.volPlan : "";
+        document.getElementById("regVolReal").value = active.volReal !== undefined ? active.volReal : "";
+        document.getElementById("metaInboundTHP").value = active.metaInbound !== undefined ? active.metaInbound : "";
+        document.getElementById("realInboundTHP").value = active.realInbound !== undefined ? active.realInbound : "";
+        document.getElementById("metaOutboundTHP").value = active.metaOutbound !== undefined ? active.metaOutbound : "";
+        document.getElementById("realOutboundTHP").value = active.realOutbound !== undefined ? active.realOutbound : "";
+        document.getElementById("realFastStart").value = active.realFastStart !== undefined ? active.realFastStart : "";
+        document.getElementById("realStrongFinish").value = active.realStrongFinish !== undefined ? active.realStrongFinish : "";
+        document.getElementById("regGeneralNotes").value = active.notes || "";
+
+        const template = turnos[active.shift];
+        template.horarios.forEach((h, i) => {
+          const tReal = document.getElementById(`thp_real_${i}`);
+          const iReal = document.getElementById(`idle_real_${i}`);
+          const cReal = document.getElementById(`cot_real_${i}`);
+          if (tReal) tReal.value = (active.hourlyTHPReal && active.hourlyTHPReal[i] !== undefined) ? active.hourlyTHPReal[i] : "";
+          if (iReal) iReal.value = (active.hourlyIdleReal && active.hourlyIdleReal[i] !== undefined) ? active.hourlyIdleReal[i] : "";
+          if (cReal) cReal.value = (active.hourlyCOTReal && active.hourlyCOTReal[i] !== undefined) ? active.hourlyCOTReal[i] : "";
+        });
+
+        calculateLiveScores();
+        updateVolumeChart(active);
+        renderOpTabs();
+      } else {
+        updateGauge(0, "-");
+        const elInboundPct = document.getElementById("dashKpiInboundPct");
+        const elInboundMeta = document.getElementById("dashKpiInboundMeta");
+        const elInboundReal = document.getElementById("dashKpiInboundReal");
+        const elOutboundPct = document.getElementById("dashKpiOutboundPct");
+        const elOutboundMeta = document.getElementById("dashKpiOutboundMeta");
+        const elOutboundReal = document.getElementById("dashKpiOutboundReal");
+        const elFast = document.getElementById("dashKpiFast");
+        const elStrong = document.getElementById("dashKpiStrong");
+
+        if (elInboundPct) elInboundPct.innerText = "0%";
+        if (elInboundMeta) elInboundMeta.innerText = "0";
+        if (elInboundReal) elInboundReal.innerText = "0";
+        if (elOutboundPct) elOutboundPct.innerText = "0%";
+        if (elOutboundMeta) elOutboundMeta.innerText = "0";
+        if (elOutboundReal) elOutboundReal.innerText = "0";
+        if (elFast) elFast.innerText = "0%";
+        if (elStrong) elStrong.innerText = "0%";
+
+        const elInboundBody = document.getElementById("inboundFlowTableBody");
+        const elOutboundBody = document.getElementById("outboundFlowTableBody");
+
+        if (elInboundBody) elInboundBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Sem dados disponíveis</td></tr>`;
+        if (elOutboundBody) elOutboundBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Sem dados disponíveis</td></tr>`;
+      }
+    }
+
+    function updateGauge(score, classification) {
+      const fill = document.getElementById("gaugeFill");
+      const valText = document.getElementById("gaugeTextValue");
+      const badge = document.getElementById("scoreBadge");
+
+      if (valText) valText.textContent = score;
+      const offset = 283 - (283 * score) / 100;
+      if (fill) fill.style.strokeDashoffset = offset;
+
+      if (badge) {
+        badge.className = "badge-status";
+        badge.innerText = classification;
+
+        if (score >= 95) badge.classList.add("badge-elite");
+        else if (score >= 90) badge.classList.add("badge-excelente");
+        else if (score >= 80) badge.classList.add("badge-ok");
+        else if (score >= 50) badge.classList.add("badge-atencao");
+        else badge.classList.add("badge-critico");
+      }
+    }
+
+    function updateVolumeChart(active) {
+      const canvasEl = document.getElementById("headerVolumeChart");
+      if (!canvasEl) return;
+      const ctx = canvasEl.getContext("2d");
+      if (volumeChart) volumeChart.destroy();
+
+      volumeChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Inbound', 'Outbound'],
+          datasets: [
+            {
+              label: 'Meta',
+              data: [active.metaInbound || 0, active.metaOutbound || 0],
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              borderColor: 'rgba(212, 175, 55, 0.5)',
+              borderWidth: 1
+            },
+            {
+              label: 'Realizado',
+              data: [active.realInbound || 0, active.realOutbound || 0],
+              backgroundColor: ['#00f0ff', '#d4af37'],
+              borderRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#8491a5', font: { size: 9 } } },
+            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8491a5', font: { size: 9 } } }
+          }
+        }
+      });
+    }
+
+    function switchOpTab(tab) {
+      activeOpTab = tab;
+      document.getElementById("tabBtnInbound").classList.remove("active-tab");
+      document.getElementById("tabBtnOutbound").classList.remove("active-tab");
+      document.getElementById("tabContentInbound").style.display = "none";
+      document.getElementById("tabContentOutbound").style.display = "none";
+
+      if (tab === 'inbound') {
+        document.getElementById("tabBtnInbound").classList.add("active-tab");
+        document.getElementById("tabContentInbound").style.display = "block";
+      } else {
+        document.getElementById("tabBtnOutbound").classList.add("active-tab");
+        document.getElementById("tabContentOutbound").style.display = "block";
+      }
+      renderOpTabs();
+    }
+
+    function renderOpTabs() {
+      const fShift = document.getElementById("tabFilterShift").value;
+      const fPS = document.getElementById("tabFilterPS").value.toLowerCase();
+      const fDate = document.getElementById("tabFilterDate").value;
+      const fArea = document.getElementById("tabFilterArea").value.toLowerCase();
+
+      const filtered = records.filter(r => {
+        if (fShift && r.shift !== fShift) return false;
+        if (fPS && !r.psName.toLowerCase().includes(fPS)) return false;
+        if (fDate && r.date !== fDate) return false;
+        if (fArea && !r.area.toLowerCase().includes(fArea)) return false;
+        return true;
+      });
+
+      const inBody = document.querySelector("#opTabInboundTable tbody");
+      const outBody = document.querySelector("#opTabOutboundTable tbody");
+
+      if (!inBody || !outBody) return;
+
+      inBody.innerHTML = "";
+      outBody.innerHTML = "";
+
+      if (filtered.length === 0) {
+        const trEmpty = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Nenhum dado condizente com os filtros atuais.</td></tr>`;
+        inBody.innerHTML = trEmpty;
+        outBody.innerHTML = trEmpty;
+        return;
+      }
+
+      filtered.forEach(r => {
+        const pctIn = r.metaInbound > 0 ? Math.round((r.realInbound / r.metaInbound) * 100) : 100;
+        const trIn = `
+          <tr>
+            <td>${r.date}</td>
+            <td><strong>${r.psName || ""}</strong></td>
+            <td>${r.shift}</td>
+            <td>${r.area}</td>
+            <td>${r.metaInbound || 0} THP</td>
+            <td>${r.realInbound || 0} THP</td>
+            <td><span class="badge-status ${pctIn >= 100 ? 'badge-excelente' : 'badge-critico'}">${pctIn}%</span></td>
+          </tr>
+        `;
+        inBody.innerHTML += trIn;
+
+        const pctOut = r.metaOutbound > 0 ? Math.round((r.realOutbound / r.metaOutbound) * 100) : 100;
+        const trOut = `
+          <tr>
+            <td>${r.date}</td>
+            <td><strong>${r.psName || ""}</strong></td>
+            <td>${r.shift}</td>
+            <td>${r.area}</td>
+            <td>${r.metaOutbound || 0} THP</td>
+            <td>${r.realOutbound || 0} THP</td>
+            <td><span class="badge-status ${pctOut >= 100 ? 'badge-excelente' : 'badge-critico'}">${pctOut}%</span></td>
+          </tr>
+        `;
+        outBody.innerHTML += trOut;
+      });
+    }
+
+    function renderHistory() {
+      const tbody = document.getElementById("historicoTableBody");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      if (records.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color: var(--text-muted);">Nenhum registro armazenado. Sincronize com a Planilha.</td></tr>`;
+        return;
+      }
+
+      const sorted = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      sorted.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${r.date}</td>
+          <td><strong>${r.shift}</strong></td>
+          <td>${r.psName || ""}</td>
+          <td>${r.area}</td>
+          <td>${r.realInbound !== undefined ? r.realInbound : 0} / ${r.metaInbound !== undefined ? r.metaInbound : 0}</td>
+          <td>${r.realOutbound !== undefined ? r.realOutbound : 0} / ${r.metaOutbound !== undefined ? r.metaOutbound : 0}</td>
+          <td><span class="badge-status ${r.score >= 95 ? 'badge-elite' : (r.score >= 80 ? 'badge-ok' : 'badge-critico')}">${r.score}% SLA</span></td>
+          <td style="text-align: right; display: flex; gap: 6px; justify-content: flex-end;">
+            <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.7rem;" onclick="loadRecordToForm('${r.id}')">Carregar</button>
+            <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.7rem;" onclick="deleteRecord('${r.id}')">Excluir</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function loadRecordToForm(id) {
+      const record = records.find(r => r.id === id);
+      if (!record) return;
+
+      document.getElementById("regDate").value = record.date;
+      document.getElementById("regPSName").value = record.psName || "";
+      document.getElementById("regShift").value = record.shift;
+      document.getElementById("regVolPlan").value = record.volPlan !== undefined ? record.volPlan : "";
+      document.getElementById("regVolReal").value = record.volReal !== undefined ? record.volReal : "";
+      
+      onShiftChange();
+
+      const template = turnos[record.shift];
+      template.horarios.forEach((h, i) => {
+        const tReal = document.getElementById(`thp_real_${i}`);
+        const iReal = document.getElementById(`idle_real_${i}`);
+        const cReal = document.getElementById(`cot_real_${i}`);
+        if (tReal) tReal.value = (record.hourlyTHPReal && record.hourlyTHPReal[i] !== undefined) ? record.hourlyTHPReal[i] : "";
+        if (iReal) iReal.value = (record.hourlyIdleReal && record.hourlyIdleReal[i] !== undefined) ? record.hourlyIdleReal[i] : "";
+        if (cReal) cReal.value = (record.hourlyCOTReal && record.hourlyCOTReal[i] !== undefined) ? record.hourlyCOTReal[i] : "";
+      });
+
+      document.getElementById("metaInboundTHP").value = record.metaInbound !== undefined ? record.metaInbound : "";
+      document.getElementById("realInboundTHP").value = record.realInbound !== undefined ? record.realInbound : "";
+      document.getElementById("metaOutboundTHP").value = record.metaOutbound !== undefined ? record.metaOutbound : "";
+      document.getElementById("realOutboundTHP").value = record.realOutbound !== undefined ? record.realOutbound : "";
+      
+      document.getElementById("realFastStart").value = record.realFastStart !== undefined ? record.realFastStart : "";
+      document.getElementById("realStrongFinish").value = record.realStrongFinish !== undefined ? record.realStrongFinish : "";
+
+      if (record.s5) {
+        document.getElementById("s5Seiri").value = record.s5.seiri !== undefined ? record.s5.seiri : "";
+        document.getElementById("s5Seiton").value = record.s5.seiton !== undefined ? record.s5.seiton : "";
+        document.getElementById("s5Seiso").value = record.s5.seiso !== undefined ? record.s5.seiso : "";
+        document.getElementById("s5Shitsuke").value = record.s5.shitsuke !== undefined ? record.s5.shitsuke : "";
+      }
+
+      document.getElementById("regGeneralNotes").value = record.notes || "";
+
+      calculateLiveScores();
+      switchView("registrar");
+      showToast("Dados de fechamento carregados.");
+    }
+
+    function deleteRecord(id) {
+      if (confirm("Confirmar a exclusão permanente deste fechamento operacional?")) {
+        records = records.filter(r => r.id !== id);
+        localStorage.setItem("kronos_records", JSON.stringify(records));
+        showToast("Fechamento deletado.");
+        renderHistory();
+      }
+    }
+
+    function renderRankings() {
+      const leadersMap = {};
+      const shiftsMap = {};
+
+      records.forEach(r => {
+        const psName = r.psName || "Sem PS";
+        if (!leadersMap[psName]) leadersMap[psName] = { scoreSum: 0, count: 0 };
+        leadersMap[psName].scoreSum += r.score;
+        leadersMap[psName].count++;
+
+        if (!shiftsMap[r.shift]) shiftsMap[r.shift] = { scoreSum: 0, count: 0 };
+        shiftsMap[r.shift].scoreSum += r.score;
+        shiftsMap[r.shift].count++;
+      });
+
+      const leaderRanking = Object.keys(leadersMap).map(k => ({
+        name: k,
+        avg: Math.round(leadersMap[k].scoreSum / leadersMap[k].count),
+        count: leadersMap[k].count
+      })).sort((a,b) => b.avg - a.avg);
+
+      const shiftRanking = Object.keys(shiftsMap).map(k => ({
+        name: k,
+        avg: Math.round(shiftsMap[k].scoreSum / shiftsMap[k].count),
+        count: shiftsMap[k].count
+      })).sort((a,b) => b.avg - a.avg);
+
+      const lBody = document.querySelector("#rankingLeadersTable tbody");
+      if (lBody) {
+        lBody.innerHTML = "";
+        leaderRanking.forEach((l, i) => {
+          lBody.innerHTML += `
+            <tr>
+              <td><strong>${i+1}º</strong></td>
+              <td><strong>${l.name}</strong></td>
+              <td>${l.avg}% SLA</td>
+              <td>${l.count} registros</td>
+            </tr>
+          `;
+        });
+      }
+
+      const sBody = document.querySelector("#rankingShiftsTable tbody");
+      if (sBody) {
+        sBody.innerHTML = "";
+        shiftRanking.forEach((s, i) => {
+          sBody.innerHTML += `
+            <tr>
+              <td><strong>${i+1}º</strong></td>
+              <td><strong>${s.name}</strong></td>
+              <td>${s.avg}% SLA</td>
+              <td>${s.count} registros</td>
+            </tr>
+          `;
+        });
+      }
+    }
+
+    // High Density War Room Engine
+    function renderWarRoom() {
+      const elBest = document.getElementById("wrBestKpiName");
+
+      if (records.length === 0) {
+        // Estado vazio explícito: nunca deixar os cards do War Room com o
+        // último valor calculado de uma sessão anterior quando não há registros.
+        document.getElementById("wrBestKpiName").innerText = "-";
+        document.getElementById("wrBestKpiMeta").innerText = "-";
+        document.getElementById("wrBestKpiReal").innerText = "-";
+        document.getElementById("wrWorstKpiName").innerText = "-";
+        document.getElementById("wrWorstKpiMeta").innerText = "-";
+        document.getElementById("wrWorstKpiReal").innerText = "-";
+        document.getElementById("wrInboundConsolidated").innerText = "0%";
+        document.getElementById("wrOutboundConsolidated").innerText = "0%";
+        document.getElementById("wrFastActual").innerText = "0%";
+        document.getElementById("wrBestPsName").innerText = "-";
+        document.getElementById("wrBestPsScore").innerText = "0%";
+        document.getElementById("warRoomTrend").innerText = "Sem dados disponíveis";
+
+        const psRankingTbody = document.querySelector("#wrPsRankingTable tbody");
+        const shiftRankingTbody = document.querySelector("#wrShiftRankingTable tbody");
+        if (psRankingTbody) psRankingTbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Sem dados disponíveis</td></tr>`;
+        if (shiftRankingTbody) shiftRankingTbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Sem dados disponíveis</td></tr>`;
+        return;
+      }
+
+      const latest = records[records.length - 1];
+      
+      const inboundPerf = latest.metaInbound > 0 ? (latest.realInbound / latest.metaInbound) * 100 : 100;
+      const outboundPerf = latest.metaOutbound > 0 ? (latest.realOutbound / latest.metaOutbound) * 100 : 100;
+
+      const candidates = [
+        { name: "Inbound", real: Math.round(inboundPerf), meta: 100, weight: 25 },
+        { name: "Outbound", real: Math.round(outboundPerf), meta: 100, weight: 25 },
+        { name: "Fast Start", real: latest.realFastStart || 0, meta: 85, weight: 15 },
+        { name: "Strong Finish", real: latest.realStrongFinish || 0, meta: 85, weight: 15 },
+        { name: "COT", real: latest.realCot || 0, meta: 100, weight: 20 },
+        { name: "Idle", real: 100 - (latest.realIdle || 0), meta: 95, weight: 15 }
+      ];
+
+      candidates.sort((a, b) => (a.real - a.meta) - (b.real - b.meta));
+      const worst = candidates[0];
+      const best = candidates[candidates.length - 1];
+
+      document.getElementById("wrBestKpiName").innerText = best.name;
+      document.getElementById("wrBestKpiMeta").innerText = `${best.meta}%`;
+      document.getElementById("wrBestKpiReal").innerText = `${best.real}%`;
+      
+      document.getElementById("wrWorstKpiName").innerText = worst.name;
+      document.getElementById("wrWorstKpiMeta").innerText = `${worst.meta}%`;
+      document.getElementById("wrWorstKpiReal").innerText = `${worst.real}%`;
+
+      document.getElementById("wrInboundConsolidated").innerText = `${Math.round(inboundPerf)}%`;
+      document.getElementById("wrOutboundConsolidated").innerText = `${Math.round(outboundPerf)}%`;
+      
+      document.getElementById("wrFastActual").innerText = `${latest.realFastStart || 0}%`;
+      const fastBadge = document.getElementById("wrFastStatus");
+      if (fastBadge) {
+        fastBadge.innerText = (latest.realFastStart || 0) >= 85 ? "SLA OK" : "DESVIO";
+        fastBadge.className = "badge-status " + ((latest.realFastStart || 0) >= 85 ? "badge-excelente" : "badge-critico");
+      }
+
+      // Leaderboards
+      const leadersMap = {};
+      const shiftsMap = {};
+
+      records.forEach(r => {
+        const psName = r.psName || "Sem PS";
+        if (!leadersMap[psName]) leadersMap[psName] = { scoreSum: 0, count: 0 };
+        leadersMap[psName].scoreSum += r.score;
+        leadersMap[psName].count++;
+
+        if (!shiftsMap[r.shift]) shiftsMap[r.shift] = { scoreSum: 0, count: 0 };
+        shiftsMap[r.shift].scoreSum += r.score;
+        shiftsMap[r.shift].count++;
+      });
+
+      const leaderRanking = Object.keys(leadersMap).map(k => ({
+        name: k,
+        avg: Math.round(leadersMap[k].scoreSum / leadersMap[k].count),
+        count: leadersMap[k].count
+      })).sort((a,b) => b.avg - a.avg);
+
+      const shiftRanking = Object.keys(shiftsMap).map(k => ({
+        name: k,
+        avg: Math.round(shiftsMap[k].scoreSum / shiftsMap[k].count),
+        count: shiftsMap[k].count
+      })).sort((a,b) => b.avg - a.avg);
+
+      if (leaderRanking.length > 0) {
+        document.getElementById("wrBestPsName").innerText = leaderRanking[0].name;
+        document.getElementById("wrBestPsScore").innerText = `${leaderRanking[0].avg}%`;
+      }
+
+      const sumAllScores = records.reduce((acc, curr) => acc + curr.score, 0);
+      const avgGlobal = Math.round(sumAllScores / records.length);
+      document.getElementById("warRoomTrend").innerText = `${avgGlobal}% SLA`;
+
+      // Render tables
+      const psRankingTbody = document.querySelector("#wrPsRankingTable tbody");
+      if (psRankingTbody) {
+        psRankingTbody.innerHTML = "";
+        leaderRanking.forEach((l, i) => {
+          psRankingTbody.innerHTML += `
+            <tr>
+              <td><strong>${i+1}º</strong></td>
+              <td><strong>${l.name}</strong></td>
+              <td>${l.avg}% SLA</td>
+              <td>${l.count} medições</td>
+            </tr>
+          `;
+        });
+      }
+
+      const shiftRankingTbody = document.querySelector("#wrShiftRankingTable tbody");
+      if (shiftRankingTbody) {
+        shiftRankingTbody.innerHTML = "";
+        shiftRanking.forEach((s, i) => {
+          shiftRankingTbody.innerHTML += `
+            <tr>
+              <td><strong>${i+1}º</strong></td>
+              <td><strong>${s.name}</strong></td>
+              <td>${s.avg}% SLA</td>
+              <td>${s.count} turnos</td>
+            </tr>
+          `;
+        });
+      }
+    }
+
+    function renderTrendCharts() {
+      const elScore = document.getElementById("chartTrendScore");
+      const elThp = document.getElementById("chartTrendTHP");
+      if (!elScore || !elThp) return;
+
+      const ctxScore = elScore.getContext("2d");
+      const ctxThp = elThp.getContext("2d");
+
+      if (trendScoreChart) trendScoreChart.destroy();
+      if (trendThpChart) trendThpChart.destroy();
+
+      const lastSeven = [...records].slice(-7);
+      const labels = lastSeven.map(r => `${r.date.substring(8, 10)}/${r.date.substring(5, 7)} (${r.shift})`);
+      const scores = lastSeven.map(r => r.score);
+      const targets = lastSeven.map(() => 95);
+
+      const realTHPs = lastSeven.map(r => (r.realInbound || 0) + (r.realOutbound || 0));
+      const metaTHPs = lastSeven.map(r => (r.metaInbound || 0) + (r.metaOutbound || 0));
+
+      trendScoreChart = new Chart(ctxScore, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Score KRONOS',
+              data: scores,
+              borderColor: '#ffd700',
+              backgroundColor: 'rgba(255, 215, 0, 0.05)',
+              borderWidth: 2,
+              tension: 0.3,
+              fill: true
+            },
+            {
+              label: 'Meta Mínima',
+              data: targets,
+              borderColor: 'rgba(255, 23, 68, 0.5)',
+              borderWidth: 1.5,
+              borderDash: [5, 5],
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { min: 0, max: 100, ticks: { color: '#8491a5', font: { size: 9 } } },
+            x: { ticks: { color: '#8491a5', font: { size: 9 } } }
+          }
+        }
+      });
+
+      trendThpChart = new Chart(ctxThp, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Meta Produtividade',
+              data: metaTHPs,
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              borderColor: 'rgba(212, 175, 55, 0.3)',
+              borderWidth: 1
+            },
+            {
+              label: 'Produtividade Realizada',
+              data: realTHPs,
+              backgroundColor: '#00e676',
+              borderRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { ticks: { color: '#8491a5', font: { size: 9 } } },
+            x: { ticks: { color: '#8491a5', font: { size: 9 } } }
+          }
+        }
+      });
+    }
+
+    function startSystemCountdown() {
+      setInterval(() => {
+        const now = new Date();
+        const activeShift = detectAutoShift();
+        const limits = { T1: [14, 30], T2: [22, 0], T3: [6, 0] };
+        
+        let target = new Date();
+        target.setHours(limits[activeShift][0], limits[activeShift][1], 0, 0);
+
+        if (activeShift === "T3" && now.getHours() >= 22) {
+          target.setDate(target.getDate() + 1);
+        } else if (now > target) {
+          target.setDate(target.getDate() + 1);
+        }
+
+        const diff = target - now;
+        const countdownEl = document.getElementById("kronosTimerCountdown");
+        
+        if (countdownEl) {
+          // Operação dinâmica tolerância: 10 min (600.000 ms) antes do fim do turno
+          if (diff <= 600000 && diff > 0) {
+            countdownEl.innerText = "FINALIZADO";
+          } else {
+            const outHrs = Math.floor(diff / 3600000);
+            const outMins = Math.floor((diff % 3600000) / 60000);
+            const outSecs = Math.floor((diff % 60000) / 1000);
+            countdownEl.innerText = `${String(outHrs).padStart(2, '0')}:${String(outMins).padStart(2, '0')}:${String(outSecs).padStart(2, '0')}`;
+          }
+        }
+      }, 1000);
+    }
+
+    function exportCardExecutivo() {
+      const active = records[records.length - 1];
+      if (!active) {
+        showToast("Nenhuma medição cadastrada no sistema.", "error");
+        return;
+      }
+
+      const card = document.createElement("div");
+      card.style.position = "absolute";
+      card.style.left = "-9999px";
+      card.style.width = "500px";
+      card.style.backgroundColor = "#050608";
+      card.style.border = "2px solid #d4af37";
+      card.style.padding = "30px";
+      card.style.borderRadius = "14px";
+      card.style.color = "#fff";
+      card.style.fontFamily = "Inter, sans-serif";
+
+      card.innerHTML = `
+        <h1 style="font-family: 'Cinzel', serif; font-size: 1.4rem; color: #d4af37; margin-bottom: 5px;">KRONOS COMMAND CENTER</h1>
+        <p style="font-size: 0.75rem; color: #8491a5; margin-bottom: 20px;">Relatório de Desempenho Operacional - BRFPE1</p>
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 0.85rem;">
+          <div>
+            <p style="color:#8491a5;">DATA DO TURNO</p>
+            <p><strong>${active.date}</strong></p>
+          </div>
+          <div>
+            <p style="color:#8491a5;">TURNO / PS</p>
+            <p><strong>${active.shift} - ${active.psName || ""}</strong></p>
+          </div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; text-align: center; border: 1px solid rgba(212,175,55,0.2); margin-bottom: 20px;">
+          <p style="font-size: 0.75rem; color: #8491a5; margin-bottom: 5px;">SCORE PONDERADO DE TURNO</p>
+          <p style="font-family: 'Share Tech Mono', monospace; font-size: 2.8rem; font-weight: bold; color: #00f0ff;">${active.score}% SLA</p>
+        </div>
+
+        <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse; margin-bottom: 20px;">
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 6px 0; color: #8491a5;">Volumetria Inbound</td>
+            <td style="text-align: right;">${active.realInbound || 0} / ${active.metaInbound || 0} THP</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 6px 0; color: #8491a5;">Volumetria Outbound</td>
+            <td style="text-align: right;">${active.realOutbound || 0} / ${active.metaOutbound || 0} THP</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 6px 0; color: #8491a5;">Fast Start</td>
+            <td style="text-align: right;">${active.realFastStart || 0}%</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 6px 0; color: #8491a5;">Strong Finish</td>
+            <td style="text-align: right;">${active.realStrongFinish || 0}%</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 6px 0; color: #8491a5;">Média Auditoria 5S</td>
+            <td style="text-align: right;">${Math.round((((active.s5 && active.s5.seiri || 0) + (active.s5 && active.s5.seiton || 0) + (active.s5 && active.s5.seiso || 0) + (active.s5 && active.s5.shitsuke || 0)) / 4))}%</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; color: #8491a5;">Ociosidade (IDLE)</td>
+            <td style="text-align: right;">${active.realIdle || 0}%</td>
+          </tr>
+        </table>
+
+        <div style="font-size: 0.75rem; border-top: 1px solid rgba(212,175,55,0.15); padding-top: 15px;">
+          <p style="color: #8491a5; margin-bottom: 5px;">RESUMO GERAL DAS OCORRÊNCIAS</p>
+          <p style="font-style: italic; color: #eee; line-height: 1.3;">"${active.notes}"</p>
+        </div>
+      `;
+
+      document.body.appendChild(card);
+
+      html2canvas(card).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `KRONOS_BRFPE1_${active.date}_${active.shift}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+        card.remove();
+        showToast("Card Executivo baixado com sucesso.");
+      }).catch(() => {
+        card.remove();
+        showToast("Erro ao compilar o card.", "error");
+      });
+    }
+
+    function exportToExcel() {
+      if (records.length === 0) {
+        showToast("Nenhum registro disponível.", "error");
+        return;
+      }
+
+      let csv = "ID;Data;Turno;PS_Responsavel;Area;Inbound_Meta;Inbound_Real;Outbound_Meta;Outbound_Real;FastStart_Real;StrongFinish_Real;Idle_Média;COT_Média;Score;Classificação;Resumo_Ocorrências\n";
+      records.forEach(r => {
+        csv += `${r.id};${r.date};${r.shift};${r.psName || ""};${r.area};${r.metaInbound || 0};${r.realInbound || 0};${r.metaOutbound || 0};${r.realOutbound || 0};${r.realFastStart || 0};${r.realStrongFinish || 0};${r.realIdle || 0};${r.realCot || 0};${r.score};${r.classification};"${(r.notes || "").replace(/"/g, '""')}"\n`;
+      });
+
+      const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", `KRONOS_BASE_TÁTICA_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("Download da Base Tática CSV iniciado.");
+    }
+
+    function copiarResSummary() {
+      const active = records[records.length - 1];
+      if (!active) {
+        showToast("Nenhum fechamento ativo disponível.", "error");
+        return;
+      }
+
+      const text = `*👑 KRONOS — OPERATIONAL TIME INTELLIGENCE PLATFORM*
+----------------------------------------
+*Data:* ${active.date} | *Turno:* ${active.shift}
+*PS Responsável:* ${active.psName || ""}
+
+*🏆 Score Ponderado de Turno:* ${active.score}% SLA [${active.classification.toUpperCase()}]
+
+*📈 Fluxo Inbound:*
+• Meta Planejada: ${active.metaInbound || 0} THP
+• Realizado Acumulado: ${active.realInbound || 0} THP (${active.metaInbound > 0 ? Math.round(((active.realInbound || 0) / active.metaInbound) * 100) : 0}% de atingimento)
+
+*📉 Fluxo Outbound:*
+• Meta Planejada: ${active.metaOutbound || 0} THP
+• Realizado Acumulado: ${active.realOutbound || 0} THP (${active.metaOutbound > 0 ? Math.round(((active.realOutbound || 0) / active.metaOutbound) * 100) : 0}% de atingimento)
+
+*🛠 Indicadores de Eficiência:*
+• Fast Start: ${active.realFastStart || 0}%
+• Strong Finish: ${active.realStrongFinish || 0}%
+• Média Ociosidade (IDLE): ${active.realIdle || 0}%
+• Média Atingimento COT: ${active.realCot || 0}%
+
+*📝 Resumo Geral das Ocorrências:*
+${active.notes || "Sem observações adicionais gravadas."}
+----------------------------------------
+_Estratégia vence volume._`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("Relatório formatado copiado.");
+      }).catch(() => {
+        showToast("Erro ao tentar copiar texto.", "error");
+      });
+    }
+
+    function toggleConfigModal() {
+      const m = document.getElementById("configModal");
+      m.style.display = m.style.display === "none" || m.style.display === "" ? "grid" : "none";
+      document.getElementById("configApiUrl").value = configApiUrl;
+    }
+
+    function saveApiConfig() {
+      configApiUrl = document.getElementById("configApiUrl").value.trim();
+      localStorage.setItem("kronos_config_api_url", configApiUrl);
+      showToast("Configuração salva.");
+      toggleConfigModal();
+      checkApiConnection();
+      syncWithGoogleSheets();
+    }
+
+    function checkApiConnection() {
+      const badge = document.getElementById("connectionBadge");
+      if (badge) {
+        if (configApiUrl) {
+          badge.innerText = "Conexão Ativa";
+          badge.style.color = "var(--color-excelente)";
+        } else {
+          badge.innerText = "Modo Local";
+          badge.style.color = "var(--color-atencao)";
+        }
+      }
+    }
+
+    // Google Sheets Integrador e Sincronizador Bidirecional
+    function syncWithGoogleSheets() {
+      const badge = document.getElementById("connectionBadge");
+      
+      // Usa a URL do WebApp configurada se houver; caso contrário, consome apenas leitura via GViz API da planilha
+      let url = configApiUrl ? `${configApiUrl}?action=getRecords` : SPREADSHEET_URL;
+
+      if (badge) {
+        badge.innerText = "Sincronizando...";
+        badge.style.color = "var(--color-atencao)";
+      }
+
+      showToast("Sincronizando com o Google Sheets...");
+      fetch(url)
+        .then(res => res.text())
+        .then(text => {
+          let mappedRecords = [];
+          
+          if (text.trim().startsWith("google.visualization.Query.setResponse")) {
+            // Leitura direta via GViz
+            const startIdx = text.indexOf("google.visualization.Query.setResponse(");
+            if (startIdx === -1) throw new Error("Estrutura de dados corrompida");
+            const jsonText = text.substring(startIdx + 38, text.length - 2);
+            const rawData = JSON.parse(jsonText);
+            mappedRecords = mapGoogleSheetRowsToRecords(rawData);
+          } else {
+            // Leitura do Apps Script WebApp
+            mappedRecords = JSON.parse(text);
+          }
+
+          // CORREÇÃO: a planilha respondeu com sucesso (não caiu no catch). Isso
+          // significa que "mappedRecords" é a fonte de verdade atual, mesmo que
+          // esteja vazia. Antes, quando mappedRecords.length === 0, o código só
+          // mostrava um toast e mantinha os registros antigos (cache local) na
+          // tela — dando a impressão de dado fictício quando a planilha, na
+          // verdade, já estava vazia. Agora o estado vazio é refletido de fato.
+          records = mappedRecords || [];
+          localStorage.setItem("kronos_records", JSON.stringify(records));
+
+          if (records.length > 0) {
+            showToast("Dados sincronizados com sucesso.");
+            if (badge) {
+              badge.innerText = configApiUrl ? "Conexão Ativa" : "Modo Local (Sheets)";
+              badge.style.color = "var(--color-excelente)";
+            }
+          } else {
+            showToast("Planilha vazia. Nenhum dado a exibir.", "warning");
+            if (badge) {
+              badge.innerText = configApiUrl ? "Conexão Ativa (Sem Dados)" : "Modo Local (Sem Dados)";
+              badge.style.color = "var(--color-atencao)";
+            }
+          }
+
+          loadActiveData();
+          renderHistory();
+          renderRankings();
+          renderWarRoom();
+          renderTrendCharts();
+        })
+        .catch(err => {
+          console.error(err);
+          // Falha real de rede/permissão/CORS: aqui SIM faz sentido manter o
+          // último cache local válido (não é dado inventado, é o último dado
+          // real já confirmado), mas deixamos claro na badge que a conexão
+          // falhou, para não passar a falsa impressão de sincronização ativa.
+          showToast("Sem resposta do Google Sheets. Exibindo último dado local confirmado.", "error");
+          if (badge) {
+            badge.innerText = "Erro Conexão";
+            badge.style.color = "var(--color-critico)";
+          }
+        });
+    }
+
+    // Tradução e mapeamento estrito de colunas para evitar undefined
+    function mapGoogleSheetRowsToRecords(gvizData) {
+      if (!gvizData || !gvizData.table || !gvizData.table.rows) return [];
+      
+      const rows = gvizData.table.rows;
+      const cols = gvizData.table.cols;
+      const headers = cols.map(c => (c.label || "").toLowerCase().trim());
+      
+      return rows.map((row, rowIndex) => {
+        const cells = row.c;
+        const getVal = (index, defaultVal = "") => {
+          if (index === -1 || !cells || cells[index] === null || cells[index] === undefined) return defaultVal;
+          return cells[index].v !== null && cells[index].v !== undefined ? cells[index].v : defaultVal;
+        };
+
+        const findColIndex = (names, fallbackIdx) => {
+          const idx = headers.findIndex(h => names.some(name => h.includes(name)));
+          return idx !== -1 ? idx : fallbackIdx;
+        };
+
+        const idxId = findColIndex(["id"], 0);
+        const idxDate = findColIndex(["data", "date"], 1);
+        const idxShift = findColIndex(["turno", "shift"], 2);
+        const idxPS = findColIndex(["ps", "respons", "lider", "nome"], 3);
+        const idxArea = findColIndex(["area", "funç"], 4);
+        const idxMetaIn = findColIndex(["meta inbound", "meta_inbound", "inbound_meta"], 5);
+        const idxRealIn = findColIndex(["real inbound", "real_inbound", "inbound_real"], 6);
+        const idxMetaOut = findColIndex(["meta outbound", "meta_outbound", "outbound_meta"], 7);
+        const idxRealOut = findColIndex(["real outbound", "real_outbound", "outbound_real"], 8);
+        const idxFast = findColIndex(["fast", "faststart"], 9);
+        const idxStrong = findColIndex(["strong", "strongfinish"], 10);
+        const idxIdle = findColIndex(["idle", "ocios"], 11);
+        const idxCot = findColIndex(["cot"], 12);
+        const idxScore = findColIndex(["score"], 13);
+        const idxNotes = findColIndex(["notes", "ocorren", "resumo"], 15);
+
+        let rawDate = getVal(idxDate, "");
+        if (typeof rawDate === "string" && rawDate.startsWith("Date(")) {
+          const parts = rawDate.replace("Date(", "").replace(")", "").split(",");
+          if (parts.length >= 3) {
+            const y = parts[0];
+            const m = String(parseInt(parts[1]) + 1).padStart(2, "0");
+            const d = String(parts[2]).padStart(2, "0");
+            rawDate = `${y}-${m}-${d}`;
+          }
+        } else if (rawDate instanceof Date) {
+          rawDate = rawDate.toISOString().split('T')[0];
+        }
+
+        const scoreVal = Math.round(parseFloat(getVal(idxScore, 0)) || 0);
+
+        // CORREÇÃO: o fallback anterior preenchia a Auditoria 5S com 100/100/100/100
+        // quando a célula vinha vazia ou mal formatada — isso fazia parecer que a
+        // auditoria tinha nota máxima "de graça". Agora o fallback é 0 (ausência
+        // de dado = zero, nunca "perfeito por padrão").
+        let s5Obj = { seiri: 0, seiton: 0, seiso: 0, shitsuke: 0 };
+        try {
+          const s5CellVal = getVal(16, "");
+          if (s5CellVal && s5CellVal.startsWith("{")) {
+            s5Obj = JSON.parse(s5CellVal);
+          }
+        } catch(e){}
+
+        // CORREÇÃO: os arrays horários de fallback antes usavam os valores fixos
+        // do template T1 (200,250,300... / 5,5,5... / 100,100,100...) mesmo para
+        // registros de T2/T3, o que fazia a matriz horária exibir "metas" que não
+        // batiam com o turno real do registro e pareciam dado inventado.
+        // Agora: as METAS de fallback são derivadas do template real do turno do
+        // próprio registro (config operacional legítima, não dado fictício), e os
+        // REAIS de fallback são sempre arrays vazios — resultando em campos em
+        // branco na UI em vez de zeros ou números emprestados de outro turno.
+        const shiftForFallback = String(getVal(idxShift, "T1"));
+        const templateForFallback = turnos[shiftForFallback] || turnos["T1"];
+
+        let hThpMeta = templateForFallback.matrixThpMeta;
+        let hThpReal = [];
+        let hIdleMeta = templateForFallback.matrixIdleMeta;
+        let hIdleReal = [];
+        let hCotMeta = templateForFallback.matrixCotMeta;
+        let hCotReal = [];
+
+        try {
+          const tm = getVal(17, ""); if(tm) hThpMeta = JSON.parse(tm);
+          const tr = getVal(18, ""); if(tr) hThpReal = JSON.parse(tr);
+          const im = getVal(19, ""); if(im) hIdleMeta = JSON.parse(im);
+          const ir = getVal(20, ""); if(ir) hIdleReal = JSON.parse(ir);
+          const cm = getVal(21, ""); if(cm) hCotMeta = JSON.parse(cm);
+          const cr = getVal(22, ""); if(cr) hCotReal = JSON.parse(cr);
+        } catch(e){}
+
+        return {
+          id: String(getVal(idxId, rowIndex + 1)),
+          date: String(rawDate).substring(0, 10),
+          psName: String(getVal(idxPS, "Sem PS")),
+          shift: shiftForFallback,
+          area: String(getVal(idxArea, "Fulfillment")),
+          metaInbound: parseFloat(getVal(idxMetaIn, 0)) || 0,
+          realInbound: parseFloat(getVal(idxRealIn, 0)) || 0,
+          metaOutbound: parseFloat(getVal(idxMetaOut, 0)) || 0,
+          realOutbound: parseFloat(getVal(idxRealOut, 0)) || 0,
+          realFastStart: parseFloat(getVal(idxFast, 0)) || 0,
+          realStrongFinish: parseFloat(getVal(idxStrong, 0)) || 0,
+          realIdle: parseFloat(getVal(idxIdle, 0)) || 0,
+          realCot: parseFloat(getVal(idxCot, 0)) || 0,
+          score: scoreVal,
+          classification: scoreVal >= 95 ? "Elite" : (scoreVal >= 90 ? "Excelente" : (scoreVal >= 80 ? "OK" : "Atenção")),
+          notes: String(getVal(idxNotes, "")),
+          s5: s5Obj,
+          hourlyTHPMeta: hThpMeta,
+          hourlyTHPReal: hThpReal,
+          hourlyIdleMeta: hIdleMeta,
+          hourlyIdleReal: hIdleReal,
+          hourlyCOTMeta: hCotMeta,
+          hourlyCOTReal: hCotReal
+        };
+      });
+    }
+
+    function sendToGoogleSheets(record) {
+      if (!configApiUrl) return;
+      
+      fetch(configApiUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(record)
+      })
+      .then(() => {
+        // ATENÇÃO (não corrigido automaticamente — depende do Code.gs):
+        // "mode: no-cors" torna a resposta opaca; este .then() sempre executa
+        // como sucesso mesmo que o doPost() do Apps Script tenha retornado erro
+        // ou nem exista. Só será possível confirmar a gravação de verdade
+        // depois de eu analisar o Code.gs e, se necessário, ajustar o deploy
+        // para permitir resposta legível (removendo no-cors ou usando JSONP).
+        showToast("Registro enviado. Confirmando gravação...");
+        syncWithGoogleSheets();
+      })
+      .catch(() => {
+        showToast("Falha ao enviar. Backup local mantido.", "warning");
+      });
+    }
+
+    function showToast(msg, type = "info") {
+      const container = document.getElementById("toastContainer");
+      if (!container) return;
+      const t = document.createElement("div");
+      t.className = "toast";
+      if (type === "error") t.style.borderLeftColor = "var(--color-critico)";
+      else if (type === "warning") t.style.borderLeftColor = "var(--color-atencao)";
+      
+      t.innerText = msg;
+      container.appendChild(t);
+
+      setTimeout(() => {
+        t.style.opacity = "0";
+        setTimeout(() => t.remove(), 300);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
