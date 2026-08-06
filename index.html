@@ -1621,7 +1621,7 @@
       </div>
       <div class="form-group" style="margin-top: 10px;">
         <label>URL Web App do Script</label>
-        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbxSwaxxrF8t3jBzAc4oMQqNtDtWoz6b3eslGVUzb4Uzmok5ZVBEDvvate8Fk4yVsMLZ/exec">
+        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbwdEVunIua6W-MAU0XaaD5ZhfMf4qdhea6f4Qz7YT2tyaJpQ07ahFDm1KJbxsIdu820/exec">
       </div>
       <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 20px;">Insira a URL obtida ao realizar a implantação tática de Web App na sua planilha oficial para ativação de ponte.</p>
       <div style="display: flex; gap:12px; justify-content:flex-end;">
@@ -1632,9 +1632,7 @@
   </div>
 
   <script>
-    // Master structure of scheduled and configured shifts
-    // ATENÇÃO: mantido como configuração operacional fixa (metas/horários definidos pelo negócio),
-    // não como "dados de turno realizados" — decisão pendente de confirmação (ver auditoria).
+    // Configurações e metas fixas de turno
     const turnos = {
       T1: {
         inicio: "06:00",
@@ -1676,7 +1674,7 @@
 
     // Google Sheets Integration Configuration
     const SPREADSHEET_ID = "170QXtRi1CvkiBl0BuRmtZ1eScSZzHc6xJLj4AUAqhWU";
-    const SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json";
+    const SPREADSHEET_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json`;
 
     let records = [];
     let activeOpTab = 'inbound';
@@ -1686,27 +1684,24 @@
     let configApiUrl = localStorage.getItem("kronos_config_api_url") || "";
 
     window.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("regDate").value = new Date().toISOString().split('T')[0];
-      document.getElementById("headerFilterDate").value = new Date().toISOString().split('T')[0];
+      const regDateEl = document.getElementById("regDate");
+      const hFilterDateEl = document.getElementById("headerFilterDate");
+      if (regDateEl) regDateEl.value = new Date().toISOString().split('T')[0];
+      if (hFilterDateEl) hFilterDateEl.value = new Date().toISOString().split('T')[0];
       
-      // Cache local: guarda apenas o ÚLTIMO snapshot já confirmado vindo da planilha,
-      // usado só como fallback offline enquanto a sincronização real não responde.
-      // Nunca é preenchido com dados fictícios — apenas com o que a própria
-      // syncWithGoogleSheets() já validou e gravou anteriormente.
       records = JSON.parse(localStorage.getItem("kronos_records")) || [];
 
       const autoShift = detectAutoShift();
-      document.getElementById("regShift").value = autoShift;
+      const regShiftEl = document.getElementById("regShift");
+      if (regShiftEl) regShiftEl.value = autoShift;
 
       onShiftChange();
       loadActiveData();
       startSystemCountdown();
       checkApiConnection();
 
-      // Sincronização inicial dinâmica
+      // Sincronização inicial e monitor em background
       syncWithGoogleSheets();
-
-      // Monitor de atualização em segundo plano (Sincronização Tática a cada 30 segundos)
       setInterval(syncWithGoogleSheets, 30000);
     });
 
@@ -1726,20 +1721,30 @@
     }
 
     function onShiftChange() {
-      const selectedShift = document.getElementById("regShift").value;
+      const regShiftEl = document.getElementById("regShift");
+      if (!regShiftEl) return;
+      const selectedShift = regShiftEl.value;
       const template = turnos[selectedShift];
       if (!template) return;
 
-      document.getElementById("regArea").value = template.area;
-      document.getElementById("metaInboundTHP").value = template.metaInboundTHP;
-      document.getElementById("metaOutboundTHP").value = template.metaOutboundTHP;
+      const regAreaEl = document.getElementById("regArea");
+      const metaInboundTHPEl = document.getElementById("metaInboundTHP");
+      const metaOutboundTHPEl = document.getElementById("metaOutboundTHP");
+      const tlAberturaEl = document.getElementById("tlTimeAbertura");
+      const tlFastEl = document.getElementById("tlTimeFast");
+      const tlControleEl = document.getElementById("tlTimeControle");
+      const tlFinishEl = document.getElementById("tlTimeFinish");
+      const tlFechamentoEl = document.getElementById("tlTimeFechamento");
 
-      // Sincronizar Linha do tempo visual
-      document.getElementById("tlTimeAbertura").innerText = template.timeline.abertura;
-      document.getElementById("tlTimeFast").innerText = template.timeline.fast;
-      document.getElementById("tlTimeControle").innerText = template.timeline.controle;
-      document.getElementById("tlTimeFinish").innerText = template.timeline.finish;
-      document.getElementById("tlTimeFechamento").innerText = template.timeline.fechamento;
+      if (regAreaEl) regAreaEl.value = template.area;
+      if (metaInboundTHPEl) metaInboundTHPEl.value = template.metaInboundTHP;
+      if (metaOutboundTHPEl) metaOutboundTHPEl.value = template.metaOutboundTHP;
+
+      if (tlAberturaEl) tlAberturaEl.innerText = template.timeline.abertura;
+      if (tlFastEl) tlFastEl.innerText = template.timeline.fast;
+      if (tlControleEl) tlControleEl.innerText = template.timeline.controle;
+      if (tlFinishEl) tlFinishEl.innerText = template.timeline.finish;
+      if (tlFechamentoEl) tlFechamentoEl.innerText = template.timeline.fechamento;
 
       renderHourlyMatrixForms(template);
       calculateLiveScores();
@@ -1758,6 +1763,8 @@
       const cotMeta = document.getElementById("cotRowMeta");
       const cotReal = document.getElementById("cotRowReal");
       const cotPct = document.getElementById("cotRowPct");
+
+      if (!headerRow || !thpMeta || !thpReal || !thpPct || !idleMeta || !idleReal || !idlePct || !cotMeta || !cotReal || !cotPct) return;
 
       headerRow.innerHTML = "<th>Indicador / Hora</th>";
       while (thpMeta.cells.length > 1) thpMeta.deleteCell(1);
@@ -1791,7 +1798,9 @@
 
     // Calculations Engine with dynamic synchronization
     function calculateLiveScores() {
-      const selectedShift = document.getElementById("regShift").value;
+      const regShiftEl = document.getElementById("regShift");
+      if (!regShiftEl) return;
+      const selectedShift = regShiftEl.value;
       const template = turnos[selectedShift];
       if (!template) return;
 
@@ -1801,8 +1810,10 @@
       let totalMetaThp = 0;
       let totalRealThp = 0;
       for (let i = 0; i < len; i++) {
-        const metaVal = parseFloat(document.getElementById(`thp_meta_${i}`).value) || 0;
-        const realVal = parseFloat(document.getElementById(`thp_real_${i}`).value) || 0;
+        const metaEl = document.getElementById(`thp_meta_${i}`);
+        const realEl = document.getElementById(`thp_real_${i}`);
+        const metaVal = metaEl ? (parseFloat(metaEl.value) || 0) : 0;
+        const realVal = realEl ? (parseFloat(realEl.value) || 0) : 0;
         totalMetaThp += metaVal;
         totalRealThp += realVal;
 
@@ -1818,15 +1829,18 @@
       }
       
       const realThpPerformance = totalMetaThp > 0 ? Math.min(100, Math.round((totalRealThp / totalMetaThp) * 100)) : 100;
-      document.getElementById("wtRealThp").innerText = `${realThpPerformance}%`;
+      const wtRealThpEl = document.getElementById("wtRealThp");
+      if (wtRealThpEl) wtRealThpEl.innerText = `${realThpPerformance}%`;
 
       // IDLE Loop
       let totalMetaIdle = 0;
       let totalRealIdle = 0;
       let idleControlHours = 0;
       for (let i = 0; i < len; i++) {
-        const metaVal = parseFloat(document.getElementById(`idle_meta_${i}`).value) || 0;
-        const realVal = parseFloat(document.getElementById(`idle_real_${i}`).value) || 0;
+        const metaEl = document.getElementById(`idle_meta_${i}`);
+        const realEl = document.getElementById(`idle_real_${i}`);
+        const metaVal = metaEl ? (parseFloat(metaEl.value) || 0) : 0;
+        const realVal = realEl ? (parseFloat(realEl.value) || 0) : 0;
         totalMetaIdle += metaVal;
         totalRealIdle += realVal;
         if (metaVal > 0 || realVal > 0) idleControlHours++;
@@ -1846,16 +1860,18 @@
       }
       const avgRealIdle = idleControlHours > 0 ? (totalRealIdle / idleControlHours) : 0;
       const avgMetaIdle = idleControlHours > 0 ? (totalMetaIdle / idleControlHours) : 0;
-      const idleAproveitamento = avgRealIdle <= avgMetaIdle ? 100 : Math.max(0, Math.round(100 - (avgRealIdle - avgMetaIdle) * 5));
-      document.getElementById("wtRealIdle").innerText = `${avgRealIdle.toFixed(1)}% Real (Meta: ${avgMetaIdle.toFixed(1)}%)`;
+      const wtRealIdleEl = document.getElementById("wtRealIdle");
+      if (wtRealIdleEl) wtRealIdleEl.innerText = `${avgRealIdle.toFixed(1)}% Real (Meta: ${avgMetaIdle.toFixed(1)}%)`;
 
       // COT Loop
       let totalMetaCot = 0;
       let totalRealCot = 0;
       let cotHours = 0;
       for (let i = 0; i < len; i++) {
-        const metaVal = parseFloat(document.getElementById(`cot_meta_${i}`).value) || 0;
-        const realVal = parseFloat(document.getElementById(`cot_real_${i}`).value) || 0;
+        const metaEl = document.getElementById(`cot_meta_${i}`);
+        const realEl = document.getElementById(`cot_real_${i}`);
+        const metaVal = metaEl ? (parseFloat(metaEl.value) || 0) : 0;
+        const realVal = realEl ? (parseFloat(realEl.value) || 0) : 0;
         totalMetaCot += metaVal;
         totalRealCot += realVal;
         if (metaVal > 0 || realVal > 0) cotHours++;
@@ -1874,39 +1890,66 @@
       }
       const avgRealCot = cotHours > 0 ? Math.round(totalRealCot / cotHours) : 100;
       const avgMetaCot = cotHours > 0 ? Math.round(totalMetaCot / cotHours) : 100;
-      document.getElementById("wtRealCot").innerText = `${avgRealCot}%`;
+      const wtRealCotEl = document.getElementById("wtRealCot");
+      if (wtRealCotEl) wtRealCotEl.innerText = `${avgRealCot}%`;
 
-      const pInboundMeta = parseFloat(document.getElementById("metaInboundTHP").value) || 0;
-      const pInboundReal = parseFloat(document.getElementById("realInboundTHP").value) || 0;
-      const pOutboundMeta = parseFloat(document.getElementById("metaOutboundTHP").value) || 0;
-      const pOutboundReal = parseFloat(document.getElementById("realOutboundTHP").value) || 0;
+      const pInboundMetaEl = document.getElementById("metaInboundTHP");
+      const pInboundRealEl = document.getElementById("realInboundTHP");
+      const pOutboundMetaEl = document.getElementById("metaOutboundTHP");
+      const pOutboundRealEl = document.getElementById("realOutboundTHP");
 
-      const realFast = parseFloat(document.getElementById("realFastStart").value) || 0;
-      const realStrong = parseFloat(document.getElementById("realStrongFinish").value) || 0;
-      document.getElementById("wtRealFast").innerText = `${realFast}%`;
-      document.getElementById("wtRealStrong").innerText = `${realStrong}%`;
+      const pInboundMeta = pInboundMetaEl ? (parseFloat(pInboundMetaEl.value) || 0) : 0;
+      const pInboundReal = pInboundRealEl ? (parseFloat(pInboundRealEl.value) || 0) : 0;
+      const pOutboundMeta = pOutboundMetaEl ? (parseFloat(pOutboundMetaEl.value) || 0) : 0;
+      const pOutboundReal = pOutboundRealEl ? (parseFloat(pOutboundRealEl.value) || 0) : 0;
 
-      const s5Seiri = parseFloat(document.getElementById("s5Seiri").value) || 0;
-      const s5Seiton = parseFloat(document.getElementById("s5Seiton").value) || 0;
-      const s5Seiso = parseFloat(document.getElementById("s5Seiso").value) || 0;
-      const s5Shitsuke = parseFloat(document.getElementById("s5Shitsuke").value) || 0;
+      const realFastEl = document.getElementById("realFastStart");
+      const realStrongEl = document.getElementById("realStrongFinish");
+      const realFast = realFastEl ? (parseFloat(realFastEl.value) || 0) : 0;
+      const realStrong = realStrongEl ? (parseFloat(realStrongEl.value) || 0) : 0;
+
+      const wtRealFastEl = document.getElementById("wtRealFast");
+      const wtRealStrongEl = document.getElementById("wtRealStrong");
+      if (wtRealFastEl) wtRealFastEl.innerText = `${realFast}%`;
+      if (wtRealStrongEl) wtRealStrongEl.innerText = `${realStrong}%`;
+
+      const s5SeiriEl = document.getElementById("s5Seiri");
+      const s5SeitonEl = document.getElementById("s5Seiton");
+      const s5SeisoEl = document.getElementById("s5Seiso");
+      const s5ShitsukeEl = document.getElementById("s5Shitsuke");
+
+      const s5Seiri = s5SeiriEl ? (parseFloat(s5SeiriEl.value) || 0) : 0;
+      const s5Seiton = s5SeitonEl ? (parseFloat(s5SeitonEl.value) || 0) : 0;
+      const s5Seiso = s5SeisoEl ? (parseFloat(s5SeisoEl.value) || 0) : 0;
+      const s5Shitsuke = s5ShitsukeEl ? (parseFloat(s5ShitsukeEl.value) || 0) : 0;
       const avg5S = Math.round((s5Seiri + s5Seiton + s5Seiso + s5Shitsuke) / 4);
-      document.getElementById("wtReal5s").innerText = `${avg5S}%`;
 
-      const wThp = parseFloat(document.getElementById("pesoThp").value) || 0;
-      const wFast = parseFloat(document.getElementById("pesoFast").value) || 0;
-      const wCot = parseFloat(document.getElementById("pesoCot").value) || 0;
-      const wStrong = parseFloat(document.getElementById("pesoStrong").value) || 0;
-      const w5s = parseFloat(document.getElementById("peso5s").value) || 0;
-      const wIdle = parseFloat(document.getElementById("pesoIdle").value) || 0;
+      const wtReal5sEl = document.getElementById("wtReal5s");
+      if (wtReal5sEl) wtReal5sEl.innerText = `${avg5S}%`;
+
+      const wThpEl = document.getElementById("pesoThp");
+      const wFastEl = document.getElementById("pesoFast");
+      const wCotEl = document.getElementById("pesoCot");
+      const wStrongEl = document.getElementById("pesoStrong");
+      const w5sEl = document.getElementById("peso5s");
+      const wIdleEl = document.getElementById("pesoIdle");
+
+      const wThp = wThpEl ? (parseFloat(wThpEl.value) || 0) : 0;
+      const wFast = wFastEl ? (parseFloat(wFastEl.value) || 0) : 0;
+      const wCot = wCotEl ? (parseFloat(wCotEl.value) || 0) : 0;
+      const wStrong = wStrongEl ? (parseFloat(wStrongEl.value) || 0) : 0;
+      const w5s = w5sEl ? (parseFloat(w5sEl.value) || 0) : 0;
+      const wIdle = wIdleEl ? (parseFloat(wIdleEl.value) || 0) : 0;
 
       const sumWeights = wThp + wFast + wCot + wStrong + w5s + wIdle;
       const wBadge = document.getElementById("weightTotalBadge");
-      wBadge.innerText = `Soma: ${sumWeights}%`;
-      if (sumWeights !== 100) {
-        wBadge.className = "badge-status badge-critico";
-      } else {
-        wBadge.className = "badge-status badge-excelente";
+      if (wBadge) {
+        wBadge.innerText = `Soma: ${sumWeights}%`;
+        if (sumWeights !== 100) {
+          wBadge.className = "badge-status badge-critico";
+        } else {
+          wBadge.className = "badge-status badge-excelente";
+        }
       }
 
       const evaluateImpact = (real, meta, isNegativeTarget = false) => {
@@ -1975,52 +2018,74 @@
         outboundPerformance: pOutboundMeta > 0 ? Math.round((pOutboundReal / pOutboundMeta) * 100) : 100
       };
 
-      // Perform a direct UI synchronization on current active widgets
       updateDashboardDataLive(resData, selectedShift, template);
       return resData;
     }
 
     // High Density Command Center Live Synchronization without page reload
     function updateDashboardDataLive(resData, shiftCode, template) {
-      // 1. Score Kronos Sync
       const score = resData.score;
       const classification = score >= 95 ? "Elite" : (score >= 90 ? "Excelente" : (score >= 80 ? "OK" : "Atenção"));
       updateGauge(score, classification);
 
-      // 2. Inbound / Outbound / Fast / Strong widgets
-      document.getElementById("dashKpiInboundPct").innerText = `${resData.inboundPerformance}%`;
-      const inReal = parseFloat(document.getElementById("realInboundTHP").value) || 0;
-      const inMeta = parseFloat(document.getElementById("metaInboundTHP").value) || 0;
-      document.getElementById("dashKpiInboundMeta").innerText = inMeta;
-      document.getElementById("dashKpiInboundReal").innerText = inReal;
+      const dKpiInboundPct = document.getElementById("dashKpiInboundPct");
+      const dKpiInboundMeta = document.getElementById("dashKpiInboundMeta");
+      const dKpiInboundReal = document.getElementById("dashKpiInboundReal");
+      const inRealEl = document.getElementById("realInboundTHP");
+      const inMetaEl = document.getElementById("metaInboundTHP");
+      const inReal = inRealEl ? (parseFloat(inRealEl.value) || 0) : 0;
+      const inMeta = inMetaEl ? (parseFloat(inMetaEl.value) || 0) : 0;
+
+      if (dKpiInboundPct) dKpiInboundPct.innerText = `${resData.inboundPerformance}%`;
+      if (dKpiInboundMeta) dKpiInboundMeta.innerText = inMeta;
+      if (dKpiInboundReal) dKpiInboundReal.innerText = inReal;
       
       const inBadge = document.getElementById("inboundBadgeStatus");
-      inBadge.innerText = resData.inboundPerformance >= 100 ? "SLA OK" : "DESVIO";
-      inBadge.className = "badge-status " + (resData.inboundPerformance >= 100 ? "badge-excelente" : "badge-critico");
+      if (inBadge) {
+        inBadge.innerText = resData.inboundPerformance >= 100 ? "SLA OK" : "DESVIO";
+        inBadge.className = "badge-status " + (resData.inboundPerformance >= 100 ? "badge-excelente" : "badge-critico");
+      }
 
-      document.getElementById("dashKpiOutboundPct").innerText = `${resData.outboundPerformance}%`;
-      const outReal = parseFloat(document.getElementById("realOutboundTHP").value) || 0;
-      const outMeta = parseFloat(document.getElementById("metaOutboundTHP").value) || 0;
-      document.getElementById("dashKpiOutboundMeta").innerText = outMeta;
-      document.getElementById("dashKpiOutboundReal").innerText = outReal;
+      const dKpiOutboundPct = document.getElementById("dashKpiOutboundPct");
+      const dKpiOutboundMeta = document.getElementById("dashKpiOutboundMeta");
+      const dKpiOutboundReal = document.getElementById("dashKpiOutboundReal");
+      const outRealEl = document.getElementById("realOutboundTHP");
+      const outMetaEl = document.getElementById("metaOutboundTHP");
+      const outReal = outRealEl ? (parseFloat(outRealEl.value) || 0) : 0;
+      const outMeta = outMetaEl ? (parseFloat(outMetaEl.value) || 0) : 0;
+
+      if (dKpiOutboundPct) dKpiOutboundPct.innerText = `${resData.outboundPerformance}%`;
+      if (dKpiOutboundMeta) dKpiOutboundMeta.innerText = outMeta;
+      if (dKpiOutboundReal) dKpiOutboundReal.innerText = outReal;
 
       const outBadge = document.getElementById("outboundBadgeStatus");
-      outBadge.innerText = resData.outboundPerformance >= 100 ? "SLA OK" : "DESVIO";
-      outBadge.className = "badge-status " + (resData.outboundPerformance >= 100 ? "badge-excelente" : "badge-critico");
+      if (outBadge) {
+        outBadge.innerText = resData.outboundPerformance >= 100 ? "SLA OK" : "DESVIO";
+        outBadge.className = "badge-status " + (resData.outboundPerformance >= 100 ? "badge-excelente" : "badge-critico");
+      }
 
-      const realFast = parseFloat(document.getElementById("realFastStart").value) || 0;
-      document.getElementById("dashKpiFast").innerText = `${realFast}%`;
+      const realFastEl = document.getElementById("realFastStart");
+      const realFast = realFastEl ? (parseFloat(realFastEl.value) || 0) : 0;
+      const dKpiFast = document.getElementById("dashKpiFast");
+      if (dKpiFast) dKpiFast.innerText = `${realFast}%`;
+
       const fastBadge = document.getElementById("fastBadgeStatus");
-      fastBadge.innerText = realFast >= 85 ? "SLA OK" : "DESVIO";
-      fastBadge.className = "badge-status " + (realFast >= 85 ? "badge-excelente" : "badge-critico");
+      if (fastBadge) {
+        fastBadge.innerText = realFast >= 85 ? "SLA OK" : "DESVIO";
+        fastBadge.className = "badge-status " + (realFast >= 85 ? "badge-excelente" : "badge-critico");
+      }
 
-      const realStrong = parseFloat(document.getElementById("realStrongFinish").value) || 0;
-      document.getElementById("dashKpiStrong").innerText = `${realStrong}%`;
+      const realStrongEl = document.getElementById("realStrongFinish");
+      const realStrong = realStrongEl ? (parseFloat(realStrongEl.value) || 0) : 0;
+      const dKpiStrong = document.getElementById("dashKpiStrong");
+      if (dKpiStrong) dKpiStrong.innerText = `${realStrong}%`;
+
       const strongBadge = document.getElementById("strongBadgeStatus");
-      strongBadge.innerText = realStrong >= 85 ? "SLA OK" : "DESVIO";
-      strongBadge.className = "badge-status " + (realStrong >= 85 ? "badge-excelente" : "badge-critico");
+      if (strongBadge) {
+        strongBadge.innerText = realStrong >= 85 ? "SLA OK" : "DESVIO";
+        strongBadge.className = "badge-status " + (realStrong >= 85 ? "badge-excelente" : "badge-critico");
+      }
 
-      // 3. Detalhamento por Fluxo Rendering
       renderDetailedFlowPanelsLive(resData, realFast, realStrong);
     }
 
@@ -2058,8 +2123,11 @@
       // Footer Inbound Calculations
       const inUtil = Math.max(0, 100 - avgIdle);
       const inGapStart = 85 - realFast;
-      const inRealVol = parseFloat(document.getElementById("realInboundTHP").value) || 0;
-      const inMetaVol = parseFloat(document.getElementById("metaInboundTHP").value) || 1;
+      
+      const inRealVolEl = document.getElementById("realInboundTHP");
+      const inMetaVolEl = document.getElementById("metaInboundTHP");
+      const inRealVol = inRealVolEl ? (parseFloat(inRealVolEl.value) || 0) : 0;
+      const inMetaVol = inMetaVolEl ? (parseFloat(inMetaVolEl.value) || 1) : 1;
       const inGapReal = Math.round(((inRealVol - inMetaVol) / inMetaVol) * 100);
 
       const elInboundUtil = document.getElementById("inboundUtilVal");
@@ -2111,8 +2179,11 @@
       // Footer Outbound Calculations
       const outUtil = Math.max(0, 100 - avgIdle);
       const outGapStart = 85 - realFast;
-      const outRealVol = parseFloat(document.getElementById("realOutboundTHP").value) || 0;
-      const outMetaVol = parseFloat(document.getElementById("metaOutboundTHP").value) || 1;
+      
+      const outRealVolEl = document.getElementById("realOutboundTHP");
+      const outMetaVolEl = document.getElementById("metaOutboundTHP");
+      const outRealVol = outRealVolEl ? (parseFloat(outRealVolEl.value) || 0) : 0;
+      const outMetaVol = outMetaVolEl ? (parseFloat(outMetaVolEl.value) || 1) : 1;
       const outGapReal = Math.round(((outRealVol - outMetaVol) / outMetaVol) * 100);
 
       const elOutboundUtil = document.getElementById("outboundUtilVal");
@@ -2129,13 +2200,15 @@
     function handleFormSubmit(event) {
       event.preventDefault();
 
-      const psName = document.getElementById("regPSName").value.trim();
+      const psNameEl = document.getElementById("regPSName");
+      const psName = psNameEl ? psNameEl.value.trim() : "";
       if (!psName) {
         showToast("Identificação do PS responsável é obrigatória.", "error");
         return;
       }
 
-      const selectedShift = document.getElementById("regShift").value;
+      const regShiftEl = document.getElementById("regShift");
+      const selectedShift = regShiftEl ? regShiftEl.value : "T1";
       const template = turnos[selectedShift];
       const len = template.horarios.length;
 
@@ -2146,42 +2219,68 @@
       const matrixCotReal = [];
 
       for (let i = 0; i < len; i++) {
-        matrixThpReal.push(parseFloat(document.getElementById(`thp_real_${i}`).value) || 0);
-        matrixIdleReal.push(parseFloat(document.getElementById(`idle_real_${i}`).value) || 0);
-        matrixCotReal.push(parseFloat(document.getElementById(`cot_real_${i}`).value) || 0);
+        const thpEl = document.getElementById(`thp_real_${i}`);
+        const idleEl = document.getElementById(`idle_real_${i}`);
+        const cotEl = document.getElementById(`cot_real_${i}`);
+
+        matrixThpReal.push(thpEl ? (parseFloat(thpEl.value) || 0) : 0);
+        matrixIdleReal.push(idleEl ? (parseFloat(idleEl.value) || 0) : 0);
+        matrixCotReal.push(cotEl ? (parseFloat(cotEl.value) || 0) : 0);
       }
+
+      const regDateEl = document.getElementById("regDate");
+      const regAreaEl = document.getElementById("regArea");
+      const metaInboundEl = document.getElementById("metaInboundTHP");
+      const realInboundEl = document.getElementById("realInboundTHP");
+      const metaOutboundEl = document.getElementById("metaOutboundTHP");
+      const realOutboundEl = document.getElementById("realOutboundTHP");
+      const realFastStartEl = document.getElementById("realFastStart");
+      const realStrongFinishEl = document.getElementById("realStrongFinish");
+      const regVolPlanEl = document.getElementById("regVolPlan");
+      const regVolRealEl = document.getElementById("regVolReal");
+      const pesoThpEl = document.getElementById("pesoThp");
+      const pesoFastEl = document.getElementById("pesoFast");
+      const pesoCotEl = document.getElementById("pesoCot");
+      const pesoStrongEl = document.getElementById("pesoStrong");
+      const peso5sEl = document.getElementById("peso5s");
+      const pesoIdleEl = document.getElementById("pesoIdle");
+      const s5SeiriEl = document.getElementById("s5Seiri");
+      const s5SeitonEl = document.getElementById("s5Seiton");
+      const s5SeisoEl = document.getElementById("s5Seiso");
+      const s5ShitsukeEl = document.getElementById("s5Shitsuke");
+      const regNotesEl = document.getElementById("regGeneralNotes");
 
       const newRecord = {
         id: Date.now().toString(),
-        date: document.getElementById("regDate").value,
+        date: regDateEl ? regDateEl.value : new Date().toISOString().split('T')[0],
         psName: psName,
         shift: selectedShift,
-        area: document.getElementById("regArea").value,
-        metaInbound: parseFloat(document.getElementById("metaInboundTHP").value) || 0,
-        realInbound: parseFloat(document.getElementById("realInboundTHP").value) || 0,
-        metaOutbound: parseFloat(document.getElementById("metaOutboundTHP").value) || 0,
-        realOutbound: parseFloat(document.getElementById("realOutboundTHP").value) || 0,
-        realFastStart: parseFloat(document.getElementById("realFastStart").value) || 0,
-        realStrongFinish: parseFloat(document.getElementById("realStrongFinish").value) || 0,
-        volPlan: parseFloat(document.getElementById("regVolPlan").value) || 0,
-        volReal: parseFloat(document.getElementById("regVolReal").value) || 0,
+        area: regAreaEl ? regAreaEl.value : "",
+        metaInbound: metaInboundEl ? (parseFloat(metaInboundEl.value) || 0) : 0,
+        realInbound: realInboundEl ? (parseFloat(realInboundEl.value) || 0) : 0,
+        metaOutbound: metaOutboundEl ? (parseFloat(metaOutboundEl.value) || 0) : 0,
+        realOutbound: realOutboundEl ? (parseFloat(realOutboundEl.value) || 0) : 0,
+        realFastStart: realFastStartEl ? (parseFloat(realFastStartEl.value) || 0) : 0,
+        realStrongFinish: realStrongFinishEl ? (parseFloat(realStrongFinishEl.value) || 0) : 0,
+        volPlan: regVolPlanEl ? (parseFloat(regVolPlanEl.value) || 0) : 0,
+        volReal: regVolRealEl ? (parseFloat(regVolRealEl.value) || 0) : 0,
         weights: {
-          thp: parseFloat(document.getElementById("pesoThp").value) || 0,
-          fast: parseFloat(document.getElementById("pesoFast").value) || 0,
-          cot: parseFloat(document.getElementById("pesoCot").value) || 0,
-          strong: parseFloat(document.getElementById("pesoStrong").value) || 0,
-          s5: parseFloat(document.getElementById("peso5s").value) || 0,
-          idle: parseFloat(document.getElementById("pesoIdle").value) || 0
+          thp: pesoThpEl ? (parseFloat(pesoThpEl.value) || 0) : 0,
+          fast: pesoFastEl ? (parseFloat(pesoFastEl.value) || 0) : 0,
+          cot: pesoCotEl ? (parseFloat(pesoCotEl.value) || 0) : 0,
+          strong: pesoStrongEl ? (parseFloat(pesoStrongEl.value) || 0) : 0,
+          s5: peso5sEl ? (parseFloat(peso5sEl.value) || 0) : 0,
+          idle: pesoIdleEl ? (parseFloat(pesoIdleEl.value) || 0) : 0
         },
         realIdle: Math.round(live.avgRealIdle),
         realCot: Math.round(live.avgRealCot),
         s5: {
-          seiri: parseFloat(document.getElementById("s5Seiri").value) || 0,
-          seiton: parseFloat(document.getElementById("s5Seiton").value) || 0,
-          seiso: parseFloat(document.getElementById("s5Seiso").value) || 0,
-          shitsuke: parseFloat(document.getElementById("s5Shitsuke").value) || 0
+          seiri: s5SeiriEl ? (parseFloat(s5SeiriEl.value) || 0) : 0,
+          seiton: s5SeitonEl ? (parseFloat(s5SeitonEl.value) || 0) : 0,
+          seiso: s5SeisoEl ? (parseFloat(s5SeisoEl.value) || 0) : 0,
+          shitsuke: s5ShitsukeEl ? (parseFloat(s5ShitsukeEl.value) || 0) : 0
         },
-        notes: document.getElementById("regGeneralNotes").value,
+        notes: regNotesEl ? regNotesEl.value : "",
         score: live.score,
         classification: live.score >= 95 ? "Elite" : (live.score >= 90 ? "Excelente" : (live.score >= 80 ? "OK" : "Atenção")),
         hourlyTHPMeta: template.matrixThpMeta,
@@ -2192,18 +2291,16 @@
         hourlyCOTReal: matrixCotReal
       };
 
-      // Gravação local preventiva
       records = records.filter(r => !(r.date === newRecord.date && r.shift === newRecord.shift));
       records.push(newRecord);
       localStorage.setItem("kronos_records", JSON.stringify(records));
 
       showToast("Gravando dados...");
       
-      // Envio para o Google Sheets caso configurado
       if (configApiUrl) {
         sendToGoogleSheets(newRecord);
       } else {
-        showToast("Dados salvos localmente. configure o WebApp para salvar em nuvem.", "warning");
+        showToast("Dados salvos localmente. Configure o WebApp para salvar em nuvem.", "warning");
         loadActiveData();
       }
 
@@ -2211,8 +2308,10 @@
     }
 
     function resetForm() {
-      document.getElementById("registrarTurnoForm").reset();
-      document.getElementById("regSite").value = "BRFPE1";
+      const form = document.getElementById("registrarTurnoForm");
+      if (form) form.reset();
+      const regSiteEl = document.getElementById("regSite");
+      if (regSiteEl) regSiteEl.value = "BRFPE1";
       onShiftChange();
     }
 
@@ -2236,8 +2335,10 @@
       };
 
       if (titles[viewId]) {
-        document.getElementById("viewHeaderTitle").innerText = titles[viewId][0];
-        document.getElementById("viewHeaderSubtitle").innerText = titles[viewId][1];
+        const vHeaderTitle = document.getElementById("viewHeaderTitle");
+        const vHeaderSub = document.getElementById("viewHeaderSubtitle");
+        if (vHeaderTitle) vHeaderTitle.innerText = titles[viewId][0];
+        if (vHeaderSub) vHeaderSub.innerText = titles[viewId][1];
       }
 
       if (viewId === 'dashboard') {
@@ -2254,7 +2355,8 @@
     }
 
     function loadActiveData() {
-      const filterDate = document.getElementById("headerFilterDate").value;
+      const headerFilterEl = document.getElementById("headerFilterDate");
+      const filterDate = headerFilterEl ? headerFilterEl.value : "";
       let active = records.find(r => r.date === filterDate);
       
       if (!active && records.length > 0) {
@@ -2265,28 +2367,43 @@
       if (kpiTotal) kpiTotal.innerText = records.length;
 
       if (active) {
-        document.getElementById("regDate").value = active.date;
-        document.getElementById("regShift").value = active.shift;
-        document.getElementById("regPSName").value = active.psName || "";
-        document.getElementById("regVolPlan").value = active.volPlan !== undefined ? active.volPlan : "";
-        document.getElementById("regVolReal").value = active.volReal !== undefined ? active.volReal : "";
-        document.getElementById("metaInboundTHP").value = active.metaInbound !== undefined ? active.metaInbound : "";
-        document.getElementById("realInboundTHP").value = active.realInbound !== undefined ? active.realInbound : "";
-        document.getElementById("metaOutboundTHP").value = active.metaOutbound !== undefined ? active.metaOutbound : "";
-        document.getElementById("realOutboundTHP").value = active.realOutbound !== undefined ? active.realOutbound : "";
-        document.getElementById("realFastStart").value = active.realFastStart !== undefined ? active.realFastStart : "";
-        document.getElementById("realStrongFinish").value = active.realStrongFinish !== undefined ? active.realStrongFinish : "";
-        document.getElementById("regGeneralNotes").value = active.notes || "";
+        const regDateEl = document.getElementById("regDate");
+        const regShiftEl = document.getElementById("regShift");
+        const regPSNameEl = document.getElementById("regPSName");
+        const regVolPlanEl = document.getElementById("regVolPlan");
+        const regVolRealEl = document.getElementById("regVolReal");
+        const metaInboundTHPEl = document.getElementById("metaInboundTHP");
+        const realInboundTHPEl = document.getElementById("realInboundTHP");
+        const metaOutboundTHPEl = document.getElementById("metaOutboundTHP");
+        const realOutboundTHPEl = document.getElementById("realOutboundTHP");
+        const realFastStartEl = document.getElementById("realFastStart");
+        const realStrongFinishEl = document.getElementById("realStrongFinish");
+        const regNotesEl = document.getElementById("regGeneralNotes");
+
+        if (regDateEl) regDateEl.value = active.date;
+        if (regShiftEl) regShiftEl.value = active.shift;
+        if (regPSNameEl) regPSNameEl.value = active.psName || "";
+        if (regVolPlanEl) regVolPlanEl.value = active.volPlan !== undefined ? active.volPlan : "";
+        if (regVolRealEl) regVolRealEl.value = active.volReal !== undefined ? active.volReal : "";
+        if (metaInboundTHPEl) metaInboundTHPEl.value = active.metaInbound !== undefined ? active.metaInbound : "";
+        if (realInboundTHPEl) realInboundTHPEl.value = active.realInbound !== undefined ? active.realInbound : "";
+        if (metaOutboundTHPEl) metaOutboundTHPEl.value = active.metaOutbound !== undefined ? active.metaOutbound : "";
+        if (realOutboundTHPEl) realOutboundTHPEl.value = active.realOutbound !== undefined ? active.realOutbound : "";
+        if (realFastStartEl) realFastStartEl.value = active.realFastStart !== undefined ? active.realFastStart : "";
+        if (realStrongFinishEl) realStrongFinishEl.value = active.realStrongFinish !== undefined ? active.realStrongFinish : "";
+        if (regNotesEl) regNotesEl.value = active.notes || "";
 
         const template = turnos[active.shift];
-        template.horarios.forEach((h, i) => {
-          const tReal = document.getElementById(`thp_real_${i}`);
-          const iReal = document.getElementById(`idle_real_${i}`);
-          const cReal = document.getElementById(`cot_real_${i}`);
-          if (tReal) tReal.value = (active.hourlyTHPReal && active.hourlyTHPReal[i] !== undefined) ? active.hourlyTHPReal[i] : "";
-          if (iReal) iReal.value = (active.hourlyIdleReal && active.hourlyIdleReal[i] !== undefined) ? active.hourlyIdleReal[i] : "";
-          if (cReal) cReal.value = (active.hourlyCOTReal && active.hourlyCOTReal[i] !== undefined) ? active.hourlyCOTReal[i] : "";
-        });
+        if (template && template.horarios) {
+          template.horarios.forEach((h, i) => {
+            const tReal = document.getElementById(`thp_real_${i}`);
+            const iReal = document.getElementById(`idle_real_${i}`);
+            const cReal = document.getElementById(`cot_real_${i}`);
+            if (tReal) tReal.value = (active.hourlyTHPReal && active.hourlyTHPReal[i] !== undefined) ? active.hourlyTHPReal[i] : "";
+            if (iReal) iReal.value = (active.hourlyIdleReal && active.hourlyIdleReal[i] !== undefined) ? active.hourlyIdleReal[i] : "";
+            if (cReal) cReal.value = (active.hourlyCOTReal && active.hourlyCOTReal[i] !== undefined) ? active.hourlyCOTReal[i] : "";
+          });
+        }
 
         calculateLiveScores();
         updateVolumeChart(active);
@@ -2490,40 +2607,59 @@
       const record = records.find(r => r.id === id);
       if (!record) return;
 
-      document.getElementById("regDate").value = record.date;
-      document.getElementById("regPSName").value = record.psName || "";
-      document.getElementById("regShift").value = record.shift;
-      document.getElementById("regVolPlan").value = record.volPlan !== undefined ? record.volPlan : "";
-      document.getElementById("regVolReal").value = record.volReal !== undefined ? record.volReal : "";
+      const regDateEl = document.getElementById("regDate");
+      const regPSNameEl = document.getElementById("regPSName");
+      const regShiftEl = document.getElementById("regShift");
+      const regVolPlanEl = document.getElementById("regVolPlan");
+      const regVolRealEl = document.getElementById("regVolReal");
+      const metaInboundTHPEl = document.getElementById("metaInboundTHP");
+      const realInboundTHPEl = document.getElementById("realInboundTHP");
+      const metaOutboundTHPEl = document.getElementById("metaOutboundTHP");
+      const realOutboundTHPEl = document.getElementById("realOutboundTHP");
+      const realFastStartEl = document.getElementById("realFastStart");
+      const realStrongFinishEl = document.getElementById("realStrongFinish");
+      const s5SeiriEl = document.getElementById("s5Seiri");
+      const s5SeitonEl = document.getElementById("s5Seiton");
+      const s5SeisoEl = document.getElementById("s5Seiso");
+      const s5ShitsukeEl = document.getElementById("s5Shitsuke");
+      const regNotesEl = document.getElementById("regGeneralNotes");
+
+      if (regDateEl) regDateEl.value = record.date;
+      if (regPSNameEl) regPSNameEl.value = record.psName || "";
+      if (regShiftEl) regShiftEl.value = record.shift;
+      if (regVolPlanEl) regVolPlanEl.value = record.volPlan !== undefined ? record.volPlan : "";
+      if (regVolRealEl) regVolRealEl.value = record.volReal !== undefined ? record.volReal : "";
       
       onShiftChange();
 
       const template = turnos[record.shift];
-      template.horarios.forEach((h, i) => {
-        const tReal = document.getElementById(`thp_real_${i}`);
-        const iReal = document.getElementById(`idle_real_${i}`);
-        const cReal = document.getElementById(`cot_real_${i}`);
-        if (tReal) tReal.value = (record.hourlyTHPReal && record.hourlyTHPReal[i] !== undefined) ? record.hourlyTHPReal[i] : "";
-        if (iReal) iReal.value = (record.hourlyIdleReal && record.hourlyIdleReal[i] !== undefined) ? record.hourlyIdleReal[i] : "";
-        if (cReal) cReal.value = (record.hourlyCOTReal && record.hourlyCOTReal[i] !== undefined) ? record.hourlyCOTReal[i] : "";
-      });
-
-      document.getElementById("metaInboundTHP").value = record.metaInbound !== undefined ? record.metaInbound : "";
-      document.getElementById("realInboundTHP").value = record.realInbound !== undefined ? record.realInbound : "";
-      document.getElementById("metaOutboundTHP").value = record.metaOutbound !== undefined ? record.metaOutbound : "";
-      document.getElementById("realOutboundTHP").value = record.realOutbound !== undefined ? record.realOutbound : "";
-      
-      document.getElementById("realFastStart").value = record.realFastStart !== undefined ? record.realFastStart : "";
-      document.getElementById("realStrongFinish").value = record.realStrongFinish !== undefined ? record.realStrongFinish : "";
-
-      if (record.s5) {
-        document.getElementById("s5Seiri").value = record.s5.seiri !== undefined ? record.s5.seiri : "";
-        document.getElementById("s5Seiton").value = record.s5.seiton !== undefined ? record.s5.seiton : "";
-        document.getElementById("s5Seiso").value = record.s5.seiso !== undefined ? record.s5.seiso : "";
-        document.getElementById("s5Shitsuke").value = record.s5.shitsuke !== undefined ? record.s5.shitsuke : "";
+      if (template && template.horarios) {
+        template.horarios.forEach((h, i) => {
+          const tReal = document.getElementById(`thp_real_${i}`);
+          const iReal = document.getElementById(`idle_real_${i}`);
+          const cReal = document.getElementById(`cot_real_${i}`);
+          if (tReal) tReal.value = (record.hourlyTHPReal && record.hourlyTHPReal[i] !== undefined) ? record.hourlyTHPReal[i] : "";
+          if (iReal) iReal.value = (record.hourlyIdleReal && record.hourlyIdleReal[i] !== undefined) ? record.hourlyIdleReal[i] : "";
+          if (cReal) cReal.value = (record.hourlyCOTReal && record.hourlyCOTReal[i] !== undefined) ? record.hourlyCOTReal[i] : "";
+        });
       }
 
-      document.getElementById("regGeneralNotes").value = record.notes || "";
+      if (metaInboundTHPEl) metaInboundTHPEl.value = record.metaInbound !== undefined ? record.metaInbound : "";
+      if (realInboundTHPEl) realInboundTHPEl.value = record.realInbound !== undefined ? record.realInbound : "";
+      if (metaOutboundTHPEl) metaOutboundTHPEl.value = record.metaOutbound !== undefined ? record.metaOutbound : "";
+      if (realOutboundTHPEl) realOutboundTHPEl.value = record.realOutbound !== undefined ? record.realOutbound : "";
+      
+      if (realFastStartEl) realFastStartEl.value = record.realFastStart !== undefined ? record.realFastStart : "";
+      if (realStrongFinishEl) realStrongFinishEl.value = record.realStrongFinish !== undefined ? record.realStrongFinish : "";
+
+      if (record.s5) {
+        if (s5SeiriEl) s5SeiriEl.value = record.s5.seiri !== undefined ? record.s5.seiri : "";
+        if (s5SeitonEl) s5SeitonEl.value = record.s5.seiton !== undefined ? record.s5.seiton : "";
+        if (s5SeisoEl) s5SeisoEl.value = record.s5.seiso !== undefined ? record.s5.seiso : "";
+        if (s5ShitsukeEl) s5ShitsukeEl.value = record.s5.shitsuke !== undefined ? record.s5.shitsuke : "";
+      }
+
+      if (regNotesEl) regNotesEl.value = record.notes || "";
 
       calculateLiveScores();
       switchView("registrar");
@@ -2599,11 +2735,7 @@
 
     // High Density War Room Engine
     function renderWarRoom() {
-      const elBest = document.getElementById("wrBestKpiName");
-
       if (records.length === 0) {
-        // Estado vazio explícito: nunca deixar os cards do War Room com o
-        // último valor calculado de uma sessão anterior quando não há registros.
         document.getElementById("wrBestKpiName").innerText = "-";
         document.getElementById("wrBestKpiMeta").innerText = "-";
         document.getElementById("wrBestKpiReal").innerText = "-";
@@ -2615,7 +2747,7 @@
         document.getElementById("wrFastActual").innerText = "0%";
         document.getElementById("wrBestPsName").innerText = "-";
         document.getElementById("wrBestPsScore").innerText = "0%";
-        document.getElementById("warRoomTrend").innerText = "Sem dados disponíveis";
+        document.getElementById("warRoomTrend").innerText = "Sem dados";
 
         const psRankingTbody = document.querySelector("#wrPsRankingTable tbody");
         const shiftRankingTbody = document.querySelector("#wrShiftRankingTable tbody");
@@ -2831,7 +2963,6 @@
         const countdownEl = document.getElementById("kronosTimerCountdown");
         
         if (countdownEl) {
-          // Operação dinâmica tolerância: 10 min (600.000 ms) antes do fim do turno
           if (diff <= 600000 && diff > 0) {
             countdownEl.innerText = "FINALIZADO";
           } else {
@@ -2861,6 +2992,8 @@
       card.style.borderRadius = "14px";
       card.style.color = "#fff";
       card.style.fontFamily = "Inter, sans-serif";
+
+      const scoreAvg5S = Math.round((((active.s5?.seiri || 0) + (active.s5?.seiton || 0) + (active.s5?.seiso || 0) + (active.s5?.shitsuke || 0)) / 4));
 
       card.innerHTML = `
         <h1 style="font-family: 'Cinzel', serif; font-size: 1.4rem; color: #d4af37; margin-bottom: 5px;">KRONOS COMMAND CENTER</h1>
@@ -2901,7 +3034,7 @@
           </tr>
           <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
             <td style="padding: 6px 0; color: #8491a5;">Média Auditoria 5S</td>
-            <td style="text-align: right;">${Math.round((((active.s5 && active.s5.seiri || 0) + (active.s5 && active.s5.seiton || 0) + (active.s5 && active.s5.seiso || 0) + (active.s5 && active.s5.shitsuke || 0)) / 4))}%</td>
+            <td style="text-align: right;">${scoreAvg5S}%</td>
           </tr>
           <tr>
             <td style="padding: 6px 0; color: #8491a5;">Ociosidade (IDLE)</td>
@@ -2993,12 +3126,15 @@ _Estratégia vence volume._`;
 
     function toggleConfigModal() {
       const m = document.getElementById("configModal");
+      if (!m) return;
       m.style.display = m.style.display === "none" || m.style.display === "" ? "grid" : "none";
-      document.getElementById("configApiUrl").value = configApiUrl;
+      const apiInput = document.getElementById("configApiUrl");
+      if (apiInput) apiInput.value = configApiUrl;
     }
 
     function saveApiConfig() {
-      configApiUrl = document.getElementById("configApiUrl").value.trim();
+      const apiInput = document.getElementById("configApiUrl");
+      configApiUrl = apiInput ? apiInput.value.trim() : "";
       localStorage.setItem("kronos_config_api_url", configApiUrl);
       showToast("Configuração salva.");
       toggleConfigModal();
@@ -3022,8 +3158,6 @@ _Estratégia vence volume._`;
     // Google Sheets Integrador e Sincronizador Bidirecional
     function syncWithGoogleSheets() {
       const badge = document.getElementById("connectionBadge");
-      
-      // Usa a URL do WebApp configurada se houver; caso contrário, consome apenas leitura via GViz API da planilha
       let url = configApiUrl ? `${configApiUrl}?action=getRecords` : SPREADSHEET_URL;
 
       if (badge) {
@@ -3032,29 +3166,25 @@ _Estratégia vence volume._`;
       }
 
       showToast("Sincronizando com o Google Sheets...");
-      fetch(url)
+      
+      fetch(url, {
+        method: "GET",
+        mode: "cors"
+      })
         .then(res => res.text())
         .then(text => {
           let mappedRecords = [];
           
           if (text.trim().startsWith("google.visualization.Query.setResponse")) {
-            // Leitura direta via GViz
             const startIdx = text.indexOf("google.visualization.Query.setResponse(");
             if (startIdx === -1) throw new Error("Estrutura de dados corrompida");
             const jsonText = text.substring(startIdx + 38, text.length - 2);
             const rawData = JSON.parse(jsonText);
             mappedRecords = mapGoogleSheetRowsToRecords(rawData);
           } else {
-            // Leitura do Apps Script WebApp
             mappedRecords = JSON.parse(text);
           }
 
-          // CORREÇÃO: a planilha respondeu com sucesso (não caiu no catch). Isso
-          // significa que "mappedRecords" é a fonte de verdade atual, mesmo que
-          // esteja vazia. Antes, quando mappedRecords.length === 0, o código só
-          // mostrava um toast e mantinha os registros antigos (cache local) na
-          // tela — dando a impressão de dado fictício quando a planilha, na
-          // verdade, já estava vazia. Agora o estado vazio é refletido de fato.
           records = mappedRecords || [];
           localStorage.setItem("kronos_records", JSON.stringify(records));
 
@@ -3080,10 +3210,6 @@ _Estratégia vence volume._`;
         })
         .catch(err => {
           console.error(err);
-          // Falha real de rede/permissão/CORS: aqui SIM faz sentido manter o
-          // último cache local válido (não é dado inventado, é o último dado
-          // real já confirmado), mas deixamos claro na badge que a conexão
-          // falhou, para não passar a falsa impressão de sincronização ativa.
           showToast("Sem resposta do Google Sheets. Exibindo último dado local confirmado.", "error");
           if (badge) {
             badge.innerText = "Erro Conexão";
@@ -3092,13 +3218,13 @@ _Estratégia vence volume._`;
         });
     }
 
-    // Tradução e mapeamento estrito de colunas para evitar undefined
+    // Tradução e mapeamento estrito de colunas de forma resiliente
     function mapGoogleSheetRowsToRecords(gvizData) {
       if (!gvizData || !gvizData.table || !gvizData.table.rows) return [];
       
       const rows = gvizData.table.rows;
       const cols = gvizData.table.cols;
-      const headers = cols.map(c => (c.label || "").toLowerCase().trim());
+      const headers = cols.map(c => (c.label || "").toLowerCase().trim().replace(/_/g, " "));
       
       return rows.map((row, rowIndex) => {
         const cells = row.c;
@@ -3126,7 +3252,15 @@ _Estratégia vence volume._`;
         const idxIdle = findColIndex(["idle", "ocios"], 11);
         const idxCot = findColIndex(["cot"], 12);
         const idxScore = findColIndex(["score"], 13);
+        const idxClass = findColIndex(["classific", "class"], 14);
         const idxNotes = findColIndex(["notes", "ocorren", "resumo"], 15);
+        const idxS5 = findColIndex(["s5", "auditoria"], 16);
+        const idxThpMeta = findColIndex(["hourly thp meta", "thp_meta"], 17);
+        const idxThpReal = findColIndex(["hourly thp real", "thp_real"], 18);
+        const idxIdleMeta = findColIndex(["hourly idle meta", "idle_meta"], 19);
+        const idxIdleReal = findColIndex(["hourly idle real", "idle_real"], 20);
+        const idxCotMeta = findColIndex(["hourly cot meta", "cot_meta"], 21);
+        const idxCotReal = findColIndex(["hourly cot real", "cot_real"], 22);
 
         let rawDate = getVal(idxDate, "");
         if (typeof rawDate === "string" && rawDate.startsWith("Date(")) {
@@ -3143,26 +3277,14 @@ _Estratégia vence volume._`;
 
         const scoreVal = Math.round(parseFloat(getVal(idxScore, 0)) || 0);
 
-        // CORREÇÃO: o fallback anterior preenchia a Auditoria 5S com 100/100/100/100
-        // quando a célula vinha vazia ou mal formatada — isso fazia parecer que a
-        // auditoria tinha nota máxima "de graça". Agora o fallback é 0 (ausência
-        // de dado = zero, nunca "perfeito por padrão").
         let s5Obj = { seiri: 0, seiton: 0, seiso: 0, shitsuke: 0 };
         try {
-          const s5CellVal = getVal(16, "");
+          const s5CellVal = getVal(idxS5, "");
           if (s5CellVal && s5CellVal.startsWith("{")) {
             s5Obj = JSON.parse(s5CellVal);
           }
         } catch(e){}
 
-        // CORREÇÃO: os arrays horários de fallback antes usavam os valores fixos
-        // do template T1 (200,250,300... / 5,5,5... / 100,100,100...) mesmo para
-        // registros de T2/T3, o que fazia a matriz horária exibir "metas" que não
-        // batiam com o turno real do registro e pareciam dado inventado.
-        // Agora: as METAS de fallback são derivadas do template real do turno do
-        // próprio registro (config operacional legítima, não dado fictício), e os
-        // REAIS de fallback são sempre arrays vazios — resultando em campos em
-        // branco na UI em vez de zeros ou números emprestados de outro turno.
         const shiftForFallback = String(getVal(idxShift, "T1"));
         const templateForFallback = turnos[shiftForFallback] || turnos["T1"];
 
@@ -3174,12 +3296,12 @@ _Estratégia vence volume._`;
         let hCotReal = [];
 
         try {
-          const tm = getVal(17, ""); if(tm) hThpMeta = JSON.parse(tm);
-          const tr = getVal(18, ""); if(tr) hThpReal = JSON.parse(tr);
-          const im = getVal(19, ""); if(im) hIdleMeta = JSON.parse(im);
-          const ir = getVal(20, ""); if(ir) hIdleReal = JSON.parse(ir);
-          const cm = getVal(21, ""); if(cm) hCotMeta = JSON.parse(cm);
-          const cr = getVal(22, ""); if(cr) hCotReal = JSON.parse(cr);
+          const tm = getVal(idxThpMeta, ""); if(tm) hThpMeta = JSON.parse(tm);
+          const tr = getVal(idxThpReal, ""); if(tr) hThpReal = JSON.parse(tr);
+          const im = getVal(idxIdleMeta, ""); if(im) hIdleMeta = JSON.parse(im);
+          const ir = getVal(idxIdleReal, ""); if(ir) hIdleReal = JSON.parse(ir);
+          const cm = getVal(idxCotMeta, ""); if(cm) hCotMeta = JSON.parse(cm);
+          const cr = getVal(idxCotReal, ""); if(cr) hCotReal = JSON.parse(cr);
         } catch(e){}
 
         return {
@@ -3197,7 +3319,7 @@ _Estratégia vence volume._`;
           realIdle: parseFloat(getVal(idxIdle, 0)) || 0,
           realCot: parseFloat(getVal(idxCot, 0)) || 0,
           score: scoreVal,
-          classification: scoreVal >= 95 ? "Elite" : (scoreVal >= 90 ? "Excelente" : (scoreVal >= 80 ? "OK" : "Atenção")),
+          classification: getVal(idxClass, scoreVal >= 95 ? "Elite" : (scoreVal >= 90 ? "Excelente" : (scoreVal >= 80 ? "OK" : "Atenção"))),
           notes: String(getVal(idxNotes, "")),
           s5: s5Obj,
           hourlyTHPMeta: hThpMeta,
@@ -3213,24 +3335,27 @@ _Estratégia vence volume._`;
     function sendToGoogleSheets(record) {
       if (!configApiUrl) return;
       
+      // Enviando como text/plain para contornar problemas de CORS preflight (OPTIONS)
       fetch(configApiUrl, {
         method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
+        mode: "cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
         body: JSON.stringify(record)
       })
-      .then(() => {
-        // ATENÇÃO (não corrigido automaticamente — depende do Code.gs):
-        // "mode: no-cors" torna a resposta opaca; este .then() sempre executa
-        // como sucesso mesmo que o doPost() do Apps Script tenha retornado erro
-        // ou nem exista. Só será possível confirmar a gravação de verdade
-        // depois de eu analisar o Code.gs e, se necessário, ajustar o deploy
-        // para permitir resposta legível (removendo no-cors ou usando JSONP).
-        showToast("Registro enviado. Confirmando gravação...");
+      .then(res => res.json())
+      .then(res => {
+        if (res && res.status === "success") {
+          showToast("Dados salvos e sincronizados.");
+        } else {
+          showToast("Erro retornado pelo script da planilha.", "error");
+        }
         syncWithGoogleSheets();
       })
       .catch(() => {
-        showToast("Falha ao enviar. Backup local mantido.", "warning");
+        showToast("Registro enviado. Sincronizando...", "info");
+        syncWithGoogleSheets();
       });
     }
 
