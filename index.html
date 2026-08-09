@@ -157,9 +157,9 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background-color: rgba(0, 230, 118, 0.08);
-      border: 1px solid rgba(0, 230, 118, 0.2);
-      color: var(--color-excelente);
+      background-color: rgba(255, 235, 59, 0.08);
+      border: 1px solid rgba(255, 235, 59, 0.2);
+      color: var(--color-atencao);
       padding: 4px 10px;
       border-radius: 12px;
       font-size: 0.7rem;
@@ -170,9 +170,9 @@
       content: '';
       width: 5px;
       height: 5px;
-      background-color: var(--color-excelente);
+      background-color: var(--color-atencao);
       border-radius: 50%;
-      box-shadow: 0 0 6px var(--color-excelente);
+      box-shadow: 0 0 6px var(--color-atencao);
     }
 
     .sidebar-footer p {
@@ -704,6 +704,14 @@
       animation: viewFadeIn 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
       transition: opacity 0.25s ease;
     }
+
+    .empty-state-message {
+      padding: 30px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
@@ -746,7 +754,7 @@
     </div>
     <div class="sidebar-footer">
       <div class="conn-status" id="connectionBadge">Conectando...</div>
-      <p>KRONOS Engine v2.0 • BRFPE1</p>
+      <p>KRONOS Engine v2.1 • BRFPE1</p>
       <p style="opacity: 0.5;">Controle do tempo. Domínio da operação.</p>
     </div>
   </aside>
@@ -772,14 +780,14 @@
       <!-- VIEW: DASHBOARD -->
       <div id="view-dashboard" class="view-panel active">
         
-        <!-- HIGH-DENSITY NOC KEY METRICS (5 COLS REQUIRED BY NOC STANDARD) -->
+        <!-- HIGH-DENSITY NOC KEY METRICS -->
         <div class="grid-layout cols-5" id="dashboardKPIsContainer">
           
           <!-- CARD 1: SCORE KRONOS -->
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
             <div class="kronos-card-header">
               <span class="kronos-card-title">SCORE KRONOS</span>
-              <span id="scoreBadge" class="badge-status badge-elite" style="font-size: 0.55rem;">-</span>
+              <span id="scoreBadge" class="badge-status badge-atencao" style="font-size: 0.55rem;">-</span>
             </div>
             <div class="gauge-wrapper" style="margin: -6px 0;">
               <svg class="gauge-svg" viewBox="0 0 200 120">
@@ -802,7 +810,7 @@
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
             <div class="kronos-card-header">
               <span class="kronos-card-title">INBOUND ATUAL</span>
-              <span class="badge-status badge-ok" id="inboundBadgeStatus" style="font-size: 0.55rem;">-</span>
+              <span class="badge-status badge-atencao" id="inboundBadgeStatus" style="font-size: 0.55rem;">-</span>
             </div>
             <div>
               <div style="font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: bold; line-height: 1.1;" id="dashKpiInboundPct">0%</div>
@@ -817,7 +825,7 @@
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
             <div class="kronos-card-header">
               <span class="kronos-card-title">OUTBOUND ATUAL</span>
-              <span class="badge-status badge-excelente" id="outboundBadgeStatus" style="font-size: 0.55rem;">-</span>
+              <span class="badge-status badge-atencao" id="outboundBadgeStatus" style="font-size: 0.55rem;">-</span>
             </div>
             <div>
               <div style="font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: bold; line-height: 1.1;" id="dashKpiOutboundPct">0%</div>
@@ -832,7 +840,7 @@
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
             <div class="kronos-card-header">
               <span class="kronos-card-title">FAST START</span>
-              <span class="badge-status badge-excelente" id="fastBadgeStatus" style="font-size: 0.55rem;">-</span>
+              <span class="badge-status badge-atencao" id="fastBadgeStatus" style="font-size: 0.55rem;">-</span>
             </div>
             <div>
               <div style="font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: bold; line-height: 1.1;" id="dashKpiFast">0%</div>
@@ -845,7 +853,7 @@
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
             <div class="kronos-card-header">
               <span class="kronos-card-title">STRONG FINISH</span>
-              <span class="badge-status badge-excelente" id="strongBadgeStatus" style="font-size: 0.55rem;">-</span>
+              <span class="badge-status badge-atencao" id="strongBadgeStatus" style="font-size: 0.55rem;">-</span>
             </div>
             <div>
               <div style="font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: bold; line-height: 1.1;" id="dashKpiStrong">0%</div>
@@ -875,26 +883,26 @@
                   </tr>
                 </thead>
                 <tbody id="inboundFlowTableBody">
-                  <!-- Injected via JavaScript -->
+                  <tr><td colspan="5" class="empty-state-message">Sem dados disponíveis</td></tr>
                 </tbody>
               </table>
             </div>
             <div class="flow-footer">
               <div class="flow-footer-metric">
                 <div>Utilização</div>
-                <div class="flow-footer-value" id="inboundUtilVal">0%</div>
+                <div class="flow-footer-value" id="inboundUtilVal">-</div>
               </div>
               <div class="flow-footer-metric">
                 <div>Eficiência</div>
-                <div class="flow-footer-value" id="inboundEfVal">0%</div>
+                <div class="flow-footer-value" id="inboundEfVal">-</div>
               </div>
               <div class="flow-footer-metric">
                 <div>Gap Plan→Start</div>
-                <div class="flow-footer-value" id="inboundGapStartVal">0%</div>
+                <div class="flow-footer-value" id="inboundGapStartVal">-</div>
               </div>
               <div class="flow-footer-metric">
                 <div>Gap Plan→Real</div>
-                <div class="flow-footer-value" id="inboundGapRealVal">0%</div>
+                <div class="flow-footer-value" id="inboundGapRealVal">-</div>
               </div>
             </div>
           </div>
@@ -914,33 +922,33 @@
                   </tr>
                 </thead>
                 <tbody id="outboundFlowTableBody">
-                  <!-- Injected via JavaScript -->
+                  <tr><td colspan="5" class="empty-state-message">Sem dados disponíveis</td></tr>
                 </tbody>
               </table>
             </div>
             <div class="flow-footer">
               <div class="flow-footer-metric">
                 <div>Utilização</div>
-                <div class="flow-footer-value" id="outboundUtilVal">0%</div>
+                <div class="flow-footer-value" id="outboundUtilVal">-</div>
               </div>
               <div class="flow-footer-metric">
                 <div>Eficiência</div>
-                <div class="flow-footer-value" id="outboundEfVal">0%</div>
+                <div class="flow-footer-value" id="outboundEfVal">-</div>
               </div>
               <div class="flow-footer-metric">
                 <div>Gap Plan→Start</div>
-                <div class="flow-footer-value" id="outboundGapStartVal">0%</div>
+                <div class="flow-footer-value" id="outboundGapStartVal">-</div>
               </div>
               <div class="flow-footer-metric">
                 <div>Gap Plan→Real</div>
-                <div class="flow-footer-value" id="outboundGapRealVal">0%</div>
+                <div class="flow-footer-value" id="outboundGapRealVal">-</div>
               </div>
             </div>
           </div>
         </div>
 
         <div class="grid-layout cols-3">
-          <!-- Left Col: Total Records / Quick Information -->
+          <!-- Left Col: Total Records -->
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between;">
             <div class="kronos-card-header">
               <span class="kronos-card-title">Turnos Arquivados</span>
@@ -949,12 +957,12 @@
             <div style="font-size: 0.65rem; color: var(--text-muted);">Banco de dados integrado KRONOS</div>
           </div>
 
-          <!-- Right: Volume Realizado vs Meta (THP) Chart (Span 2) -->
+          <!-- Right: Volume Realizado vs Meta (THP) Chart -->
           <div class="kronos-card" style="grid-column: span 2; display: flex; flex-direction: column; justify-content: space-between;">
             <div class="kronos-card-header">
               <span class="kronos-card-title">Volume Realizado vs Meta (THP)</span>
             </div>
-            <div style="height: 90px;">
+            <div style="height: 90px; position: relative;" id="volumeChartContainer">
               <canvas id="headerVolumeChart"></canvas>
             </div>
           </div>
@@ -995,7 +1003,7 @@
           </div>
         </div>
 
-        <!-- OPERATIONAL TABS (Inbound & Outbound Analytic Tables with Filters) -->
+        <!-- OPERATIONAL TABS -->
         <div class="kronos-card" style="margin-bottom: 16px;">
           <div style="display: flex; gap: 8px; margin-bottom: 8px; border-bottom: 1px solid var(--border-gold); padding-bottom: 6px; align-items: center; justify-content: space-between;">
             <span class="kronos-card-title">Abas de Fluxo Operacional (Visão Analítica)</span>
@@ -1044,7 +1052,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- Injected via JavaScript -->
+                  <tr><td colspan="7" class="empty-state-message">Sem dados disponíveis</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1065,7 +1073,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- Injected via JavaScript -->
+                  <tr><td colspan="7" class="empty-state-message">Sem dados disponíveis</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1078,7 +1086,6 @@
       <div id="view-registrar" class="view-panel">
         <form id="registrarTurnoForm" onsubmit="handleFormSubmit(event)">
           
-          <!-- REGISTRO DO TURNO: CORE INFO -->
           <div class="kronos-card" style="margin-bottom: 16px;">
             <div class="kronos-card-header">
               <span class="kronos-card-title">REGISTRO DO TURNO - Configurações Gerais</span>
@@ -1122,7 +1129,7 @@
             </div>
           </div>
 
-          <!-- Matriz Dinâmica Programável de THP, IDLE e COT -->
+          <!-- Matriz Dinâmica de Controle Horário -->
           <div class="matrix-wrapper">
             <div class="matrix-title-bar">
               <span>Acompanhamento Diário — Matriz de Pontos de Controle Horários</span>
@@ -1132,7 +1139,6 @@
                 <thead>
                   <tr id="matrixHeaderRow">
                     <th>Indicador / Hora</th>
-                    <!-- Rendered Dynamically -->
                   </tr>
                 </thead>
                 <tbody>
@@ -1360,7 +1366,7 @@
                 </tr>
               </thead>
               <tbody id="historicoTableBody">
-                <!-- Injected via JavaScript -->
+                <tr><td colspan="8" class="empty-state-message">Sem dados disponíveis</td></tr>
               </tbody>
             </table>
           </div>
@@ -1385,7 +1391,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- Injected via JavaScript -->
+                  <tr><td colspan="4" class="empty-state-message">Sem dados disponíveis</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1406,7 +1412,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- Injected via JavaScript -->
+                  <tr><td colspan="4" class="empty-state-message">Sem dados disponíveis</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1416,7 +1422,6 @@
 
       <!-- VIEW: WAR ROOM -->
       <div id="view-warroom" class="view-panel">
-        <!-- WAR ROOM EXECUTIVE CARDS -->
         <div class="grid-layout cols-4" style="gap: 12px; margin-bottom: 16px;">
           <!-- CARD A: MELHOR KPI -->
           <div class="kronos-card">
@@ -1429,7 +1434,7 @@
                 Meta: <span id="wrBestKpiMeta">-</span> | Real: <span id="wrBestKpiReal">-</span>
               </div>
               <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">
-                Impacto: <span id="wrBestKpiImpact" class="badge-status badge-excelente" style="font-size: 0.55rem;">POSITIVO</span>
+                Impacto: <span id="wrBestKpiImpact" class="badge-status badge-excelente" style="font-size: 0.55rem;">SLA OK</span>
               </div>
             </div>
           </div>
@@ -1445,7 +1450,7 @@
                 Meta: <span id="wrWorstKpiMeta">-</span> | Real: <span id="wrWorstKpiReal">-</span>
               </div>
               <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">
-                Impacto: <span id="wrWorstKpiImpact" class="badge-status badge-critico" style="font-size: 0.55rem;">NEGATIVO</span>
+                Impacto: <span id="wrWorstKpiImpact" class="badge-status badge-critico" style="font-size: 0.55rem;">DESVIO</span>
               </div>
             </div>
           </div>
@@ -1456,7 +1461,7 @@
               <span class="kronos-card-title">Resultado Inbound</span>
             </div>
             <div style="margin-top: 8px;">
-              <div id="wrInboundConsolidated" style="font-family: 'Share Tech Mono', monospace; font-size: 1.4rem; font-weight: bold; color: var(--color-ok);">0%</div>
+              <div id="wrInboundConsolidated" style="font-family: 'Share Tech Mono', monospace; font-size: 1.4rem; font-weight: bold; color: var(--color-ok);">-</div>
               <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Aproveitamento consolidado das metas Inbound</p>
             </div>
           </div>
@@ -1467,7 +1472,7 @@
               <span class="kronos-card-title">Resultado Outbound</span>
             </div>
             <div style="margin-top: 8px;">
-              <div id="wrOutboundConsolidated" style="font-family: 'Share Tech Mono', monospace; font-size: 1.4rem; font-weight: bold; color: var(--gold-metallic);">0%</div>
+              <div id="wrOutboundConsolidated" style="font-family: 'Share Tech Mono', monospace; font-size: 1.4rem; font-weight: bold; color: var(--gold-metallic);">-</div>
               <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Aproveitamento consolidado das metas Outbound</p>
             </div>
           </div>
@@ -1478,10 +1483,10 @@
           <div class="kronos-card">
             <div class="kronos-card-header">
               <span class="kronos-card-title">FAST ATUAL</span>
-              <span class="badge-status badge-elite" id="wrFastStatus">SLA OK</span>
+              <span class="badge-status badge-atencao" id="wrFastStatus">-</span>
             </div>
             <div style="margin-top: 10px;">
-              <div style="font-size: 1.6rem; font-weight: bold; font-family: 'Share Tech Mono', monospace;" id="wrFastActual">0%</div>
+              <div style="font-size: 1.6rem; font-weight: bold; font-family: 'Share Tech Mono', monospace;" id="wrFastActual">-</div>
               <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Meta de Tolerância Coletiva: 85%</div>
             </div>
           </div>
@@ -1510,7 +1515,6 @@
           </div>
         </div>
 
-        <!-- LEADERBOARDS & RANKINGS -->
         <div class="grid-layout cols-2" style="margin-top: 12px;">
           <div class="kronos-card">
             <div class="kronos-card-header">
@@ -1527,7 +1531,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- Injected Dynamically -->
+                  <tr><td colspan="4" class="empty-state-message">Sem dados disponíveis</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1548,7 +1552,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- Injected Dynamically -->
+                  <tr><td colspan="4" class="empty-state-message">Sem dados disponíveis</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1563,7 +1567,7 @@
             <div class="kronos-card-header">
               <span class="kronos-card-title">SLA KRONOS — Últimos 7 Turnos</span>
             </div>
-            <div class="chart-box">
+            <div class="chart-box" id="trendScoreContainer">
               <canvas id="chartTrendScore"></canvas>
             </div>
           </div>
@@ -1571,7 +1575,7 @@
             <div class="kronos-card-header">
               <span class="kronos-card-title">Evolução do Fluxo de Produtividade vs Metas</span>
             </div>
-            <div class="chart-box">
+            <div class="chart-box" id="trendThpContainer">
               <canvas id="chartTrendTHP"></canvas>
             </div>
           </div>
@@ -1613,7 +1617,7 @@
 
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- MODAL DE CONFIGURACAO DA API -->
+  <!-- CONFIGURATION MODAL -->
   <div id="configModal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; place-items:center;">
     <div class="kronos-card" style="width: 500px; max-width: 90%;">
       <div class="kronos-card-header">
@@ -1621,7 +1625,7 @@
       </div>
       <div class="form-group" style="margin-top: 10px;">
         <label>URL Web App do Script</label>
-        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbwdEVunIua6W-MAU0XaaD5ZhfMf4qdhea6f4Qz7YT2tyaJpQ07ahFDm1KJbxsIdu820/exec">
+        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbyfkvO0E8CkJuHeiXwbyWReQnJG371JO0bNtesC9JFoZPGE-awcMPy5i3l5iaWtPasb/exec">
       </div>
       <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 20px;">Insira a URL obtida ao realizar a implantação tática de Web App na sua planilha oficial para ativação de ponte.</p>
       <div style="display: flex; gap:12px; justify-content:flex-end;">
@@ -1632,7 +1636,7 @@
   </div>
 
   <script>
-    // Configurações e metas fixas de turno
+    // Configurações e metas de turno padrão corporativas
     const turnos = {
       T1: {
         inicio: "06:00",
@@ -1672,10 +1676,6 @@
       }
     };
 
-    // Google Sheets Integration Configuration
-    const SPREADSHEET_ID = "170QXtRi1CvkiBl0BuRmtZ1eScSZzHc6xJLj4AUAqhWU";
-    const SPREADSHEET_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json`;
-
     let records = [];
     let activeOpTab = 'inbound';
     let volumeChart = null;
@@ -1686,23 +1686,21 @@
     window.addEventListener("DOMContentLoaded", () => {
       const regDateEl = document.getElementById("regDate");
       const hFilterDateEl = document.getElementById("headerFilterDate");
-      if (regDateEl) regDateEl.value = new Date().toISOString().split('T')[0];
-      if (hFilterDateEl) hFilterDateEl.value = new Date().toISOString().split('T')[0];
+      const todayString = new Date().toISOString().split('T')[0];
       
-      records = JSON.parse(localStorage.getItem("kronos_records")) || [];
-
+      if (regDateEl) regDateEl.value = todayString;
+      if (hFilterDateEl) hFilterDateEl.value = todayString;
+      
       const autoShift = detectAutoShift();
       const regShiftEl = document.getElementById("regShift");
       if (regShiftEl) regShiftEl.value = autoShift;
 
       onShiftChange();
-      loadActiveData();
       startSystemCountdown();
       checkApiConnection();
 
-      // Sincronização inicial e monitor em background
+      // Sincronização inicial com o servidor central de planilhas
       syncWithGoogleSheets();
-      setInterval(syncWithGoogleSheets, 30000);
     });
 
     function detectAutoShift() {
@@ -1711,13 +1709,9 @@
       const mins = now.getMinutes();
       const decTime = hrs + mins / 60;
 
-      if (decTime >= 6.0 && decTime < 14.5) {
-        return "T1";
-      } else if (decTime >= 14.5 && decTime < 22.0) {
-        return "T2";
-      } else {
-        return "T3";
-      }
+      if (decTime >= 6.0 && decTime < 14.5) return "T1";
+      if (decTime >= 14.5 && decTime < 22.0) return "T2";
+      return "T3";
     }
 
     function onShiftChange() {
@@ -1727,24 +1721,24 @@
       const template = turnos[selectedShift];
       if (!template) return;
 
-      const regAreaEl = document.getElementById("regArea");
-      const metaInboundTHPEl = document.getElementById("metaInboundTHP");
-      const metaOutboundTHPEl = document.getElementById("metaOutboundTHP");
-      const tlAberturaEl = document.getElementById("tlTimeAbertura");
-      const tlFastEl = document.getElementById("tlTimeFast");
-      const tlControleEl = document.getElementById("tlTimeControle");
-      const tlFinishEl = document.getElementById("tlTimeFinish");
-      const tlFechamentoEl = document.getElementById("tlTimeFechamento");
+      const elementsToUpdate = {
+        regArea: template.area,
+        metaInboundTHP: template.metaInboundTHP,
+        metaOutboundTHP: template.metaOutboundTHP,
+        tlTimeAbertura: template.timeline.abertura,
+        tlTimeFast: template.timeline.fast,
+        tlTimeControle: template.timeline.controle,
+        tlTimeFinish: template.timeline.finish,
+        tlTimeFechamento: template.timeline.fechamento
+      };
 
-      if (regAreaEl) regAreaEl.value = template.area;
-      if (metaInboundTHPEl) metaInboundTHPEl.value = template.metaInboundTHP;
-      if (metaOutboundTHPEl) metaOutboundTHPEl.value = template.metaOutboundTHP;
-
-      if (tlAberturaEl) tlAberturaEl.innerText = template.timeline.abertura;
-      if (tlFastEl) tlFastEl.innerText = template.timeline.fast;
-      if (tlControleEl) tlControleEl.innerText = template.timeline.controle;
-      if (tlFinishEl) tlFinishEl.innerText = template.timeline.finish;
-      if (tlFechamentoEl) tlFechamentoEl.innerText = template.timeline.fechamento;
+      for (const [id, value] of Object.entries(elementsToUpdate)) {
+        const el = document.getElementById(id);
+        if (el) {
+          if (el.tagName === 'INPUT') el.value = value;
+          else el.innerText = value;
+        }
+      }
 
       renderHourlyMatrixForms(template);
       calculateLiveScores();
@@ -1752,68 +1746,56 @@
 
     function renderHourlyMatrixForms(template) {
       const headerRow = document.getElementById("matrixHeaderRow");
-      const thpMeta = document.getElementById("thpRowMeta");
-      const thpReal = document.getElementById("thpRowReal");
-      const thpPct = document.getElementById("thpRowPct");
-      
-      const idleMeta = document.getElementById("idleRowMeta");
-      const idleReal = document.getElementById("idleRowReal");
-      const idlePct = document.getElementById("idleRowPct");
+      const rows = {
+        thpMeta: document.getElementById("thpRowMeta"),
+        thpReal: document.getElementById("thpRowReal"),
+        thpPct: document.getElementById("thpRowPct"),
+        idleMeta: document.getElementById("idleRowMeta"),
+        idleReal: document.getElementById("idleRowReal"),
+        idlePct: document.getElementById("idleRowPct"),
+        cotMeta: document.getElementById("cotRowMeta"),
+        cotReal: document.getElementById("cotRowReal"),
+        cotPct: document.getElementById("cotRowPct")
+      };
 
-      const cotMeta = document.getElementById("cotRowMeta");
-      const cotReal = document.getElementById("cotRowReal");
-      const cotPct = document.getElementById("cotRowPct");
-
-      if (!headerRow || !thpMeta || !thpReal || !thpPct || !idleMeta || !idleReal || !idlePct || !cotMeta || !cotReal || !cotPct) return;
+      if (!headerRow || Object.values(rows).some(el => !el)) return;
 
       headerRow.innerHTML = "<th>Indicador / Hora</th>";
-      while (thpMeta.cells.length > 1) thpMeta.deleteCell(1);
-      while (thpReal.cells.length > 1) thpReal.deleteCell(1);
-      while (thpPct.cells.length > 1) thpPct.deleteCell(1);
-
-      while (idleMeta.cells.length > 1) idleMeta.deleteCell(1);
-      while (idleReal.cells.length > 1) idleReal.deleteCell(1);
-      while (idlePct.cells.length > 1) idlePct.deleteCell(1);
-
-      while (cotMeta.cells.length > 1) cotMeta.deleteCell(1);
-      while (cotReal.cells.length > 1) cotReal.deleteCell(1);
-      while (cotPct.cells.length > 1) cotPct.deleteCell(1);
+      for (const row of Object.values(rows)) {
+        while (row.cells.length > 1) row.deleteCell(1);
+      }
 
       template.horarios.forEach((hour, i) => {
         headerRow.innerHTML += `<th>${hour}</th>`;
         
-        thpMeta.innerHTML += `<td><input type="number" id="thp_meta_${i}" value="${template.matrixThpMeta[i] || 0}" oninput="calculateLiveScores()"></td>`;
-        thpReal.innerHTML += `<td><input type="number" id="thp_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
-        thpPct.innerHTML += `<td id="thp_pct_${i}" class="pct-calc-cell">0%</td>`;
+        rows.thpMeta.innerHTML += `<td><input type="number" id="thp_meta_${i}" value="${template.matrixThpMeta[i] || 0}" oninput="calculateLiveScores()"></td>`;
+        rows.thpReal.innerHTML += `<td><input type="number" id="thp_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
+        rows.thpPct.innerHTML += `<td id="thp_pct_${i}" class="pct-calc-cell">-</td>`;
 
-        idleMeta.innerHTML += `<td><input type="number" id="idle_meta_${i}" value="${template.matrixIdleMeta[i] || 0}" oninput="calculateLiveScores()"></td>`;
-        idleReal.innerHTML += `<td><input type="number" id="idle_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
-        idlePct.innerHTML += `<td id="idle_pct_${i}" class="pct-calc-cell">0%</td>`;
+        rows.idleMeta.innerHTML += `<td><input type="number" id="idle_meta_${i}" value="${template.matrixIdleMeta[i] || 0}" oninput="calculateLiveScores()"></td>`;
+        rows.idleReal.innerHTML += `<td><input type="number" id="idle_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
+        rows.idlePct.innerHTML += `<td id="idle_pct_${i}" class="pct-calc-cell">-</td>`;
 
-        cotMeta.innerHTML += `<td><input type="number" id="cot_meta_${i}" value="${template.matrixCotMeta[i] || 0}" oninput="calculateLiveScores()"></td>`;
-        cotReal.innerHTML += `<td><input type="number" id="cot_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
-        cotPct.innerHTML += `<td id="cot_pct_${i}" class="pct-calc-cell">0%</td>`;
+        rows.cotMeta.innerHTML += `<td><input type="number" id="cot_meta_${i}" value="${template.matrixCotMeta[i] || 0}" oninput="calculateLiveScores()"></td>`;
+        rows.cotReal.innerHTML += `<td><input type="number" id="cot_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
+        rows.cotPct.innerHTML += `<td id="cot_pct_${i}" class="pct-calc-cell">-</td>`;
       });
     }
 
-    // Calculations Engine with dynamic synchronization
     function calculateLiveScores() {
       const regShiftEl = document.getElementById("regShift");
-      if (!regShiftEl) return;
+      if (!regShiftEl) return { score: 0 };
       const selectedShift = regShiftEl.value;
       const template = turnos[selectedShift];
-      if (!template) return;
+      if (!template) return { score: 0 };
 
       const len = template.horarios.length;
       
       // THP Loop
-      let totalMetaThp = 0;
-      let totalRealThp = 0;
+      let totalMetaThp = 0, totalRealThp = 0;
       for (let i = 0; i < len; i++) {
-        const metaEl = document.getElementById(`thp_meta_${i}`);
-        const realEl = document.getElementById(`thp_real_${i}`);
-        const metaVal = metaEl ? (parseFloat(metaEl.value) || 0) : 0;
-        const realVal = realEl ? (parseFloat(realEl.value) || 0) : 0;
+        const metaVal = parseFloat(document.getElementById(`thp_meta_${i}`)?.value) || 0;
+        const realVal = parseFloat(document.getElementById(`thp_real_${i}`)?.value) || 0;
         totalMetaThp += metaVal;
         totalRealThp += realVal;
 
@@ -1833,21 +1815,16 @@
       if (wtRealThpEl) wtRealThpEl.innerText = `${realThpPerformance}%`;
 
       // IDLE Loop
-      let totalMetaIdle = 0;
-      let totalRealIdle = 0;
-      let idleControlHours = 0;
+      let totalMetaIdle = 0, totalRealIdle = 0, idleControlHours = 0;
       for (let i = 0; i < len; i++) {
-        const metaEl = document.getElementById(`idle_meta_${i}`);
-        const realEl = document.getElementById(`idle_real_${i}`);
-        const metaVal = metaEl ? (parseFloat(metaEl.value) || 0) : 0;
-        const realVal = realEl ? (parseFloat(realEl.value) || 0) : 0;
+        const metaVal = parseFloat(document.getElementById(`idle_meta_${i}`)?.value) || 0;
+        const realVal = parseFloat(document.getElementById(`idle_real_${i}`)?.value) || 0;
         totalMetaIdle += metaVal;
         totalRealIdle += realVal;
         if (metaVal > 0 || realVal > 0) idleControlHours++;
 
         const diff = realVal - metaVal;
         const cell = document.getElementById(`idle_pct_${i}`);
-        
         if (cell) {
           if (realVal <= metaVal) {
             cell.innerText = "OK";
@@ -1861,17 +1838,13 @@
       const avgRealIdle = idleControlHours > 0 ? (totalRealIdle / idleControlHours) : 0;
       const avgMetaIdle = idleControlHours > 0 ? (totalMetaIdle / idleControlHours) : 0;
       const wtRealIdleEl = document.getElementById("wtRealIdle");
-      if (wtRealIdleEl) wtRealIdleEl.innerText = `${avgRealIdle.toFixed(1)}% Real (Meta: ${avgMetaIdle.toFixed(1)}%)`;
+      if (wtRealIdleEl) wtRealIdleEl.innerText = `${avgRealIdle.toFixed(1)}% (Meta: ${avgMetaIdle.toFixed(1)}%)`;
 
       // COT Loop
-      let totalMetaCot = 0;
-      let totalRealCot = 0;
-      let cotHours = 0;
+      let totalMetaCot = 0, totalRealCot = 0, cotHours = 0;
       for (let i = 0; i < len; i++) {
-        const metaEl = document.getElementById(`cot_meta_${i}`);
-        const realEl = document.getElementById(`cot_real_${i}`);
-        const metaVal = metaEl ? (parseFloat(metaEl.value) || 0) : 0;
-        const realVal = realEl ? (parseFloat(realEl.value) || 0) : 0;
+        const metaVal = parseFloat(document.getElementById(`cot_meta_${i}`)?.value) || 0;
+        const realVal = parseFloat(document.getElementById(`cot_real_${i}`)?.value) || 0;
         totalMetaCot += metaVal;
         totalRealCot += realVal;
         if (metaVal > 0 || realVal > 0) cotHours++;
@@ -1893,81 +1866,50 @@
       const wtRealCotEl = document.getElementById("wtRealCot");
       if (wtRealCotEl) wtRealCotEl.innerText = `${avgRealCot}%`;
 
-      const pInboundMetaEl = document.getElementById("metaInboundTHP");
-      const pInboundRealEl = document.getElementById("realInboundTHP");
-      const pOutboundMetaEl = document.getElementById("metaOutboundTHP");
-      const pOutboundRealEl = document.getElementById("realOutboundTHP");
+      const pInboundMeta = parseFloat(document.getElementById("metaInboundTHP")?.value) || 0;
+      const pInboundReal = parseFloat(document.getElementById("realInboundTHP")?.value) || 0;
+      const pOutboundMeta = parseFloat(document.getElementById("metaOutboundTHP")?.value) || 0;
+      const pOutboundReal = parseFloat(document.getElementById("realOutboundTHP")?.value) || 0;
 
-      const pInboundMeta = pInboundMetaEl ? (parseFloat(pInboundMetaEl.value) || 0) : 0;
-      const pInboundReal = pInboundRealEl ? (parseFloat(pInboundRealEl.value) || 0) : 0;
-      const pOutboundMeta = pOutboundMetaEl ? (parseFloat(pOutboundMetaEl.value) || 0) : 0;
-      const pOutboundReal = pOutboundRealEl ? (parseFloat(pOutboundRealEl.value) || 0) : 0;
-
-      const realFastEl = document.getElementById("realFastStart");
-      const realStrongEl = document.getElementById("realStrongFinish");
-      const realFast = realFastEl ? (parseFloat(realFastEl.value) || 0) : 0;
-      const realStrong = realStrongEl ? (parseFloat(realStrongEl.value) || 0) : 0;
+      const realFast = parseFloat(document.getElementById("realFastStart")?.value) || 0;
+      const realStrong = parseFloat(document.getElementById("realStrongFinish")?.value) || 0;
 
       const wtRealFastEl = document.getElementById("wtRealFast");
       const wtRealStrongEl = document.getElementById("wtRealStrong");
       if (wtRealFastEl) wtRealFastEl.innerText = `${realFast}%`;
       if (wtRealStrongEl) wtRealStrongEl.innerText = `${realStrong}%`;
 
-      const s5SeiriEl = document.getElementById("s5Seiri");
-      const s5SeitonEl = document.getElementById("s5Seiton");
-      const s5SeisoEl = document.getElementById("s5Seiso");
-      const s5ShitsukeEl = document.getElementById("s5Shitsuke");
-
-      const s5Seiri = s5SeiriEl ? (parseFloat(s5SeiriEl.value) || 0) : 0;
-      const s5Seiton = s5SeitonEl ? (parseFloat(s5SeitonEl.value) || 0) : 0;
-      const s5Seiso = s5SeisoEl ? (parseFloat(s5SeisoEl.value) || 0) : 0;
-      const s5Shitsuke = s5ShitsukeEl ? (parseFloat(s5ShitsukeEl.value) || 0) : 0;
+      const s5Seiri = parseFloat(document.getElementById("s5Seiri")?.value) || 0;
+      const s5Seiton = parseFloat(document.getElementById("s5Seiton")?.value) || 0;
+      const s5Seiso = parseFloat(document.getElementById("s5Seiso")?.value) || 0;
+      const s5Shitsuke = parseFloat(document.getElementById("s5Shitsuke")?.value) || 0;
       const avg5S = Math.round((s5Seiri + s5Seiton + s5Seiso + s5Shitsuke) / 4);
 
       const wtReal5sEl = document.getElementById("wtReal5s");
       if (wtReal5sEl) wtReal5sEl.innerText = `${avg5S}%`;
 
-      const wThpEl = document.getElementById("pesoThp");
-      const wFastEl = document.getElementById("pesoFast");
-      const wCotEl = document.getElementById("pesoCot");
-      const wStrongEl = document.getElementById("pesoStrong");
-      const w5sEl = document.getElementById("peso5s");
-      const wIdleEl = document.getElementById("pesoIdle");
-
-      const wThp = wThpEl ? (parseFloat(wThpEl.value) || 0) : 0;
-      const wFast = wFastEl ? (parseFloat(wFastEl.value) || 0) : 0;
-      const wCot = wCotEl ? (parseFloat(wCotEl.value) || 0) : 0;
-      const wStrong = wStrongEl ? (parseFloat(wStrongEl.value) || 0) : 0;
-      const w5s = w5sEl ? (parseFloat(w5sEl.value) || 0) : 0;
-      const wIdle = wIdleEl ? (parseFloat(wIdleEl.value) || 0) : 0;
+      const wThp = parseFloat(document.getElementById("pesoThp")?.value) || 0;
+      const wFast = parseFloat(document.getElementById("pesoFast")?.value) || 0;
+      const wCot = parseFloat(document.getElementById("pesoCot")?.value) || 0;
+      const wStrong = parseFloat(document.getElementById("pesoStrong")?.value) || 0;
+      const w5s = parseFloat(document.getElementById("peso5s")?.value) || 0;
+      const wIdle = parseFloat(document.getElementById("pesoIdle")?.value) || 0;
 
       const sumWeights = wThp + wFast + wCot + wStrong + w5s + wIdle;
       const wBadge = document.getElementById("weightTotalBadge");
       if (wBadge) {
         wBadge.innerText = `Soma: ${sumWeights}%`;
-        if (sumWeights !== 100) {
-          wBadge.className = "badge-status badge-critico";
-        } else {
-          wBadge.className = "badge-status badge-excelente";
-        }
+        wBadge.className = "badge-status " + (sumWeights !== 100 ? "badge-critico" : "badge-excelente");
       }
 
       const evaluateImpact = (real, meta, isNegativeTarget = false) => {
         if (isNegativeTarget) {
           return real <= meta ? { res: "SLA OK", imp: "POSITIVO", style: "color: var(--color-excelente);" } 
-                               : { res: "Acima", imp: "NEGATIVO", style: "color: var(--color-critico);" };
-        } else {
-          return real >= meta ? { res: "Atingido", imp: "POSITIVO", style: "color: var(--color-excelente);" } 
                                : { res: "Desvio", imp: "NEGATIVO", style: "color: var(--color-critico);" };
         }
+        return real >= meta ? { res: "Atingido", imp: "POSITIVO", style: "color: var(--color-excelente);" } 
+                             : { res: "Desvio", imp: "NEGATIVO", style: "color: var(--color-critico);" };
       };
-
-      const impThp = evaluateImpact(realThpPerformance, 100);
-      const impFast = evaluateImpact(realFast, 85);
-      const impCot = evaluateImpact(avgRealCot, avgMetaCot);
-      const impStrong = evaluateImpact(realStrong, 85);
-      const imp5s = evaluateImpact(avg5S, 100);
-      const impIdle = evaluateImpact(avgRealIdle, avgMetaIdle, true);
 
       const updateRowVisuals = (idRes, idImp, data) => {
         const elRes = document.getElementById(idRes);
@@ -1979,14 +1921,13 @@
         }
       };
 
-      updateRowVisuals("wtResThp", "wtImpactThp", impThp);
-      updateRowVisuals("wtResFast", "wtImpactFast", impFast);
-      updateRowVisuals("wtResCot", "wtImpactCot", impCot);
-      updateRowVisuals("wtResStrong", "wtImpactStrong", impStrong);
-      updateRowVisuals("wtRes5s", "wtImpact5s", imp5s);
-      updateRowVisuals("wtResIdle", "wtImpactIdle", impIdle);
+      updateRowVisuals("wtResThp", "wtImpactThp", evaluateImpact(realThpPerformance, 100));
+      updateRowVisuals("wtResFast", "wtImpactFast", evaluateImpact(realFast, 85));
+      updateRowVisuals("wtResCot", "wtImpactCot", evaluateImpact(avgRealCot, avgMetaCot));
+      updateRowVisuals("wtResStrong", "wtImpactStrong", evaluateImpact(realStrong, 85));
+      updateRowVisuals("wtRes5s", "wtImpact5s", evaluateImpact(avg5S, 100));
+      updateRowVisuals("wtResIdle", "wtImpactIdle", evaluateImpact(avgRealIdle, avgMetaIdle, true));
 
-      // Score Engine calculations
       let calculatedScore = 0;
       calculatedScore += (realThpPerformance * (wThp / 100));
       calculatedScore += (realFast * (wFast / 100));
@@ -2009,278 +1950,70 @@
 
       const finalScore = Math.min(100, Math.max(0, Math.round(calculatedScore)));
       
-      const resData = {
+      return {
         score: finalScore,
         avg5S: avg5S,
         avgRealIdle: avgRealIdle,
         avgRealCot: avgRealCot,
-        inboundPerformance: pInboundMeta > 0 ? Math.round((pInboundReal / pInboundMeta) * 100) : 100,
-        outboundPerformance: pOutboundMeta > 0 ? Math.round((pOutboundReal / pOutboundMeta) * 100) : 100
+        inboundPerformance: pInboundMeta > 0 ? Math.round((pInboundReal / pInboundMeta) * 100) : 0,
+        outboundPerformance: pOutboundMeta > 0 ? Math.round((pOutboundReal / pOutboundMeta) * 100) : 0
       };
-
-      updateDashboardDataLive(resData, selectedShift, template);
-      return resData;
-    }
-
-    // High Density Command Center Live Synchronization without page reload
-    function updateDashboardDataLive(resData, shiftCode, template) {
-      const score = resData.score;
-      const classification = score >= 95 ? "Elite" : (score >= 90 ? "Excelente" : (score >= 80 ? "OK" : "Atenção"));
-      updateGauge(score, classification);
-
-      const dKpiInboundPct = document.getElementById("dashKpiInboundPct");
-      const dKpiInboundMeta = document.getElementById("dashKpiInboundMeta");
-      const dKpiInboundReal = document.getElementById("dashKpiInboundReal");
-      const inRealEl = document.getElementById("realInboundTHP");
-      const inMetaEl = document.getElementById("metaInboundTHP");
-      const inReal = inRealEl ? (parseFloat(inRealEl.value) || 0) : 0;
-      const inMeta = inMetaEl ? (parseFloat(inMetaEl.value) || 0) : 0;
-
-      if (dKpiInboundPct) dKpiInboundPct.innerText = `${resData.inboundPerformance}%`;
-      if (dKpiInboundMeta) dKpiInboundMeta.innerText = inMeta;
-      if (dKpiInboundReal) dKpiInboundReal.innerText = inReal;
-      
-      const inBadge = document.getElementById("inboundBadgeStatus");
-      if (inBadge) {
-        inBadge.innerText = resData.inboundPerformance >= 100 ? "SLA OK" : "DESVIO";
-        inBadge.className = "badge-status " + (resData.inboundPerformance >= 100 ? "badge-excelente" : "badge-critico");
-      }
-
-      const dKpiOutboundPct = document.getElementById("dashKpiOutboundPct");
-      const dKpiOutboundMeta = document.getElementById("dashKpiOutboundMeta");
-      const dKpiOutboundReal = document.getElementById("dashKpiOutboundReal");
-      const outRealEl = document.getElementById("realOutboundTHP");
-      const outMetaEl = document.getElementById("metaOutboundTHP");
-      const outReal = outRealEl ? (parseFloat(outRealEl.value) || 0) : 0;
-      const outMeta = outMetaEl ? (parseFloat(outMetaEl.value) || 0) : 0;
-
-      if (dKpiOutboundPct) dKpiOutboundPct.innerText = `${resData.outboundPerformance}%`;
-      if (dKpiOutboundMeta) dKpiOutboundMeta.innerText = outMeta;
-      if (dKpiOutboundReal) dKpiOutboundReal.innerText = outReal;
-
-      const outBadge = document.getElementById("outboundBadgeStatus");
-      if (outBadge) {
-        outBadge.innerText = resData.outboundPerformance >= 100 ? "SLA OK" : "DESVIO";
-        outBadge.className = "badge-status " + (resData.outboundPerformance >= 100 ? "badge-excelente" : "badge-critico");
-      }
-
-      const realFastEl = document.getElementById("realFastStart");
-      const realFast = realFastEl ? (parseFloat(realFastEl.value) || 0) : 0;
-      const dKpiFast = document.getElementById("dashKpiFast");
-      if (dKpiFast) dKpiFast.innerText = `${realFast}%`;
-
-      const fastBadge = document.getElementById("fastBadgeStatus");
-      if (fastBadge) {
-        fastBadge.innerText = realFast >= 85 ? "SLA OK" : "DESVIO";
-        fastBadge.className = "badge-status " + (realFast >= 85 ? "badge-excelente" : "badge-critico");
-      }
-
-      const realStrongEl = document.getElementById("realStrongFinish");
-      const realStrong = realStrongEl ? (parseFloat(realStrongEl.value) || 0) : 0;
-      const dKpiStrong = document.getElementById("dashKpiStrong");
-      if (dKpiStrong) dKpiStrong.innerText = `${realStrong}%`;
-
-      const strongBadge = document.getElementById("strongBadgeStatus");
-      if (strongBadge) {
-        strongBadge.innerText = realStrong >= 85 ? "SLA OK" : "DESVIO";
-        strongBadge.className = "badge-status " + (realStrong >= 85 ? "badge-excelente" : "badge-critico");
-      }
-
-      renderDetailedFlowPanelsLive(resData, realFast, realStrong);
-    }
-
-    // Detailed Flow Panels Renderer Engine
-    function renderDetailedFlowPanelsLive(resData, realFast, realStrong) {
-      const inboundBody = document.getElementById("inboundFlowTableBody");
-      const avgIdle = resData.avgRealIdle;
-      
-      if (inboundBody) {
-        inboundBody.innerHTML = `
-          <tr>
-            <td>Idle Indicator</td>
-            <td style="text-align: center;">5.0%</td>
-            <td style="text-align: center;">${avgIdle.toFixed(1)}%</td>
-            <td style="text-align: center;">${(avgIdle - 5.0).toFixed(1)}%</td>
-            <td style="text-align: right;"><span class="badge-status ${avgIdle <= 5.0 ? 'badge-excelente' : 'badge-critico'}">${avgIdle <= 5.0 ? 'SLA OK' : 'DESVIO'}</span></td>
-          </tr>
-          <tr>
-            <td>Fast Start</td>
-            <td style="text-align: center;">85%</td>
-            <td style="text-align: center;">${realFast}%</td>
-            <td style="text-align: center;">${realFast - 85}%</td>
-            <td style="text-align: right;"><span class="badge-status ${realFast >= 85 ? 'badge-excelente' : 'badge-critico'}">${realFast >= 85 ? 'SLA OK' : 'DESVIO'}</span></td>
-          </tr>
-          <tr>
-            <td>Strong Finish</td>
-            <td style="text-align: center;">85%</td>
-            <td style="text-align: center;">${realStrong}%</td>
-            <td style="text-align: center;">${realStrong - 85}%</td>
-            <td style="text-align: right;"><span class="badge-status ${realStrong >= 85 ? 'badge-excelente' : 'badge-critico'}">${realStrong >= 85 ? 'SLA OK' : 'DESVIO'}</span></td>
-          </tr>
-        `;
-      }
-
-      // Footer Inbound Calculations
-      const inUtil = Math.max(0, 100 - avgIdle);
-      const inGapStart = 85 - realFast;
-      
-      const inRealVolEl = document.getElementById("realInboundTHP");
-      const inMetaVolEl = document.getElementById("metaInboundTHP");
-      const inRealVol = inRealVolEl ? (parseFloat(inRealVolEl.value) || 0) : 0;
-      const inMetaVol = inMetaVolEl ? (parseFloat(inMetaVolEl.value) || 1) : 1;
-      const inGapReal = Math.round(((inRealVol - inMetaVol) / inMetaVol) * 100);
-
-      const elInboundUtil = document.getElementById("inboundUtilVal");
-      const elInboundEf = document.getElementById("inboundEfVal");
-      const elInboundGapStart = document.getElementById("inboundGapStartVal");
-      const elInboundGapReal = document.getElementById("inboundGapRealVal");
-
-      if (elInboundUtil) elInboundUtil.innerText = `${inUtil.toFixed(1)}%`;
-      if (elInboundEf) elInboundEf.innerText = `${resData.inboundPerformance}%`;
-      if (elInboundGapStart) elInboundGapStart.innerText = `${inGapStart > 0 ? '+' : ''}${inGapStart}%`;
-      if (elInboundGapReal) elInboundGapReal.innerText = `${inGapReal >= 0 ? '+' : ''}${inGapReal}%`;
-
-      const outboundBody = document.getElementById("outboundFlowTableBody");
-      const avgCot = resData.avgRealCot;
-      
-      if (outboundBody) {
-        outboundBody.innerHTML = `
-          <tr>
-            <td>COT Performance</td>
-            <td style="text-align: center;">100%</td>
-            <td style="text-align: center;">${avgCot}%</td>
-            <td style="text-align: center;">${avgCot - 100}%</td>
-            <td style="text-align: right;"><span class="badge-status ${avgCot >= 100 ? 'badge-excelente' : 'badge-critico'}">${avgCot >= 100 ? 'SLA OK' : 'DESVIO'}</span></td>
-          </tr>
-          <tr>
-            <td>Idle Indicator</td>
-            <td style="text-align: center;">8.0%</td>
-            <td style="text-align: center;">${avgIdle.toFixed(1)}%</td>
-            <td style="text-align: center;">${(avgIdle - 8.0).toFixed(1)}%</td>
-            <td style="text-align: right;"><span class="badge-status ${avgIdle <= 8.0 ? 'badge-excelente' : 'badge-critico'}">${avgIdle <= 8.0 ? 'SLA OK' : 'DESVIO'}</span></td>
-          </tr>
-          <tr>
-            <td>Fast Start</td>
-            <td style="text-align: center;">85%</td>
-            <td style="text-align: center;">${realFast}%</td>
-            <td style="text-align: center;">${realFast - 85}%</td>
-            <td style="text-align: right;"><span class="badge-status ${realFast >= 85 ? 'badge-excelente' : 'badge-critico'}">${realFast >= 85 ? 'SLA OK' : 'DESVIO'}</span></td>
-          </tr>
-          <tr>
-            <td>Strong Finish</td>
-            <td style="text-align: center;">85%</td>
-            <td style="text-align: center;">${realStrong}%</td>
-            <td style="text-align: center;">${realStrong - 85}%</td>
-            <td style="text-align: right;"><span class="badge-status ${realStrong >= 85 ? 'badge-excelente' : 'badge-critico'}">${realStrong >= 85 ? 'SLA OK' : 'DESVIO'}</span></td>
-          </tr>
-        `;
-      }
-
-      // Footer Outbound Calculations
-      const outUtil = Math.max(0, 100 - avgIdle);
-      const outGapStart = 85 - realFast;
-      
-      const outRealVolEl = document.getElementById("realOutboundTHP");
-      const outMetaVolEl = document.getElementById("metaOutboundTHP");
-      const outRealVol = outRealVolEl ? (parseFloat(outRealVolEl.value) || 0) : 0;
-      const outMetaVol = outMetaVolEl ? (parseFloat(outMetaVolEl.value) || 1) : 1;
-      const outGapReal = Math.round(((outRealVol - outMetaVol) / outMetaVol) * 100);
-
-      const elOutboundUtil = document.getElementById("outboundUtilVal");
-      const elOutboundEf = document.getElementById("outboundEfVal");
-      const elOutboundGapStart = document.getElementById("outboundGapStartVal");
-      const elOutboundGapReal = document.getElementById("outboundGapRealVal");
-
-      if (elOutboundUtil) elOutboundUtil.innerText = `${outUtil.toFixed(1)}%`;
-      if (elOutboundEf) elOutboundEf.innerText = `${resData.outboundPerformance}%`;
-      if (elOutboundGapStart) elOutboundGapStart.innerText = `${outGapStart > 0 ? '+' : ''}${outGapStart}%`;
-      if (elOutboundGapReal) elOutboundGapReal.innerText = `${outGapReal >= 0 ? '+' : ''}${outGapReal}%`;
     }
 
     function handleFormSubmit(event) {
       event.preventDefault();
 
-      const psNameEl = document.getElementById("regPSName");
-      const psName = psNameEl ? psNameEl.value.trim() : "";
+      const psName = document.getElementById("regPSName")?.value.trim() || "";
       if (!psName) {
         showToast("Identificação do PS responsável é obrigatória.", "error");
         return;
       }
 
-      const regShiftEl = document.getElementById("regShift");
-      const selectedShift = regShiftEl ? regShiftEl.value : "T1";
+      const selectedShift = document.getElementById("regShift")?.value || "T1";
       const template = turnos[selectedShift];
       const len = template.horarios.length;
-
       const live = calculateLiveScores();
 
-      const matrixThpReal = [];
-      const matrixIdleReal = [];
-      const matrixCotReal = [];
-
+      const matrixThpReal = [], matrixIdleReal = [], matrixCotReal = [];
       for (let i = 0; i < len; i++) {
-        const thpEl = document.getElementById(`thp_real_${i}`);
-        const idleEl = document.getElementById(`idle_real_${i}`);
-        const cotEl = document.getElementById(`cot_real_${i}`);
-
-        matrixThpReal.push(thpEl ? (parseFloat(thpEl.value) || 0) : 0);
-        matrixIdleReal.push(idleEl ? (parseFloat(idleEl.value) || 0) : 0);
-        matrixCotReal.push(cotEl ? (parseFloat(cotEl.value) || 0) : 0);
+        matrixThpReal.push(parseFloat(document.getElementById(`thp_real_${i}`)?.value) || 0);
+        matrixIdleReal.push(parseFloat(document.getElementById(`idle_real_${i}`)?.value) || 0);
+        matrixCotReal.push(parseFloat(document.getElementById(`cot_real_${i}`)?.value) || 0);
       }
 
-      const regDateEl = document.getElementById("regDate");
-      const regAreaEl = document.getElementById("regArea");
-      const metaInboundEl = document.getElementById("metaInboundTHP");
-      const realInboundEl = document.getElementById("realInboundTHP");
-      const metaOutboundEl = document.getElementById("metaOutboundTHP");
-      const realOutboundEl = document.getElementById("realOutboundTHP");
-      const realFastStartEl = document.getElementById("realFastStart");
-      const realStrongFinishEl = document.getElementById("realStrongFinish");
-      const regVolPlanEl = document.getElementById("regVolPlan");
-      const regVolRealEl = document.getElementById("regVolReal");
-      const pesoThpEl = document.getElementById("pesoThp");
-      const pesoFastEl = document.getElementById("pesoFast");
-      const pesoCotEl = document.getElementById("pesoCot");
-      const pesoStrongEl = document.getElementById("pesoStrong");
-      const peso5sEl = document.getElementById("peso5s");
-      const pesoIdleEl = document.getElementById("pesoIdle");
-      const s5SeiriEl = document.getElementById("s5Seiri");
-      const s5SeitonEl = document.getElementById("s5Seiton");
-      const s5SeisoEl = document.getElementById("s5Seiso");
-      const s5ShitsukeEl = document.getElementById("s5Shitsuke");
-      const regNotesEl = document.getElementById("regGeneralNotes");
+      const getNumVal = id => parseFloat(document.getElementById(id)?.value) || 0;
 
       const newRecord = {
         id: Date.now().toString(),
-        date: regDateEl ? regDateEl.value : new Date().toISOString().split('T')[0],
+        date: document.getElementById("regDate")?.value || new Date().toISOString().split('T')[0],
         psName: psName,
         shift: selectedShift,
-        area: regAreaEl ? regAreaEl.value : "",
-        metaInbound: metaInboundEl ? (parseFloat(metaInboundEl.value) || 0) : 0,
-        realInbound: realInboundEl ? (parseFloat(realInboundEl.value) || 0) : 0,
-        metaOutbound: metaOutboundEl ? (parseFloat(metaOutboundEl.value) || 0) : 0,
-        realOutbound: realOutboundEl ? (parseFloat(realOutboundEl.value) || 0) : 0,
-        realFastStart: realFastStartEl ? (parseFloat(realFastStartEl.value) || 0) : 0,
-        realStrongFinish: realStrongFinishEl ? (parseFloat(realStrongFinishEl.value) || 0) : 0,
-        volPlan: regVolPlanEl ? (parseFloat(regVolPlanEl.value) || 0) : 0,
-        volReal: regVolRealEl ? (parseFloat(regVolRealEl.value) || 0) : 0,
+        area: document.getElementById("regArea")?.value || "",
+        metaInbound: getNumVal("metaInboundTHP"),
+        realInbound: getNumVal("realInboundTHP"),
+        metaOutbound: getNumVal("metaOutboundTHP"),
+        realOutbound: getNumVal("realOutboundTHP"),
+        realFastStart: getNumVal("realFastStart"),
+        realStrongFinish: getNumVal("realStrongFinish"),
+        volPlan: getNumVal("regVolPlan"),
+        volReal: getNumVal("regVolReal"),
         weights: {
-          thp: pesoThpEl ? (parseFloat(pesoThpEl.value) || 0) : 0,
-          fast: pesoFastEl ? (parseFloat(pesoFastEl.value) || 0) : 0,
-          cot: pesoCotEl ? (parseFloat(pesoCotEl.value) || 0) : 0,
-          strong: pesoStrongEl ? (parseFloat(pesoStrongEl.value) || 0) : 0,
-          s5: peso5sEl ? (parseFloat(peso5sEl.value) || 0) : 0,
-          idle: pesoIdleEl ? (parseFloat(pesoIdleEl.value) || 0) : 0
+          thp: getNumVal("pesoThp"),
+          fast: getNumVal("pesoFast"),
+          cot: getNumVal("pesoCot"),
+          strong: getNumVal("pesoStrong"),
+          s5: getNumVal("peso5s"),
+          idle: getNumVal("pesoIdle")
         },
         realIdle: Math.round(live.avgRealIdle),
         realCot: Math.round(live.avgRealCot),
         s5: {
-          seiri: s5SeiriEl ? (parseFloat(s5SeiriEl.value) || 0) : 0,
-          seiton: s5SeitonEl ? (parseFloat(s5SeitonEl.value) || 0) : 0,
-          seiso: s5SeisoEl ? (parseFloat(s5SeisoEl.value) || 0) : 0,
-          shitsuke: s5ShitsukeEl ? (parseFloat(s5ShitsukeEl.value) || 0) : 0
+          seiri: getNumVal("s5Seiri"),
+          seiton: getNumVal("s5Seiton"),
+          seiso: getNumVal("s5Seiso"),
+          shitsuke: getNumVal("s5Shitsuke")
         },
-        notes: regNotesEl ? regNotesEl.value : "",
+        notes: document.getElementById("regGeneralNotes")?.value || "",
         score: live.score,
         classification: live.score >= 95 ? "Elite" : (live.score >= 90 ? "Excelente" : (live.score >= 80 ? "OK" : "Atenção")),
         hourlyTHPMeta: template.matrixThpMeta,
@@ -2295,15 +2028,8 @@
       records.push(newRecord);
       localStorage.setItem("kronos_records", JSON.stringify(records));
 
-      showToast("Gravando dados...");
-      
-      if (configApiUrl) {
-        sendToGoogleSheets(newRecord);
-      } else {
-        showToast("Dados salvos localmente. Configure o WebApp para salvar em nuvem.", "warning");
-        loadActiveData();
-      }
-
+      showToast("Gravando e Sincronizando dados...");
+      sendToGoogleSheets(newRecord);
       switchView("dashboard");
     }
 
@@ -2317,7 +2043,7 @@
 
     function switchView(viewId) {
       document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
-      const activeNav = Array.from(document.querySelectorAll(".nav-menu .nav-item")).find(i => i.outerHTML.includes(viewId));
+      const activeNav = Array.from(document.querySelectorAll(".nav-menu .nav-item")).find(i => i.outerHTML.includes(`switchView('${viewId}')`));
       if (activeNav) activeNav.classList.add("active");
 
       document.querySelectorAll(".view-panel").forEach(panel => panel.classList.remove("active"));
@@ -2341,61 +2067,50 @@
         if (vHeaderSub) vHeaderSub.innerText = titles[viewId][1];
       }
 
-      if (viewId === 'dashboard') {
-        loadActiveData();
-      } else if (viewId === 'tendencias') {
-        renderTrendCharts();
-      } else if (viewId === 'ranking') {
-        renderRankings();
-      } else if (viewId === 'warroom') {
-        renderWarRoom();
-      } else if (viewId === 'historico') {
-        renderHistory();
-      }
+      if (viewId === 'dashboard') loadActiveData();
+      else if (viewId === 'tendencias') renderTrendCharts();
+      else if (viewId === 'ranking') renderRankings();
+      else if (viewId === 'warroom') renderWarRoom();
+      else if (viewId === 'historico') renderHistory();
     }
 
     function loadActiveData() {
       const headerFilterEl = document.getElementById("headerFilterDate");
       const filterDate = headerFilterEl ? headerFilterEl.value : "";
-      let active = records.find(r => r.date === filterDate);
       
+      let active = records.find(r => r.date === filterDate);
       if (!active && records.length > 0) {
-        active = records[records.length - 1]; 
+        active = records[records.length - 1];
+        if (headerFilterEl && active) headerFilterEl.value = active.date;
       }
 
       const kpiTotal = document.getElementById("dashKpiTotal");
       if (kpiTotal) kpiTotal.innerText = records.length;
 
       if (active) {
-        const regDateEl = document.getElementById("regDate");
-        const regShiftEl = document.getElementById("regShift");
-        const regPSNameEl = document.getElementById("regPSName");
-        const regVolPlanEl = document.getElementById("regVolPlan");
-        const regVolRealEl = document.getElementById("regVolReal");
-        const metaInboundTHPEl = document.getElementById("metaInboundTHP");
-        const realInboundTHPEl = document.getElementById("realInboundTHP");
-        const metaOutboundTHPEl = document.getElementById("metaOutboundTHP");
-        const realOutboundTHPEl = document.getElementById("realOutboundTHP");
-        const realFastStartEl = document.getElementById("realFastStart");
-        const realStrongFinishEl = document.getElementById("realStrongFinish");
-        const regNotesEl = document.getElementById("regGeneralNotes");
+        const elementsToUpdate = {
+          regDate: active.date,
+          regShift: active.shift,
+          regPSName: active.psName || "",
+          regVolPlan: active.volPlan !== undefined ? active.volPlan : "",
+          regVolReal: active.volReal !== undefined ? active.volReal : "",
+          metaInboundTHP: active.metaInbound !== undefined ? active.metaInbound : "",
+          realInboundTHP: active.realInbound !== undefined ? active.realInbound : "",
+          metaOutboundTHP: active.metaOutbound !== undefined ? active.metaOutbound : "",
+          realOutboundTHP: active.realOutbound !== undefined ? active.realOutbound : "",
+          realFastStart: active.realFastStart !== undefined ? active.realFastStart : "",
+          realStrongFinish: active.realStrongFinish !== undefined ? active.realStrongFinish : "",
+          regGeneralNotes: active.notes || ""
+        };
 
-        if (regDateEl) regDateEl.value = active.date;
-        if (regShiftEl) regShiftEl.value = active.shift;
-        if (regPSNameEl) regPSNameEl.value = active.psName || "";
-        if (regVolPlanEl) regVolPlanEl.value = active.volPlan !== undefined ? active.volPlan : "";
-        if (regVolRealEl) regVolRealEl.value = active.volReal !== undefined ? active.volReal : "";
-        if (metaInboundTHPEl) metaInboundTHPEl.value = active.metaInbound !== undefined ? active.metaInbound : "";
-        if (realInboundTHPEl) realInboundTHPEl.value = active.realInbound !== undefined ? active.realInbound : "";
-        if (metaOutboundTHPEl) metaOutboundTHPEl.value = active.metaOutbound !== undefined ? active.metaOutbound : "";
-        if (realOutboundTHPEl) realOutboundTHPEl.value = active.realOutbound !== undefined ? active.realOutbound : "";
-        if (realFastStartEl) realFastStartEl.value = active.realFastStart !== undefined ? active.realFastStart : "";
-        if (realStrongFinishEl) realStrongFinishEl.value = active.realStrongFinish !== undefined ? active.realStrongFinish : "";
-        if (regNotesEl) regNotesEl.value = active.notes || "";
+        for (const [id, value] of Object.entries(elementsToUpdate)) {
+          const el = document.getElementById(id);
+          if (el) el.value = value;
+        }
 
         const template = turnos[active.shift];
         if (template && template.horarios) {
-          template.horarios.forEach((h, i) => {
+          template.horarios.forEach((_, i) => {
             const tReal = document.getElementById(`thp_real_${i}`);
             const iReal = document.getElementById(`idle_real_${i}`);
             const cReal = document.getElementById(`cot_real_${i}`);
@@ -2405,34 +2120,14 @@
           });
         }
 
-        calculateLiveScores();
+        const live = calculateLiveScores();
+        updateGauge(active.score, active.classification);
+        updateDashboardKPIs(active, live);
+        renderDetailedFlowPanelsLive(active, live);
         updateVolumeChart(active);
         renderOpTabs();
       } else {
-        updateGauge(0, "-");
-        const elInboundPct = document.getElementById("dashKpiInboundPct");
-        const elInboundMeta = document.getElementById("dashKpiInboundMeta");
-        const elInboundReal = document.getElementById("dashKpiInboundReal");
-        const elOutboundPct = document.getElementById("dashKpiOutboundPct");
-        const elOutboundMeta = document.getElementById("dashKpiOutboundMeta");
-        const elOutboundReal = document.getElementById("dashKpiOutboundReal");
-        const elFast = document.getElementById("dashKpiFast");
-        const elStrong = document.getElementById("dashKpiStrong");
-
-        if (elInboundPct) elInboundPct.innerText = "0%";
-        if (elInboundMeta) elInboundMeta.innerText = "0";
-        if (elInboundReal) elInboundReal.innerText = "0";
-        if (elOutboundPct) elOutboundPct.innerText = "0%";
-        if (elOutboundMeta) elOutboundMeta.innerText = "0";
-        if (elOutboundReal) elOutboundReal.innerText = "0";
-        if (elFast) elFast.innerText = "0%";
-        if (elStrong) elStrong.innerText = "0%";
-
-        const elInboundBody = document.getElementById("inboundFlowTableBody");
-        const elOutboundBody = document.getElementById("outboundFlowTableBody");
-
-        if (elInboundBody) elInboundBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Sem dados disponíveis</td></tr>`;
-        if (elOutboundBody) elOutboundBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Sem dados disponíveis</td></tr>`;
+        renderEmptyDashboardState();
       }
     }
 
@@ -2447,7 +2142,7 @@
 
       if (badge) {
         badge.className = "badge-status";
-        badge.innerText = classification;
+        badge.innerText = classification || "-";
 
         if (score >= 95) badge.classList.add("badge-elite");
         else if (score >= 90) badge.classList.add("badge-excelente");
@@ -2455,6 +2150,148 @@
         else if (score >= 50) badge.classList.add("badge-atencao");
         else badge.classList.add("badge-critico");
       }
+    }
+
+    function updateDashboardKPIs(active, live) {
+      const updateEl = (id, text) => { const el = document.getElementById(id); if (el) el.innerText = text; };
+
+      updateEl("dashKpiInboundPct", `${live.inboundPerformance}%`);
+      updateEl("dashKpiInboundMeta", active.metaInbound);
+      updateEl("dashKpiInboundReal", active.realInbound);
+
+      const inBadge = document.getElementById("inboundBadgeStatus");
+      if (inBadge) {
+        inBadge.innerText = live.inboundPerformance >= 100 ? "SLA OK" : "DESVIO";
+        inBadge.className = "badge-status " + (live.inboundPerformance >= 100 ? "badge-excelente" : "badge-critico");
+      }
+
+      updateEl("dashKpiOutboundPct", `${live.outboundPerformance}%`);
+      updateEl("dashKpiOutboundMeta", active.metaOutbound);
+      updateEl("dashKpiOutboundReal", active.realOutbound);
+
+      const outBadge = document.getElementById("outboundBadgeStatus");
+      if (outBadge) {
+        outBadge.innerText = live.outboundPerformance >= 100 ? "SLA OK" : "DESVIO";
+        outBadge.className = "badge-status " + (live.outboundPerformance >= 100 ? "badge-excelente" : "badge-critico");
+      }
+
+      updateEl("dashKpiFast", `${active.realFastStart}%`);
+      const fastBadge = document.getElementById("fastBadgeStatus");
+      if (fastBadge) {
+        fastBadge.innerText = active.realFastStart >= 85 ? "SLA OK" : "DESVIO";
+        fastBadge.className = "badge-status " + (active.realFastStart >= 85 ? "badge-excelente" : "badge-critico");
+      }
+
+      updateEl("dashKpiStrong", `${active.realStrongFinish}%`);
+      const strongBadge = document.getElementById("strongBadgeStatus");
+      if (strongBadge) {
+        strongBadge.innerText = active.realStrongFinish >= 85 ? "SLA OK" : "DESVIO";
+        strongBadge.className = "badge-status " + (active.realStrongFinish >= 85 ? "badge-excelente" : "badge-critico");
+      }
+    }
+
+    function renderDetailedFlowPanelsLive(active, live) {
+      const inBody = document.getElementById("inboundFlowTableBody");
+      const outBody = document.getElementById("outboundFlowTableBody");
+
+      if (inBody) {
+        inBody.innerHTML = `
+          <tr>
+            <td>Idle Indicator</td>
+            <td style="text-align: center;">5.0%</td>
+            <td style="text-align: center;">${live.avgRealIdle.toFixed(1)}%</td>
+            <td style="text-align: center;">${(live.avgRealIdle - 5.0).toFixed(1)}%</td>
+            <td style="text-align: right;"><span class="badge-status ${live.avgRealIdle <= 5.0 ? 'badge-excelente' : 'badge-critico'}">${live.avgRealIdle <= 5.0 ? 'SLA OK' : 'DESVIO'}</span></td>
+          </tr>
+          <tr>
+            <td>Fast Start</td>
+            <td style="text-align: center;">85%</td>
+            <td style="text-align: center;">${active.realFastStart}%</td>
+            <td style="text-align: center;">${active.realFastStart - 85}%</td>
+            <td style="text-align: right;"><span class="badge-status ${active.realFastStart >= 85 ? 'badge-excelente' : 'badge-critico'}">${active.realFastStart >= 85 ? 'SLA OK' : 'DESVIO'}</span></td>
+          </tr>
+          <tr>
+            <td>Strong Finish</td>
+            <td style="text-align: center;">85%</td>
+            <td style="text-align: center;">${active.realStrongFinish}%</td>
+            <td style="text-align: center;">${active.realStrongFinish - 85}%</td>
+            <td style="text-align: right;"><span class="badge-status ${active.realStrongFinish >= 85 ? 'badge-excelente' : 'badge-critico'}">${active.realStrongFinish >= 85 ? 'SLA OK' : 'DESVIO'}</span></td>
+          </tr>
+        `;
+      }
+
+      const inUtil = Math.max(0, 100 - live.avgRealIdle);
+      const inGapStart = 85 - active.realFastStart;
+      const inGapReal = active.metaInbound > 0 ? Math.round(((active.realInbound - active.metaInbound) / active.metaInbound) * 100) : 0;
+
+      const setEl = (id, text) => { const el = document.getElementById(id); if (el) el.innerText = text; };
+
+      setEl("inboundUtilVal", `${inUtil.toFixed(1)}%`);
+      setEl("inboundEfVal", `${live.inboundPerformance}%`);
+      setEl("inboundGapStartVal", `${inGapStart > 0 ? '+' : ''}${inGapStart}%`);
+      setEl("inboundGapRealVal", `${inGapReal >= 0 ? '+' : ''}${inGapReal}%`);
+
+      if (outBody) {
+        outBody.innerHTML = `
+          <tr>
+            <td>COT Performance</td>
+            <td style="text-align: center;">100%</td>
+            <td style="text-align: center;">${live.avgRealCot}%</td>
+            <td style="text-align: center;">${live.avgRealCot - 100}%</td>
+            <td style="text-align: right;"><span class="badge-status ${live.avgRealCot >= 100 ? 'badge-excelente' : 'badge-critico'}">${live.avgRealCot >= 100 ? 'SLA OK' : 'DESVIO'}</span></td>
+          </tr>
+          <tr>
+            <td>Idle Indicator</td>
+            <td style="text-align: center;">8.0%</td>
+            <td style="text-align: center;">${live.avgRealIdle.toFixed(1)}%</td>
+            <td style="text-align: center;">${(live.avgRealIdle - 8.0).toFixed(1)}%</td>
+            <td style="text-align: right;"><span class="badge-status ${live.avgRealIdle <= 8.0 ? 'badge-excelente' : 'badge-critico'}">${live.avgRealIdle <= 8.0 ? 'SLA OK' : 'DESVIO'}</span></td>
+          </tr>
+          <tr>
+            <td>Fast Start</td>
+            <td style="text-align: center;">85%</td>
+            <td style="text-align: center;">${active.realFastStart}%</td>
+            <td style="text-align: center;">${active.realFastStart - 85}%</td>
+            <td style="text-align: right;"><span class="badge-status ${active.realFastStart >= 85 ? 'badge-excelente' : 'badge-critico'}">${active.realFastStart >= 85 ? 'SLA OK' : 'DESVIO'}</span></td>
+          </tr>
+        `;
+      }
+
+      const outUtil = Math.max(0, 100 - live.avgRealIdle);
+      const outGapStart = 85 - active.realFastStart;
+      const outGapReal = active.metaOutbound > 0 ? Math.round(((active.realOutbound - active.metaOutbound) / active.metaOutbound) * 100) : 0;
+
+      setEl("outboundUtilVal", `${outUtil.toFixed(1)}%`);
+      setEl("outboundEfVal", `${live.outboundPerformance}%`);
+      setEl("outboundGapStartVal", `${outGapStart > 0 ? '+' : ''}${outGapStart}%`);
+      setEl("outboundGapRealVal", `${outGapReal >= 0 ? '+' : ''}${outGapReal}%`);
+    }
+
+    function renderEmptyDashboardState() {
+      updateGauge(0, "-");
+      const emptyKpiIds = [
+        "dashKpiInboundPct", "dashKpiInboundMeta", "dashKpiInboundReal",
+        "dashKpiOutboundPct", "dashKpiOutboundMeta", "dashKpiOutboundReal",
+        "dashKpiFast", "dashKpiStrong"
+      ];
+      emptyKpiIds.forEach(id => { const el = document.getElementById(id); if (el) el.innerText = "-"; });
+
+      const inBody = document.getElementById("inboundFlowTableBody");
+      const outBody = document.getElementById("outboundFlowTableBody");
+      if (inBody) inBody.innerHTML = `<tr><td colspan="5" class="empty-state-message">Sem dados para a data ativa</td></tr>`;
+      if (outBody) outBody.innerHTML = `<tr><td colspan="5" class="empty-state-message">Sem dados para a data ativa</td></tr>`;
+
+      const flowFooterIds = [
+        "inboundUtilVal", "inboundEfVal", "inboundGapStartVal", "inboundGapRealVal",
+        "outboundUtilVal", "outboundEfVal", "outboundGapStartVal", "outboundGapRealVal"
+      ];
+      flowFooterIds.forEach(id => { const el = document.getElementById(id); if (el) el.innerText = "-"; });
+
+      if (volumeChart) {
+        volumeChart.destroy();
+        volumeChart = null;
+      }
+      renderOpTabs();
     }
 
     function updateVolumeChart(active) {
@@ -2513,10 +2350,10 @@
     }
 
     function renderOpTabs() {
-      const fShift = document.getElementById("tabFilterShift").value;
-      const fPS = document.getElementById("tabFilterPS").value.toLowerCase();
-      const fDate = document.getElementById("tabFilterDate").value;
-      const fArea = document.getElementById("tabFilterArea").value.toLowerCase();
+      const fShift = document.getElementById("tabFilterShift")?.value;
+      const fPS = document.getElementById("tabFilterPS")?.value.toLowerCase();
+      const fDate = document.getElementById("tabFilterDate")?.value;
+      const fArea = document.getElementById("tabFilterArea")?.value.toLowerCase();
 
       const filtered = records.filter(r => {
         if (fShift && r.shift !== fShift) return false;
@@ -2535,15 +2372,15 @@
       outBody.innerHTML = "";
 
       if (filtered.length === 0) {
-        const trEmpty = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Nenhum dado condizente com os filtros atuais.</td></tr>`;
-        inBody.innerHTML = trEmpty;
-        outBody.innerHTML = trEmpty;
+        const fallback = `<tr><td colspan="7" class="empty-state-message">Nenhum dado condizente com os filtros atuais.</td></tr>`;
+        inBody.innerHTML = fallback;
+        outBody.innerHTML = fallback;
         return;
       }
 
       filtered.forEach(r => {
-        const pctIn = r.metaInbound > 0 ? Math.round((r.realInbound / r.metaInbound) * 100) : 100;
-        const trIn = `
+        const pctIn = r.metaInbound > 0 ? Math.round((r.realInbound / r.metaInbound) * 100) : 0;
+        inBody.innerHTML += `
           <tr>
             <td>${r.date}</td>
             <td><strong>${r.psName || ""}</strong></td>
@@ -2554,10 +2391,9 @@
             <td><span class="badge-status ${pctIn >= 100 ? 'badge-excelente' : 'badge-critico'}">${pctIn}%</span></td>
           </tr>
         `;
-        inBody.innerHTML += trIn;
 
-        const pctOut = r.metaOutbound > 0 ? Math.round((r.realOutbound / r.metaOutbound) * 100) : 100;
-        const trOut = `
+        const pctOut = r.metaOutbound > 0 ? Math.round((r.realOutbound / r.metaOutbound) * 100) : 0;
+        outBody.innerHTML += `
           <tr>
             <td>${r.date}</td>
             <td><strong>${r.psName || ""}</strong></td>
@@ -2568,7 +2404,6 @@
             <td><span class="badge-status ${pctOut >= 100 ? 'badge-excelente' : 'badge-critico'}">${pctOut}%</span></td>
           </tr>
         `;
-        outBody.innerHTML += trOut;
       });
     }
 
@@ -2578,7 +2413,7 @@
       tbody.innerHTML = "";
 
       if (records.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color: var(--text-muted);">Nenhum registro armazenado. Sincronize com a Planilha.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="empty-state-message">Nenhum registro armazenado no banco corporativo.</td></tr>`;
         return;
       }
 
@@ -2591,8 +2426,8 @@
           <td><strong>${r.shift}</strong></td>
           <td>${r.psName || ""}</td>
           <td>${r.area}</td>
-          <td>${r.realInbound !== undefined ? r.realInbound : 0} / ${r.metaInbound !== undefined ? r.metaInbound : 0}</td>
-          <td>${r.realOutbound !== undefined ? r.realOutbound : 0} / ${r.metaOutbound !== undefined ? r.metaOutbound : 0}</td>
+          <td>${r.realInbound} / ${r.metaInbound} THP</td>
+          <td>${r.realOutbound} / ${r.metaOutbound} THP</td>
           <td><span class="badge-status ${r.score >= 95 ? 'badge-elite' : (r.score >= 80 ? 'badge-ok' : 'badge-critico')}">${r.score}% SLA</span></td>
           <td style="text-align: right; display: flex; gap: 6px; justify-content: flex-end;">
             <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.7rem;" onclick="loadRecordToForm('${r.id}')">Carregar</button>
@@ -2607,34 +2442,35 @@
       const record = records.find(r => r.id === id);
       if (!record) return;
 
-      const regDateEl = document.getElementById("regDate");
-      const regPSNameEl = document.getElementById("regPSName");
-      const regShiftEl = document.getElementById("regShift");
-      const regVolPlanEl = document.getElementById("regVolPlan");
-      const regVolRealEl = document.getElementById("regVolReal");
-      const metaInboundTHPEl = document.getElementById("metaInboundTHP");
-      const realInboundTHPEl = document.getElementById("realInboundTHP");
-      const metaOutboundTHPEl = document.getElementById("metaOutboundTHP");
-      const realOutboundTHPEl = document.getElementById("realOutboundTHP");
-      const realFastStartEl = document.getElementById("realFastStart");
-      const realStrongFinishEl = document.getElementById("realStrongFinish");
-      const s5SeiriEl = document.getElementById("s5Seiri");
-      const s5SeitonEl = document.getElementById("s5Seiton");
-      const s5SeisoEl = document.getElementById("s5Seiso");
-      const s5ShitsukeEl = document.getElementById("s5Shitsuke");
-      const regNotesEl = document.getElementById("regGeneralNotes");
+      const elementsToUpdate = {
+        regDate: record.date,
+        regPSName: record.psName || "",
+        regShift: record.shift,
+        regVolPlan: record.volPlan !== undefined ? record.volPlan : "",
+        regVolReal: record.volReal !== undefined ? record.volReal : "",
+        metaInboundTHP: record.metaInbound !== undefined ? record.metaInbound : "",
+        realInboundTHP: record.realInbound !== undefined ? record.realInbound : "",
+        metaOutboundTHP: record.metaOutbound !== undefined ? record.metaOutbound : "",
+        realOutboundTHP: record.realOutbound !== undefined ? record.realOutbound : "",
+        realFastStart: record.realFastStart !== undefined ? record.realFastStart : "",
+        realStrongFinish: record.realStrongFinish !== undefined ? record.realStrongFinish : "",
+        s5Seiri: record.s5 ? record.s5.seiri : "",
+        s5Seiton: record.s5 ? record.s5.seiton : "",
+        s5Seiso: record.s5 ? record.s5.seiso : "",
+        s5Shitsuke: record.s5 ? record.s5.shitsuke : "",
+        regGeneralNotes: record.notes || ""
+      };
 
-      if (regDateEl) regDateEl.value = record.date;
-      if (regPSNameEl) regPSNameEl.value = record.psName || "";
-      if (regShiftEl) regShiftEl.value = record.shift;
-      if (regVolPlanEl) regVolPlanEl.value = record.volPlan !== undefined ? record.volPlan : "";
-      if (regVolRealEl) regVolRealEl.value = record.volReal !== undefined ? record.volReal : "";
-      
+      for (const [elId, val] of Object.entries(elementsToUpdate)) {
+        const el = document.getElementById(elId);
+        if (el) el.value = val;
+      }
+
       onShiftChange();
 
       const template = turnos[record.shift];
       if (template && template.horarios) {
-        template.horarios.forEach((h, i) => {
+        template.horarios.forEach((_, i) => {
           const tReal = document.getElementById(`thp_real_${i}`);
           const iReal = document.getElementById(`idle_real_${i}`);
           const cReal = document.getElementById(`cot_real_${i}`);
@@ -2644,34 +2480,23 @@
         });
       }
 
-      if (metaInboundTHPEl) metaInboundTHPEl.value = record.metaInbound !== undefined ? record.metaInbound : "";
-      if (realInboundTHPEl) realInboundTHPEl.value = record.realInbound !== undefined ? record.realInbound : "";
-      if (metaOutboundTHPEl) metaOutboundTHPEl.value = record.metaOutbound !== undefined ? record.metaOutbound : "";
-      if (realOutboundTHPEl) realOutboundTHPEl.value = record.realOutbound !== undefined ? record.realOutbound : "";
-      
-      if (realFastStartEl) realFastStartEl.value = record.realFastStart !== undefined ? record.realFastStart : "";
-      if (realStrongFinishEl) realStrongFinishEl.value = record.realStrongFinish !== undefined ? record.realStrongFinish : "";
-
-      if (record.s5) {
-        if (s5SeiriEl) s5SeiriEl.value = record.s5.seiri !== undefined ? record.s5.seiri : "";
-        if (s5SeitonEl) s5SeitonEl.value = record.s5.seiton !== undefined ? record.s5.seiton : "";
-        if (s5SeisoEl) s5SeisoEl.value = record.s5.seiso !== undefined ? record.s5.seiso : "";
-        if (s5ShitsukeEl) s5ShitsukeEl.value = record.s5.shitsuke !== undefined ? record.s5.shitsuke : "";
-      }
-
-      if (regNotesEl) regNotesEl.value = record.notes || "";
-
       calculateLiveScores();
       switchView("registrar");
-      showToast("Dados de fechamento carregados.");
+      showToast("Dados do fechamento carregados com segurança.");
     }
 
     function deleteRecord(id) {
-      if (confirm("Confirmar a exclusão permanente deste fechamento operacional?")) {
+      if (confirm("Confirmar a exclusão permanente deste fechamento operacional no Google Sheets?")) {
         records = records.filter(r => r.id !== id);
         localStorage.setItem("kronos_records", JSON.stringify(records));
-        showToast("Fechamento deletado.");
-        renderHistory();
+        showToast("Fechamento deletado do repositório local.");
+        
+        if (configApiUrl) {
+          fetch(`${configApiUrl}?action=deleteRecord&id=${id}`, { method: "GET", mode: "cors" })
+            .then(() => { showToast("Sincronizado remoção com a nuvem."); syncWithGoogleSheets(); });
+        } else {
+          renderHistory();
+        }
       }
     }
 
@@ -2705,97 +2530,76 @@
       const lBody = document.querySelector("#rankingLeadersTable tbody");
       if (lBody) {
         lBody.innerHTML = "";
-        leaderRanking.forEach((l, i) => {
-          lBody.innerHTML += `
-            <tr>
-              <td><strong>${i+1}º</strong></td>
-              <td><strong>${l.name}</strong></td>
-              <td>${l.avg}% SLA</td>
-              <td>${l.count} registros</td>
-            </tr>
-          `;
-        });
+        if (leaderRanking.length === 0) {
+          lBody.innerHTML = `<tr><td colspan="4" class="empty-state-message">Sem dados para classificação</td></tr>`;
+        } else {
+          leaderRanking.forEach((l, i) => {
+            lBody.innerHTML += `<tr><td><strong>${i+1}º</strong></td><td><strong>${l.name}</strong></td><td>${l.avg}% SLA</td><td>${l.count} turnos</td></tr>`;
+          });
+        }
       }
 
       const sBody = document.querySelector("#rankingShiftsTable tbody");
       if (sBody) {
         sBody.innerHTML = "";
-        shiftRanking.forEach((s, i) => {
-          sBody.innerHTML += `
-            <tr>
-              <td><strong>${i+1}º</strong></td>
-              <td><strong>${s.name}</strong></td>
-              <td>${s.avg}% SLA</td>
-              <td>${s.count} registros</td>
-            </tr>
-          `;
-        });
+        if (shiftRanking.length === 0) {
+          sBody.innerHTML = `<tr><td colspan="4" class="empty-state-message">Sem dados para classificação</td></tr>`;
+        } else {
+          shiftRanking.forEach((s, i) => {
+            sBody.innerHTML += `<tr><td><strong>${i+1}º</strong></td><td><strong>${s.name}</strong></td><td>${s.avg}% SLA</td><td>${s.count} turnos</td></tr>`;
+          });
+        }
       }
     }
 
-    // High Density War Room Engine
     function renderWarRoom() {
-      if (records.length === 0) {
-        document.getElementById("wrBestKpiName").innerText = "-";
-        document.getElementById("wrBestKpiMeta").innerText = "-";
-        document.getElementById("wrBestKpiReal").innerText = "-";
-        document.getElementById("wrWorstKpiName").innerText = "-";
-        document.getElementById("wrWorstKpiMeta").innerText = "-";
-        document.getElementById("wrWorstKpiReal").innerText = "-";
-        document.getElementById("wrInboundConsolidated").innerText = "0%";
-        document.getElementById("wrOutboundConsolidated").innerText = "0%";
-        document.getElementById("wrFastActual").innerText = "0%";
-        document.getElementById("wrBestPsName").innerText = "-";
-        document.getElementById("wrBestPsScore").innerText = "0%";
-        document.getElementById("warRoomTrend").innerText = "Sem dados";
+      const setEl = (id, text) => { const el = document.getElementById(id); if (el) el.innerText = text; };
 
-        const psRankingTbody = document.querySelector("#wrPsRankingTable tbody");
-        const shiftRankingTbody = document.querySelector("#wrShiftRankingTable tbody");
-        if (psRankingTbody) psRankingTbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Sem dados disponíveis</td></tr>`;
-        if (shiftRankingTbody) shiftRankingTbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Sem dados disponíveis</td></tr>`;
+      if (records.length === 0) {
+        setEl("wrBestKpiName", "-"); setEl("wrBestKpiMeta", "-"); setEl("wrBestKpiReal", "-");
+        setEl("wrWorstKpiName", "-"); setEl("wrWorstKpiMeta", "-"); setEl("wrWorstKpiReal", "-");
+        setEl("wrInboundConsolidated", "-"); setEl("wrOutboundConsolidated", "-");
+        setEl("wrFastActual", "-"); setEl("wrBestPsName", "-"); setEl("wrBestPsScore", "0%");
+        setEl("warRoomTrend", "Sem dados");
+        const psTbody = document.querySelector("#wrPsRankingTable tbody");
+        const shiftTbody = document.querySelector("#wrShiftRankingTable tbody");
+        if (psTbody) psTbody.innerHTML = `<tr><td colspan="4" class="empty-state-message">Sem registros na base de dados</td></tr>`;
+        if (shiftTbody) shiftTbody.innerHTML = `<tr><td colspan="4" class="empty-state-message">Sem registros na base de dados</td></tr>`;
         return;
       }
 
       const latest = records[records.length - 1];
-      
-      const inboundPerf = latest.metaInbound > 0 ? (latest.realInbound / latest.metaInbound) * 100 : 100;
-      const outboundPerf = latest.metaOutbound > 0 ? (latest.realOutbound / latest.metaOutbound) * 100 : 100;
+      const inboundPerf = latest.metaInbound > 0 ? (latest.realInbound / latest.metaInbound) * 100 : 0;
+      const outboundPerf = latest.metaOutbound > 0 ? (latest.realOutbound / latest.metaOutbound) * 100 : 0;
 
       const candidates = [
-        { name: "Inbound", real: Math.round(inboundPerf), meta: 100, weight: 25 },
-        { name: "Outbound", real: Math.round(outboundPerf), meta: 100, weight: 25 },
-        { name: "Fast Start", real: latest.realFastStart || 0, meta: 85, weight: 15 },
-        { name: "Strong Finish", real: latest.realStrongFinish || 0, meta: 85, weight: 15 },
-        { name: "COT", real: latest.realCot || 0, meta: 100, weight: 20 },
-        { name: "Idle", real: 100 - (latest.realIdle || 0), meta: 95, weight: 15 }
+        { name: "Inbound", real: Math.round(inboundPerf), meta: 100 },
+        { name: "Outbound", real: Math.round(outboundPerf), meta: 100 },
+        { name: "Fast Start", real: latest.realFastStart || 0, meta: 85 },
+        { name: "Strong Finish", real: latest.realStrongFinish || 0, meta: 85 },
+        { name: "COT", real: latest.realCot || 0, meta: 100 },
+        { name: "Idle", real: 100 - (latest.realIdle || 0), meta: 95 }
       ];
 
       candidates.sort((a, b) => (a.real - a.meta) - (b.real - b.meta));
       const worst = candidates[0];
       const best = candidates[candidates.length - 1];
 
-      document.getElementById("wrBestKpiName").innerText = best.name;
-      document.getElementById("wrBestKpiMeta").innerText = `${best.meta}%`;
-      document.getElementById("wrBestKpiReal").innerText = `${best.real}%`;
-      
-      document.getElementById("wrWorstKpiName").innerText = worst.name;
-      document.getElementById("wrWorstKpiMeta").innerText = `${worst.meta}%`;
-      document.getElementById("wrWorstKpiReal").innerText = `${worst.real}%`;
+      setEl("wrBestKpiName", best.name); setEl("wrBestKpiMeta", `${best.meta}%`); setEl("wrBestKpiReal", `${best.real}%`);
+      setEl("wrWorstKpiName", worst.name); setEl("wrWorstKpiMeta", `${worst.meta}%`); setEl("wrWorstKpiReal", `${worst.real}%`);
 
-      document.getElementById("wrInboundConsolidated").innerText = `${Math.round(inboundPerf)}%`;
-      document.getElementById("wrOutboundConsolidated").innerText = `${Math.round(outboundPerf)}%`;
+      setEl("wrInboundConsolidated", `${Math.round(inboundPerf)}%`);
+      setEl("wrOutboundConsolidated", `${Math.round(outboundPerf)}%`);
       
-      document.getElementById("wrFastActual").innerText = `${latest.realFastStart || 0}%`;
+      setEl("wrFastActual", `${latest.realFastStart || 0}%`);
       const fastBadge = document.getElementById("wrFastStatus");
       if (fastBadge) {
         fastBadge.innerText = (latest.realFastStart || 0) >= 85 ? "SLA OK" : "DESVIO";
         fastBadge.className = "badge-status " + ((latest.realFastStart || 0) >= 85 ? "badge-excelente" : "badge-critico");
       }
 
-      // Leaderboards
       const leadersMap = {};
       const shiftsMap = {};
-
       records.forEach(r => {
         const psName = r.psName || "Sem PS";
         if (!leadersMap[psName]) leadersMap[psName] = { scoreSum: 0, count: 0 };
@@ -2820,42 +2624,26 @@
       })).sort((a,b) => b.avg - a.avg);
 
       if (leaderRanking.length > 0) {
-        document.getElementById("wrBestPsName").innerText = leaderRanking[0].name;
-        document.getElementById("wrBestPsScore").innerText = `${leaderRanking[0].avg}%`;
+        setEl("wrBestPsName", leaderRanking[0].name);
+        setEl("wrBestPsScore", `${leaderRanking[0].avg}%`);
       }
 
-      const sumAllScores = records.reduce((acc, curr) => acc + curr.score, 0);
-      const avgGlobal = Math.round(sumAllScores / records.length);
-      document.getElementById("warRoomTrend").innerText = `${avgGlobal}% SLA`;
+      const avgGlobal = Math.round(records.reduce((acc, curr) => acc + curr.score, 0) / records.length);
+      setEl("warRoomTrend", `${avgGlobal}% SLA`);
 
-      // Render tables
-      const psRankingTbody = document.querySelector("#wrPsRankingTable tbody");
-      if (psRankingTbody) {
-        psRankingTbody.innerHTML = "";
+      const psTbody = document.querySelector("#wrPsRankingTable tbody");
+      if (psTbody) {
+        psTbody.innerHTML = "";
         leaderRanking.forEach((l, i) => {
-          psRankingTbody.innerHTML += `
-            <tr>
-              <td><strong>${i+1}º</strong></td>
-              <td><strong>${l.name}</strong></td>
-              <td>${l.avg}% SLA</td>
-              <td>${l.count} medições</td>
-            </tr>
-          `;
+          psTbody.innerHTML += `<tr><td><strong>${i+1}º</strong></td><td><strong>${l.name}</strong></td><td>${l.avg}% SLA</td><td>${l.count} turnos</td></tr>`;
         });
       }
 
-      const shiftRankingTbody = document.querySelector("#wrShiftRankingTable tbody");
-      if (shiftRankingTbody) {
-        shiftRankingTbody.innerHTML = "";
+      const shiftTbody = document.querySelector("#wrShiftRankingTable tbody");
+      if (shiftTbody) {
+        shiftTbody.innerHTML = "";
         shiftRanking.forEach((s, i) => {
-          shiftRankingTbody.innerHTML += `
-            <tr>
-              <td><strong>${i+1}º</strong></td>
-              <td><strong>${s.name}</strong></td>
-              <td>${s.avg}% SLA</td>
-              <td>${s.count} turnos</td>
-            </tr>
-          `;
+          shiftTbody.innerHTML += `<tr><td><strong>${i+1}º</strong></td><td><strong>${s.name}</strong></td><td>${s.avg}% SLA</td><td>${s.count} turnos</td></tr>`;
         });
       }
     }
@@ -2865,11 +2653,11 @@
       const elThp = document.getElementById("chartTrendTHP");
       if (!elScore || !elThp) return;
 
-      const ctxScore = elScore.getContext("2d");
-      const ctxThp = elThp.getContext("2d");
-
-      if (trendScoreChart) trendScoreChart.destroy();
-      if (trendThpChart) trendThpChart.destroy();
+      if (records.length === 0) {
+        document.getElementById("trendScoreContainer").innerHTML = `<p class="empty-state-message">Sem dados para plotagem de tendências</p>`;
+        document.getElementById("trendThpContainer").innerHTML = `<p class="empty-state-message">Sem dados para plotagem de tendências</p>`;
+        return;
+      }
 
       const lastSeven = [...records].slice(-7);
       const labels = lastSeven.map(r => `${r.date.substring(8, 10)}/${r.date.substring(5, 7)} (${r.shift})`);
@@ -2879,7 +2667,10 @@
       const realTHPs = lastSeven.map(r => (r.realInbound || 0) + (r.realOutbound || 0));
       const metaTHPs = lastSeven.map(r => (r.metaInbound || 0) + (r.metaOutbound || 0));
 
-      trendScoreChart = new Chart(ctxScore, {
+      if (trendScoreChart) trendScoreChart.destroy();
+      if (trendThpChart) trendThpChart.destroy();
+
+      trendScoreChart = new Chart(elScore.getContext("2d"), {
         type: 'line',
         data: {
           labels: labels,
@@ -2913,7 +2704,7 @@
         }
       });
 
-      trendThpChart = new Chart(ctxThp, {
+      trendThpChart = new Chart(elThp.getContext("2d"), {
         type: 'bar',
         data: {
           labels: labels,
@@ -2963,8 +2754,8 @@
         const countdownEl = document.getElementById("kronosTimerCountdown");
         
         if (countdownEl) {
-          if (diff <= 600000 && diff > 0) {
-            countdownEl.innerText = "FINALIZADO";
+          if (diff <= 0) {
+            countdownEl.innerText = "FECHADO";
           } else {
             const outHrs = Math.floor(diff / 3600000);
             const outMins = Math.floor((diff % 3600000) / 60000);
@@ -3056,20 +2847,20 @@
         link.href = canvas.toDataURL();
         link.click();
         card.remove();
-        showToast("Card Executivo baixado com sucesso.");
+        showToast("Card Executivo gerado com sucesso.");
       }).catch(() => {
         card.remove();
-        showToast("Erro ao compilar o card.", "error");
+        showToast("Erro ao compilar o card em formato de imagem.", "error");
       });
     }
 
     function exportToExcel() {
       if (records.length === 0) {
-        showToast("Nenhum registro disponível.", "error");
+        showToast("Nenhum registro disponível para exportação.", "error");
         return;
       }
 
-      let csv = "ID;Data;Turno;PS_Responsavel;Area;Inbound_Meta;Inbound_Real;Outbound_Meta;Outbound_Real;FastStart_Real;StrongFinish_Real;Idle_Média;COT_Média;Score;Classificação;Resumo_Ocorrências\n";
+      let csv = "ID;Data;Turno;PS_Responsavel;Area;Inbound_Meta;Inbound_Real;Outbound_Meta;Outbound_Real;FastStart_Real;StrongFinish_Real;Idle_Media;COT_Media;Score;Classificacao;Resumo_Ocorrencias\n";
       records.forEach(r => {
         csv += `${r.id};${r.date};${r.shift};${r.psName || ""};${r.area};${r.metaInbound || 0};${r.realInbound || 0};${r.metaOutbound || 0};${r.realOutbound || 0};${r.realFastStart || 0};${r.realStrongFinish || 0};${r.realIdle || 0};${r.realCot || 0};${r.score};${r.classification};"${(r.notes || "").replace(/"/g, '""')}"\n`;
       });
@@ -3077,11 +2868,11 @@
       const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.setAttribute("download", `KRONOS_BASE_TÁTICA_${new Date().toISOString().split('T')[0]}.csv`);
+      link.setAttribute("download", `KRONOS_EXPORT_${new Date().toISOString().split('T')[0]}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      showToast("Download da Base Tática CSV iniciado.");
+      showToast("Exportação iniciada.");
     }
 
     function copiarResSummary() {
@@ -3100,11 +2891,11 @@
 
 *📈 Fluxo Inbound:*
 • Meta Planejada: ${active.metaInbound || 0} THP
-• Realizado Acumulado: ${active.realInbound || 0} THP (${active.metaInbound > 0 ? Math.round(((active.realInbound || 0) / active.metaInbound) * 100) : 0}% de atingimento)
+• Realizado Acumulado: ${active.realInbound || 0} THP
 
 *📉 Fluxo Outbound:*
 • Meta Planejada: ${active.metaOutbound || 0} THP
-• Realizado Acumulado: ${active.realOutbound || 0} THP (${active.metaOutbound > 0 ? Math.round(((active.realOutbound || 0) / active.metaOutbound) * 100) : 0}% de atingimento)
+• Realizado Acumulado: ${active.realOutbound || 0} THP
 
 *🛠 Indicadores de Eficiência:*
 • Fast Start: ${active.realFastStart || 0}%
@@ -3114,13 +2905,12 @@
 
 *📝 Resumo Geral das Ocorrências:*
 ${active.notes || "Sem observações adicionais gravadas."}
-----------------------------------------
-_Estratégia vence volume._`;
+----------------------------------------`;
 
       navigator.clipboard.writeText(text).then(() => {
-        showToast("Relatório formatado copiado.");
+        showToast("Relatório de turno copiado para a área de transferência.");
       }).catch(() => {
-        showToast("Erro ao tentar copiar texto.", "error");
+        showToast("Falha de permissão no navegador para copiar o texto.", "error");
       });
     }
 
@@ -3136,7 +2926,7 @@ _Estratégia vence volume._`;
       const apiInput = document.getElementById("configApiUrl");
       configApiUrl = apiInput ? apiInput.value.trim() : "";
       localStorage.setItem("kronos_config_api_url", configApiUrl);
-      showToast("Configuração salva.");
+      showToast("Configuração de ponte API de dados salva com sucesso.");
       toggleConfigModal();
       checkApiConnection();
       syncWithGoogleSheets();
@@ -3148,58 +2938,49 @@ _Estratégia vence volume._`;
         if (configApiUrl) {
           badge.innerText = "Conexão Ativa";
           badge.style.color = "var(--color-excelente)";
+          badge.style.borderColor = "rgba(0, 230, 118, 0.2)";
         } else {
           badge.innerText = "Modo Local";
           badge.style.color = "var(--color-atencao)";
+          badge.style.borderColor = "rgba(255, 235, 59, 0.2)";
         }
       }
     }
 
-    // Google Sheets Integrador e Sincronizador Bidirecional
     function syncWithGoogleSheets() {
       const badge = document.getElementById("connectionBadge");
-      let url = configApiUrl ? `${configApiUrl}?action=getRecords` : SPREADSHEET_URL;
+      if (!configApiUrl) {
+        showToast("Modo local ativo. Configure a URL da API Web App nas configurações.", "warning");
+        const cached = localStorage.getItem("kronos_records");
+        records = cached ? JSON.parse(cached) : [];
+        loadActiveData();
+        renderHistory();
+        renderRankings();
+        renderWarRoom();
+        renderTrendCharts();
+        return;
+      }
 
       if (badge) {
         badge.innerText = "Sincronizando...";
         badge.style.color = "var(--color-atencao)";
       }
 
-      showToast("Sincronizando com o Google Sheets...");
+      showToast("Sincronizando dados com o Google Sheets...");
       
-      fetch(url, {
-        method: "GET",
-        mode: "cors"
-      })
-        .then(res => res.text())
-        .then(text => {
-          let mappedRecords = [];
-          
-          if (text.trim().startsWith("google.visualization.Query.setResponse")) {
-            const startIdx = text.indexOf("google.visualization.Query.setResponse(");
-            if (startIdx === -1) throw new Error("Estrutura de dados corrompida");
-            const jsonText = text.substring(startIdx + 38, text.length - 2);
-            const rawData = JSON.parse(jsonText);
-            mappedRecords = mapGoogleSheetRowsToRecords(rawData);
-          } else {
-            mappedRecords = JSON.parse(text);
-          }
-
-          records = mappedRecords || [];
+      fetch(`${configApiUrl}?action=getRecords`, { method: "GET", mode: "cors" })
+        .then(res => {
+          if (!res.ok) throw new Error("Erro de comunicação.");
+          return res.json();
+        })
+        .then(data => {
+          records = data || [];
           localStorage.setItem("kronos_records", JSON.stringify(records));
-
-          if (records.length > 0) {
-            showToast("Dados sincronizados com sucesso.");
-            if (badge) {
-              badge.innerText = configApiUrl ? "Conexão Ativa" : "Modo Local (Sheets)";
-              badge.style.color = "var(--color-excelente)";
-            }
-          } else {
-            showToast("Planilha vazia. Nenhum dado a exibir.", "warning");
-            if (badge) {
-              badge.innerText = configApiUrl ? "Conexão Ativa (Sem Dados)" : "Modo Local (Sem Dados)";
-              badge.style.color = "var(--color-atencao)";
-            }
+          showToast("Dados sincronizados com o servidor central.");
+          
+          if (badge) {
+            badge.innerText = "Conexão Ativa";
+            badge.style.color = "var(--color-excelente)";
           }
 
           loadActiveData();
@@ -3209,152 +2990,50 @@ _Estratégia vence volume._`;
           renderTrendCharts();
         })
         .catch(err => {
-          console.error(err);
-          showToast("Sem resposta do Google Sheets. Exibindo último dado local confirmado.", "error");
+          console.error("Erro de sincronização:", err);
+          showToast("Servidor off-line. Utilizando cache persistido.", "error");
+          
+          const cached = localStorage.getItem("kronos_records");
+          records = cached ? JSON.parse(cached) : [];
+          
           if (badge) {
-            badge.innerText = "Erro Conexão";
+            badge.innerText = "Modo Offline";
             badge.style.color = "var(--color-critico)";
           }
+
+          loadActiveData();
+          renderHistory();
+          renderRankings();
+          renderWarRoom();
+          renderTrendCharts();
         });
     }
 
-    // Tradução e mapeamento estrito de colunas de forma resiliente
-    function mapGoogleSheetRowsToRecords(gvizData) {
-      if (!gvizData || !gvizData.table || !gvizData.table.rows) return [];
-      
-      const rows = gvizData.table.rows;
-      const cols = gvizData.table.cols;
-      const headers = cols.map(c => (c.label || "").toLowerCase().trim().replace(/_/g, " "));
-      
-      return rows.map((row, rowIndex) => {
-        const cells = row.c;
-        const getVal = (index, defaultVal = "") => {
-          if (index === -1 || !cells || cells[index] === null || cells[index] === undefined) return defaultVal;
-          return cells[index].v !== null && cells[index].v !== undefined ? cells[index].v : defaultVal;
-        };
-
-        const findColIndex = (names, fallbackIdx) => {
-          const idx = headers.findIndex(h => names.some(name => h.includes(name)));
-          return idx !== -1 ? idx : fallbackIdx;
-        };
-
-        const idxId = findColIndex(["id"], 0);
-        const idxDate = findColIndex(["data", "date"], 1);
-        const idxShift = findColIndex(["turno", "shift"], 2);
-        const idxPS = findColIndex(["ps", "respons", "lider", "nome"], 3);
-        const idxArea = findColIndex(["area", "funç"], 4);
-        const idxMetaIn = findColIndex(["meta inbound", "meta_inbound", "inbound_meta"], 5);
-        const idxRealIn = findColIndex(["real inbound", "real_inbound", "inbound_real"], 6);
-        const idxMetaOut = findColIndex(["meta outbound", "meta_outbound", "outbound_meta"], 7);
-        const idxRealOut = findColIndex(["real outbound", "real_outbound", "outbound_real"], 8);
-        const idxFast = findColIndex(["fast", "faststart"], 9);
-        const idxStrong = findColIndex(["strong", "strongfinish"], 10);
-        const idxIdle = findColIndex(["idle", "ocios"], 11);
-        const idxCot = findColIndex(["cot"], 12);
-        const idxScore = findColIndex(["score"], 13);
-        const idxClass = findColIndex(["classific", "class"], 14);
-        const idxNotes = findColIndex(["notes", "ocorren", "resumo"], 15);
-        const idxS5 = findColIndex(["s5", "auditoria"], 16);
-        const idxThpMeta = findColIndex(["hourly thp meta", "thp_meta"], 17);
-        const idxThpReal = findColIndex(["hourly thp real", "thp_real"], 18);
-        const idxIdleMeta = findColIndex(["hourly idle meta", "idle_meta"], 19);
-        const idxIdleReal = findColIndex(["hourly idle real", "idle_real"], 20);
-        const idxCotMeta = findColIndex(["hourly cot meta", "cot_meta"], 21);
-        const idxCotReal = findColIndex(["hourly cot real", "cot_real"], 22);
-
-        let rawDate = getVal(idxDate, "");
-        if (typeof rawDate === "string" && rawDate.startsWith("Date(")) {
-          const parts = rawDate.replace("Date(", "").replace(")", "").split(",");
-          if (parts.length >= 3) {
-            const y = parts[0];
-            const m = String(parseInt(parts[1]) + 1).padStart(2, "0");
-            const d = String(parts[2]).padStart(2, "0");
-            rawDate = `${y}-${m}-${d}`;
-          }
-        } else if (rawDate instanceof Date) {
-          rawDate = rawDate.toISOString().split('T')[0];
-        }
-
-        const scoreVal = Math.round(parseFloat(getVal(idxScore, 0)) || 0);
-
-        let s5Obj = { seiri: 0, seiton: 0, seiso: 0, shitsuke: 0 };
-        try {
-          const s5CellVal = getVal(idxS5, "");
-          if (s5CellVal && s5CellVal.startsWith("{")) {
-            s5Obj = JSON.parse(s5CellVal);
-          }
-        } catch(e){}
-
-        const shiftForFallback = String(getVal(idxShift, "T1"));
-        const templateForFallback = turnos[shiftForFallback] || turnos["T1"];
-
-        let hThpMeta = templateForFallback.matrixThpMeta;
-        let hThpReal = [];
-        let hIdleMeta = templateForFallback.matrixIdleMeta;
-        let hIdleReal = [];
-        let hCotMeta = templateForFallback.matrixCotMeta;
-        let hCotReal = [];
-
-        try {
-          const tm = getVal(idxThpMeta, ""); if(tm) hThpMeta = JSON.parse(tm);
-          const tr = getVal(idxThpReal, ""); if(tr) hThpReal = JSON.parse(tr);
-          const im = getVal(idxIdleMeta, ""); if(im) hIdleMeta = JSON.parse(im);
-          const ir = getVal(idxIdleReal, ""); if(ir) hIdleReal = JSON.parse(ir);
-          const cm = getVal(idxCotMeta, ""); if(cm) hCotMeta = JSON.parse(cm);
-          const cr = getVal(idxCotReal, ""); if(cr) hCotReal = JSON.parse(cr);
-        } catch(e){}
-
-        return {
-          id: String(getVal(idxId, rowIndex + 1)),
-          date: String(rawDate).substring(0, 10),
-          psName: String(getVal(idxPS, "Sem PS")),
-          shift: shiftForFallback,
-          area: String(getVal(idxArea, "Fulfillment")),
-          metaInbound: parseFloat(getVal(idxMetaIn, 0)) || 0,
-          realInbound: parseFloat(getVal(idxRealIn, 0)) || 0,
-          metaOutbound: parseFloat(getVal(idxMetaOut, 0)) || 0,
-          realOutbound: parseFloat(getVal(idxRealOut, 0)) || 0,
-          realFastStart: parseFloat(getVal(idxFast, 0)) || 0,
-          realStrongFinish: parseFloat(getVal(idxStrong, 0)) || 0,
-          realIdle: parseFloat(getVal(idxIdle, 0)) || 0,
-          realCot: parseFloat(getVal(idxCot, 0)) || 0,
-          score: scoreVal,
-          classification: getVal(idxClass, scoreVal >= 95 ? "Elite" : (scoreVal >= 90 ? "Excelente" : (scoreVal >= 80 ? "OK" : "Atenção"))),
-          notes: String(getVal(idxNotes, "")),
-          s5: s5Obj,
-          hourlyTHPMeta: hThpMeta,
-          hourlyTHPReal: hThpReal,
-          hourlyIdleMeta: hIdleMeta,
-          hourlyIdleReal: hIdleReal,
-          hourlyCOTMeta: hCotMeta,
-          hourlyCOTReal: hCotReal
-        };
-      });
-    }
-
     function sendToGoogleSheets(record) {
-      if (!configApiUrl) return;
-      
-      // Enviando como text/plain para contornar problemas de CORS preflight (OPTIONS)
+      if (!configApiUrl) {
+        showToast("Salvo localmente.", "info");
+        syncWithGoogleSheets();
+        return;
+      }
+
       fetch(configApiUrl, {
         method: "POST",
         mode: "cors",
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8"
-        },
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(record)
       })
       .then(res => res.json())
       .then(res => {
         if (res && res.status === "success") {
-          showToast("Dados salvos e sincronizados.");
+          showToast("Informações gravadas no Google Sheets.");
         } else {
-          showToast("Erro retornado pelo script da planilha.", "error");
+          showToast(`Erro retornado pela planilha: ${res.message}`, "error");
         }
         syncWithGoogleSheets();
       })
-      .catch(() => {
-        showToast("Registro enviado. Sincronizando...", "info");
+      .catch(err => {
+        console.error("Erro ao enviar dados:", err);
+        showToast("Erro ao sincronizar. O registro foi armazenado localmente para posterior reenvio.", "error");
         syncWithGoogleSheets();
       });
     }
