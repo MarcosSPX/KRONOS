@@ -238,7 +238,8 @@
     .cols-2 { grid-template-columns: repeat(2, 1fr); }
 
     @media (max-width: 1400px) {
-      .cols-5 { grid-template-columns: repeat(3, 1fr); }
+      .cols-4 { grid-template-columns: repeat(2, 1fr); }
+      .cols-3 { grid-template-columns: repeat(1, 1fr); }
     }
 
     .kronos-card {
@@ -332,7 +333,7 @@
     .badge-elite { background-color: rgba(212, 175, 55, 0.15); color: var(--color-elite); border: 1px solid rgba(212, 175, 55, 0.3); }
     .badge-excelente { background-color: rgba(0, 230, 118, 0.15); color: var(--color-excelente); border: 1px solid rgba(0, 230, 118, 0.3); }
     .badge-ok { background-color: rgba(0, 176, 255, 0.15); color: var(--color-ok); border: 1px solid rgba(0, 176, 255, 0.3); }
-    .badge-atencao { background-color: rgba(255, 235, 59, 0.15); color: var(--color-atencao); border: 1px solid rgba(255, 23, 59, 0.3); }
+    .badge-atencao { background-color: rgba(255, 235, 59, 0.15); color: var(--color-atencao); border: 1px solid rgba(255, 235, 59, 0.3); }
     .badge-critico { background-color: rgba(255, 23, 68, 0.15); color: var(--color-critico); border: 1px solid rgba(255, 23, 68, 0.3); }
 
     .timeline-card {
@@ -617,15 +618,9 @@
 
     .flow-panel-container {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 12px;
       margin-bottom: 16px;
-    }
-
-    @media (max-width: 1100px) {
-      .flow-panel-container {
-        grid-template-columns: 1fr;
-      }
     }
 
     .flow-card {
@@ -765,7 +760,10 @@
         <h2 id="viewHeaderTitle">Dashboard Geral</h2>
         <p id="viewHeaderSubtitle">Visão geral do turno ativo e controle de SLA em tempo real.</p>
       </div>
-      <div style="display: flex; gap: 8px; align-items: center;">
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <div id="liveClock" style="font-family: 'Share Tech Mono', monospace; color: var(--electric-blue); font-size: 0.85rem; font-weight: bold; background-color: rgba(0, 240, 255, 0.05); padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(0, 240, 255, 0.15);">
+          --/--/---- --:--:--
+        </div>
         <div class="form-group" style="margin-bottom:0;">
           <input type="date" id="headerFilterDate" style="padding: 4px 8px; font-size: 0.75rem;" onchange="loadActiveData()">
         </div>
@@ -781,7 +779,7 @@
       <div id="view-dashboard" class="view-panel active">
         
         <!-- HIGH-DENSITY NOC KEY METRICS -->
-        <div class="grid-layout cols-5" id="dashboardKPIsContainer">
+        <div class="grid-layout cols-4" id="dashboardKPIsContainer">
           
           <!-- CARD 1: SCORE KRONOS -->
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
@@ -806,25 +804,10 @@
             <div style="font-size: 0.6rem; color: var(--text-muted); text-align: center; margin-top: -4px;">STATUS OPERACIONAL ACTV</div>
           </div>
 
-          <!-- CARD 2: INBOUND ATUAL -->
+          <!-- CARD 2: OUTBOUND/CHECKING ATUAL -->
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
             <div class="kronos-card-header">
-              <span class="kronos-card-title">INBOUND ATUAL</span>
-              <span class="badge-status badge-atencao" id="inboundBadgeStatus" style="font-size: 0.55rem;">-</span>
-            </div>
-            <div>
-              <div style="font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: bold; line-height: 1.1;" id="dashKpiInboundPct">0%</div>
-              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 4px;">
-                Plan: <span id="dashKpiInboundMeta">0</span> | Real: <span id="dashKpiInboundReal">0</span>
-              </div>
-            </div>
-            <div style="font-size: 0.6rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2px;">META TARGET: 100% THP</div>
-          </div>
-
-          <!-- CARD 3: OUTBOUND ATUAL -->
-          <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
-            <div class="kronos-card-header">
-              <span class="kronos-card-title">OUTBOUND ATUAL</span>
+              <span class="kronos-card-title">CHECKING & OUTBOUND</span>
               <span class="badge-status badge-atencao" id="outboundBadgeStatus" style="font-size: 0.55rem;">-</span>
             </div>
             <div>
@@ -836,7 +819,7 @@
             <div style="font-size: 0.6rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2px;">META TARGET: 100% THP</div>
           </div>
 
-          <!-- CARD 4: FAST START -->
+          <!-- CARD 3: FAST START -->
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
             <div class="kronos-card-header">
               <span class="kronos-card-title">FAST START</span>
@@ -844,12 +827,12 @@
             </div>
             <div>
               <div style="font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: bold; line-height: 1.1;" id="dashKpiFast">0%</div>
-              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 4px;">Tolerância: 85% Mínimo</div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 4px;">Meta: <span id="dashKpiFastMeta">85%</span> | Real: <span id="dashKpiFastReal">0%</span></div>
             </div>
             <div style="font-size: 0.6rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2px;">CHECK START COLETIVO</div>
           </div>
 
-          <!-- CARD 5: STRONG FINISH -->
+          <!-- CARD 4: STRONG FINISH -->
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
             <div class="kronos-card-header">
               <span class="kronos-card-title">STRONG FINISH</span>
@@ -857,7 +840,7 @@
             </div>
             <div>
               <div style="font-family: 'Share Tech Mono', monospace; font-size: 1.5rem; font-weight: bold; line-height: 1.1;" id="dashKpiStrong">0%</div>
-              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 4px;">Tolerância: 85% Mínimo</div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 4px;">Meta: <span id="dashKpiStrongMeta">85%</span> | Real: <span id="dashKpiStrongReal">0%</span></div>
             </div>
             <div style="font-size: 0.6rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2px;">CONTROLE DE ENCERRAMENTO</div>
           </div>
@@ -865,52 +848,13 @@
         </div>
 
         <!-- DETALHAMENTO POR FLUXO SECTION -->
-        <h3 style="font-family: 'Cinzel', serif; font-size: 0.95rem; letter-spacing: 1px; color: var(--gold-metallic); margin-bottom: 8px; margin-top: 4px;">DETALHAMENTO POR FLUXO</h3>
+        <h3 style="font-family: 'Cinzel', serif; font-size: 0.95rem; letter-spacing: 1px; color: var(--gold-metallic); margin-bottom: 8px; margin-top: 4px;">DETALHAMENTO DO CONTROLE DE CHECKING</h3>
         
         <div class="flow-panel-container">
-          <!-- INBOUND FLOW CARD -->
-          <div class="flow-card">
-            <div>
-              <div class="flow-header">INBOUND COMMAND CENTER</div>
-              <table style="width: 100%;">
-                <thead>
-                  <tr>
-                    <th>Indicador</th>
-                    <th style="text-align: center;">Meta</th>
-                    <th style="text-align: center;">Real</th>
-                    <th style="text-align: center;">Variação</th>
-                    <th style="text-align: right;">Status</th>
-                  </tr>
-                </thead>
-                <tbody id="inboundFlowTableBody">
-                  <tr><td colspan="5" class="empty-state-message">Sem dados disponíveis</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="flow-footer">
-              <div class="flow-footer-metric">
-                <div>Utilização</div>
-                <div class="flow-footer-value" id="inboundUtilVal">-</div>
-              </div>
-              <div class="flow-footer-metric">
-                <div>Eficiência</div>
-                <div class="flow-footer-value" id="inboundEfVal">-</div>
-              </div>
-              <div class="flow-footer-metric">
-                <div>Gap Plan→Start</div>
-                <div class="flow-footer-value" id="inboundGapStartVal">-</div>
-              </div>
-              <div class="flow-footer-metric">
-                <div>Gap Plan→Real</div>
-                <div class="flow-footer-value" id="inboundGapRealVal">-</div>
-              </div>
-            </div>
-          </div>
-
           <!-- OUTBOUND FLOW CARD -->
           <div class="flow-card">
             <div>
-              <div class="flow-header">OUTBOUND COMMAND CENTER</div>
+              <div class="flow-header">CHECKING & OUTBOUND COMMAND CENTER</div>
               <table style="width: 100%;">
                 <thead>
                   <tr>
@@ -936,7 +880,7 @@
                 <div class="flow-footer-value" id="outboundEfVal">-</div>
               </div>
               <div class="flow-footer-metric">
-                <div>Gap Plan→Start</div>
+                <div>Gap Start</div>
                 <div class="flow-footer-value" id="outboundGapStartVal">-</div>
               </div>
               <div class="flow-footer-metric">
@@ -1008,8 +952,7 @@
           <div style="display: flex; gap: 8px; margin-bottom: 8px; border-bottom: 1px solid var(--border-gold); padding-bottom: 6px; align-items: center; justify-content: space-between;">
             <span class="kronos-card-title">Abas de Fluxo Operacional (Visão Analítica)</span>
             <div style="display: flex; gap: 6px;">
-              <button class="btn btn-secondary active-tab" style="padding: 4px 10px; font-size: 0.7rem;" id="tabBtnInbound" onclick="switchOpTab('inbound')">INBOUND</button>
-              <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.7rem;" id="tabBtnOutbound" onclick="switchOpTab('outbound')">OUTBOUND</button>
+              <button class="btn btn-secondary active-tab" style="padding: 4px 10px; font-size: 0.7rem;" id="tabBtnOutbound" onclick="switchOpTab('outbound')">CHECKING & OUTBOUND</button>
             </div>
           </div>
 
@@ -1037,28 +980,7 @@
             </div>
           </div>
 
-          <div id="tabContentInbound">
-            <div class="table-responsive">
-              <table id="opTabInboundTable">
-                <thead>
-                  <tr>
-                    <th>Data</th>
-                    <th>Responsável (PS)</th>
-                    <th>Turno</th>
-                    <th>Área / Função</th>
-                    <th>Meta Inbound (THP)</th>
-                    <th>Real Inbound (THP)</th>
-                    <th>Performance</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td colspan="7" class="empty-state-message">Sem dados disponíveis</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div id="tabContentOutbound" style="display: none;">
+          <div id="tabContentOutbound">
             <div class="table-responsive">
               <table id="opTabOutboundTable">
                 <thead>
@@ -1067,13 +989,14 @@
                     <th>Responsável (PS)</th>
                     <th>Turno</th>
                     <th>Área / Função</th>
-                    <th>Meta Outbound (THP)</th>
-                    <th>Real Outbound (THP)</th>
+                    <th>Meta Checking (THP)</th>
+                    <th>Real Checking (THP)</th>
                     <th>Performance</th>
+                    <th>Aprovação</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td colspan="7" class="empty-state-message">Sem dados disponíveis</td></tr>
+                  <tr><td colspan="8" class="empty-state-message">Sem dados disponíveis</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1116,15 +1039,15 @@
             <div class="grid-layout cols-3" style="gap: 10px; margin-top: 8px;">
               <div class="form-group">
                 <label>Área de Atuação</label>
-                <input type="text" id="regArea" value="" required oninput="calculateLiveScores()">
+                <input type="text" id="regArea" value="" placeholder="Ex: Fulfillment Checking" required oninput="calculateLiveScores()">
               </div>
               <div class="form-group">
                 <label>Volume Planejado (Total)</label>
-                <input type="number" id="regVolPlan" value="" oninput="calculateLiveScores()">
+                <input type="number" id="regVolPlan" value="" required oninput="calculateLiveScores()">
               </div>
               <div class="form-group">
                 <label>Volume Real (Total)</label>
-                <input type="number" id="regVolReal" value="" oninput="calculateLiveScores()">
+                <input type="number" id="regVolReal" value="" required oninput="calculateLiveScores()">
               </div>
             </div>
           </div>
@@ -1132,7 +1055,7 @@
           <!-- Matriz Dinâmica de Controle Horário -->
           <div class="matrix-wrapper">
             <div class="matrix-title-bar">
-              <span>Acompanhamento Diário — Matriz de Pontos de Controle Horários</span>
+              <span>Acompanhamento Diário — Matriz de Pontos de Controle Horários (Checking)</span>
             </div>
             <div class="matrix-table-scroll">
               <table class="matrix-table" id="thpMatrixTable">
@@ -1182,20 +1105,12 @@
               </div>
               <div class="grid-layout cols-2" style="gap: 8px;">
                 <div class="form-group">
-                  <label>Meta Inbound THP</label>
-                  <input type="number" id="metaInboundTHP" value="" oninput="calculateLiveScores()">
+                  <label>Meta Checking THP</label>
+                  <input type="number" id="metaOutboundTHP" value="" required oninput="calculateLiveScores()">
                 </div>
                 <div class="form-group">
-                  <label>Real Inbound THP</label>
-                  <input type="number" id="realInboundTHP" placeholder="Real de Entrada" oninput="calculateLiveScores()">
-                </div>
-                <div class="form-group">
-                  <label>Meta Outbound THP</label>
-                  <input type="number" id="metaOutboundTHP" value="" oninput="calculateLiveScores()">
-                </div>
-                <div class="form-group">
-                  <label>Real Outbound THP</label>
-                  <input type="number" id="realOutboundTHP" placeholder="Real de Saída" oninput="calculateLiveScores()">
+                  <label>Real Checking THP</label>
+                  <input type="number" id="realOutboundTHP" placeholder="Real de Saída" required oninput="calculateLiveScores()">
                 </div>
               </div>
             </div>
@@ -1223,7 +1138,7 @@
                       <td style="padding: 4px; text-align: left;">THP (Produtividade)</td>
                       <td style="padding: 4px; text-align: center;" id="wtMetaThp">100%</td>
                       <td style="padding: 4px; text-align: center;" id="wtRealThp">0%</td>
-                      <td style="padding: 4px;"><input type="number" id="pesoThp" value="25" style="width: 100%; padding: 2px;" oninput="calculateLiveScores()"></td>
+                      <td style="padding: 4px;"><input type="number" id="pesoThp" value="30" style="width: 100%; padding: 2px;" oninput="calculateLiveScores()"></td>
                       <td style="padding: 4px; text-align: center;" id="wtResThp">-</td>
                       <td style="padding: 4px; text-align: right;" id="wtImpactThp">-</td>
                     </tr>
@@ -1263,7 +1178,7 @@
                       <td style="padding: 4px; text-align: left;">Idle Compliance</td>
                       <td style="padding: 4px; text-align: center;" id="wtMetaIdle">95%</td>
                       <td style="padding: 4px; text-align: center;" id="wtRealIdle">0%</td>
-                      <td style="padding: 4px;"><input type="number" id="pesoIdle" value="15" style="width: 100%; padding: 2px;" oninput="calculateLiveScores()"></td>
+                      <td style="padding: 4px;"><input type="number" id="pesoIdle" value="10" style="width: 100%; padding: 2px;" oninput="calculateLiveScores()"></td>
                       <td style="padding: 4px; text-align: center;" id="wtResIdle">-</td>
                       <td style="padding: 4px; text-align: right;" id="wtImpactIdle">-</td>
                     </tr>
@@ -1279,12 +1194,16 @@
                 <span class="kronos-card-title">Fast Start Check</span>
               </div>
               <div class="form-group">
+                <label>Meta Estipulada (%)</label>
+                <input type="number" id="metaFastStart" value="85" required oninput="calculateLiveScores()">
+              </div>
+              <div class="form-group">
                 <label>Atingimento Real (%)</label>
-                <input type="number" id="realFastStart" placeholder="Ex.: 92" oninput="calculateLiveScores()">
+                <input type="number" id="realFastStart" placeholder="Ex.: 92" required oninput="calculateLiveScores()">
               </div>
               <div class="form-group">
                 <label>Justificativa do Desvio</label>
-                <textarea id="justFastStart" rows="2" placeholder="Desvio < 85%..."></textarea>
+                <textarea id="justFastStart" rows="2" placeholder="Desvio < Meta..."></textarea>
               </div>
             </div>
 
@@ -1293,12 +1212,16 @@
                 <span class="kronos-card-title">Strong Finish Control</span>
               </div>
               <div class="form-group">
+                <label>Meta Estipulada (%)</label>
+                <input type="number" id="metaStrongFinish" value="85" required oninput="calculateLiveScores()">
+              </div>
+              <div class="form-group">
                 <label>Atingimento Real (%)</label>
-                <input type="number" id="realStrongFinish" placeholder="Ex.: 95" oninput="calculateLiveScores()">
+                <input type="number" id="realStrongFinish" placeholder="Ex.: 95" required oninput="calculateLiveScores()">
               </div>
               <div class="form-group">
                 <label>Justificativa do Desvio</label>
-                <textarea id="justStrongFinish" rows="2" placeholder="Desvio < 85%..."></textarea>
+                <textarea id="justStrongFinish" rows="2" placeholder="Desvio < Meta..."></textarea>
               </div>
             </div>
 
@@ -1309,19 +1232,19 @@
               <div class="grid-layout cols-2" style="gap: 8px; margin-bottom: 0;">
                 <div class="form-group" style="margin-bottom:0;">
                   <label style="font-size:0.6rem;">Utilização</label>
-                  <input type="number" id="s5Seiri" value="" min="0" max="100" style="padding: 4px;" oninput="calculateLiveScores()">
+                  <input type="number" id="s5Seiri" value="100" min="0" max="100" style="padding: 4px;" oninput="calculateLiveScores()">
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
                   <label style="font-size:0.6rem;">Organização</label>
-                  <input type="number" id="s5Seiton" value="" min="0" max="100" style="padding: 4px;" oninput="calculateLiveScores()">
+                  <input type="number" id="s5Seiton" value="100" min="0" max="100" style="padding: 4px;" oninput="calculateLiveScores()">
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
                   <label style="font-size:0.6rem;">Limpeza</label>
-                  <input type="number" id="s5Seiso" value="" min="0" max="100" style="padding: 4px;" oninput="calculateLiveScores()">
+                  <input type="number" id="s5Seiso" value="100" min="0" max="100" style="padding: 4px;" oninput="calculateLiveScores()">
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
                   <label style="font-size:0.6rem;">Disciplina</label>
-                  <input type="number" id="s5Shitsuke" value="" min="0" max="100" style="padding: 4px;" oninput="calculateLiveScores()">
+                  <input type="number" id="s5Shitsuke" value="100" min="0" max="100" style="padding: 4px;" oninput="calculateLiveScores()">
                 </div>
               </div>
             </div>
@@ -1359,9 +1282,9 @@
                   <th>Turno</th>
                   <th>PS Responsável</th>
                   <th>Área / Função</th>
-                  <th>Inbound THP</th>
-                  <th>Outbound THP</th>
+                  <th>Checking Realizado</th>
                   <th>Score de Turno</th>
+                  <th>Validação</th>
                   <th style="text-align: right;">Ações</th>
                 </tr>
               </thead>
@@ -1426,12 +1349,12 @@
           <!-- CARD A: MELHOR KPI -->
           <div class="kronos-card">
             <div class="kronos-card-header" style="border-bottom: 1px solid rgba(0, 230, 118, 0.2); padding-bottom: 4px;">
-              <span class="kronos-card-title" style="color: var(--color-excelente);">Melhor KPI</span>
+              <span class="kronos-card-title" style="color: var(--color-excelente);">Melhor KPI Histórico</span>
             </div>
             <div style="margin-top: 8px;">
               <div id="wrBestKpiName" style="font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: bold; color: #fff;">-</div>
               <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
-                Meta: <span id="wrBestKpiMeta">-</span> | Real: <span id="wrBestKpiReal">-</span>
+                Performance Média: <span id="wrBestKpiReal">-</span>
               </div>
               <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">
                 Impacto: <span id="wrBestKpiImpact" class="badge-status badge-excelente" style="font-size: 0.55rem;">SLA OK</span>
@@ -1442,38 +1365,38 @@
           <!-- CARD B: PIOR KPI -->
           <div class="kronos-card">
             <div class="kronos-card-header" style="border-bottom: 1px solid rgba(255, 23, 68, 0.2); padding-bottom: 4px;">
-              <span class="kronos-card-title" style="color: var(--color-critico);">Pior KPI</span>
+              <span class="kronos-card-title" style="color: var(--color-critico);">Pior KPI Histórico</span>
             </div>
             <div style="margin-top: 8px;">
               <div id="wrWorstKpiName" style="font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: bold; color: #fff;">-</div>
               <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
-                Meta: <span id="wrWorstKpiMeta">-</span> | Real: <span id="wrWorstKpiReal">-</span>
+                Performance Média: <span id="wrWorstKpiReal">-</span>
               </div>
               <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">
-                Impacto: <span id="wrWorstKpiImpact" class="badge-status badge-critico" style="font-size: 0.55rem;">DESVIO</span>
+                Impacto: <span id="wrWorstKpiImpact" class="badge-status badge-critico" style="font-size: 0.55rem;">Atenção</span>
               </div>
             </div>
           </div>
 
-          <!-- CARD C: RESULTADO INBOUND CONSOLIDADO -->
+          <!-- CARD C: RESULTADO CHECKING CONSOLIDADO -->
           <div class="kronos-card">
             <div class="kronos-card-header" style="border-bottom: 1px solid rgba(0, 176, 255, 0.2); padding-bottom: 4px;">
-              <span class="kronos-card-title">Resultado Inbound</span>
+              <span class="kronos-card-title">Checking Global</span>
             </div>
             <div style="margin-top: 8px;">
-              <div id="wrInboundConsolidated" style="font-family: 'Share Tech Mono', monospace; font-size: 1.4rem; font-weight: bold; color: var(--color-ok);">-</div>
-              <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Aproveitamento consolidado das metas Inbound</p>
+              <div id="wrOutboundConsolidated" style="font-family: 'Share Tech Mono', monospace; font-size: 1.4rem; font-weight: bold; color: var(--color-ok);">-</div>
+              <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Aproveitamento consolidado das metas Checking</p>
             </div>
           </div>
 
-          <!-- CARD D: RESULTADO OUTBOUND CONSOLIDADO -->
+          <!-- CARD D: MÉDIA IDLE COMPLIANCE -->
           <div class="kronos-card">
             <div class="kronos-card-header" style="border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 4px;">
-              <span class="kronos-card-title">Resultado Outbound</span>
+              <span class="kronos-card-title">Aproveitamento IDLE</span>
             </div>
             <div style="margin-top: 8px;">
-              <div id="wrOutboundConsolidated" style="font-family: 'Share Tech Mono', monospace; font-size: 1.4rem; font-weight: bold; color: var(--gold-metallic);">-</div>
-              <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Aproveitamento consolidado das metas Outbound</p>
+              <div id="wrIdleConsolidated" style="font-family: 'Share Tech Mono', monospace; font-size: 1.4rem; font-weight: bold; color: var(--gold-metallic);">-</div>
+              <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Média global de conformidade contra ociosidade</p>
             </div>
           </div>
         </div>
@@ -1482,12 +1405,12 @@
           <!-- CARD E: FAST ATUAL -->
           <div class="kronos-card">
             <div class="kronos-card-header">
-              <span class="kronos-card-title">FAST ATUAL</span>
+              <span class="kronos-card-title">Média Fast Start</span>
               <span class="badge-status badge-atencao" id="wrFastStatus">-</span>
             </div>
             <div style="margin-top: 10px;">
               <div style="font-size: 1.6rem; font-weight: bold; font-family: 'Share Tech Mono', monospace;" id="wrFastActual">-</div>
-              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Meta de Tolerância Coletiva: 85%</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Meta de Tolerância Geral: 85%</div>
             </div>
           </div>
 
@@ -1625,12 +1548,38 @@
       </div>
       <div class="form-group" style="margin-top: 10px;">
         <label>URL Web App do Script</label>
-        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbyfkvO0E8CkJuHeiXwbyWReQnJG371JO0bNtesC9JFoZPGE-awcMPy5i3l5iaWtPasb/exec">
+        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/.../exec">
       </div>
-      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 20px;">Insira a URL obtida ao realizar a implantação tática de Web App na sua planilha oficial para ativação de ponte.</p>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 20px;">Insira a URL obtida ao realizar a implantação de Web App na sua planilha oficial para ativação de ponte.</p>
       <div style="display: flex; gap:12px; justify-content:flex-end;">
         <button class="btn btn-secondary" onclick="toggleConfigModal()">Cancelar</button>
         <button class="btn btn-gold" onclick="saveApiConfig()">Salvar Integração</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUPERVISOR VALIDATION MODAL -->
+  <div id="validationModal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10001; place-items:center;">
+    <div class="kronos-card" style="width: 550px; max-width: 95%;">
+      <div class="kronos-card-header" style="border-bottom: 1px solid var(--border-gold); padding-bottom: 8px;">
+        <span class="kronos-card-title" style="color: var(--gold-metallic); font-family: 'Cinzel', serif;">Validação do Supervisor</span>
+      </div>
+      <div style="margin: 15px 0; font-size: 0.8rem; line-height: 1.4;">
+        <p>Você está auditando e assinando os resultados do seguinte turno:</p>
+        <div style="background-color: rgba(255,255,255,0.02); padding: 10px; border-radius: 6px; margin: 10px 0; border: 1px solid rgba(255,255,255,0.05);">
+          • <strong>Data:</strong> <span id="valModalDate">-</span><br>
+          • <strong>Turno:</strong> <span id="valModalShift">-</span><br>
+          • <strong>PS Responsável:</strong> <span id="valModalPS">-</span><br>
+          • <strong>SLA do Turno:</strong> <span id="valModalScore" style="color: var(--electric-blue); font-weight: bold;">-</span>
+        </div>
+        <div class="form-group">
+          <label>Nome Completo do Supervisor (Assinatura)</label>
+          <input type="text" id="valSupervisorName" placeholder="Assinatura de aprovação" required>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button class="btn btn-secondary" onclick="closeValidationModal()">Fechar</button>
+        <button class="btn btn-gold" onclick="confirmSupervisorValidation()">Aprovar e Assinar Turno</button>
       </div>
     </div>
   </div>
@@ -1642,9 +1591,8 @@
         inicio: "06:00",
         fim: "14:30",
         horarios: ["06h", "07h", "08h", "09h", "10h", "11h", "12h", "13h", "14h"],
-        area: "Fulfillment Inbound",
-        metaInboundTHP: 2200,
-        metaOutboundTHP: 1000,
+        area: "Fulfillment Checking",
+        metaOutboundTHP: 2200,
         matrixThpMeta: [200, 250, 300, 300, 250, 250, 200, 250, 200],
         matrixIdleMeta: [5, 5, 5, 5, 10, 10, 5, 5, 5],
         matrixCotMeta: [100, 100, 100, 100, 100, 100, 100, 100, 100],
@@ -1654,8 +1602,7 @@
         inicio: "14:30",
         fim: "22:00",
         horarios: ["14h30", "15h", "16h", "17h", "18h", "19h", "20h", "21h"],
-        area: "Fulfillment Outbound",
-        metaInboundTHP: 800,
+        area: "Fulfillment Checking",
         metaOutboundTHP: 4500,
         matrixThpMeta: [100, 500, 600, 700, 700, 650, 650, 600],
         matrixIdleMeta: [5, 8, 8, 8, 12, 8, 8, 5],
@@ -1666,8 +1613,7 @@
         inicio: "22:00",
         fim: "06:00",
         horarios: ["22h", "23h", "00h", "01h", "02h", "03h", "04h", "05h"],
-        area: "Fulfillment Triagem Noturna",
-        metaInboundTHP: 1500,
+        area: "Fulfillment Checking",
         metaOutboundTHP: 2000,
         matrixThpMeta: [300, 450, 450, 500, 400, 400, 300, 200],
         matrixIdleMeta: [10, 10, 12, 12, 15, 10, 10, 10],
@@ -1677,11 +1623,11 @@
     };
 
     let records = [];
-    let activeOpTab = 'inbound';
     let volumeChart = null;
     let trendScoreChart = null;
     let trendThpChart = null;
     let configApiUrl = localStorage.getItem("kronos_config_api_url") || "";
+    let activeValidationId = null;
 
     window.addEventListener("DOMContentLoaded", () => {
       const regDateEl = document.getElementById("regDate");
@@ -1695,13 +1641,35 @@
       const regShiftEl = document.getElementById("regShift");
       if (regShiftEl) regShiftEl.value = autoShift;
 
+      // Inicia Relógio Dinâmico
+      setInterval(updateLiveClock, 1000);
+      updateLiveClock();
+
       onShiftChange();
       startSystemCountdown();
       checkApiConnection();
 
       // Sincronização inicial com o servidor central de planilhas
       syncWithGoogleSheets();
+
+      // Verifica parâmetros de link externo para validação direta do supervisor
+      const urlParams = new URLSearchParams(window.location.search);
+      const validateId = urlParams.get('validate');
+      if (validateId) {
+        setTimeout(() => showValidationModal(validateId), 1500);
+      }
     });
+
+    function updateLiveClock() {
+      const now = new Date();
+      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      const dateStr = now.toLocaleDateString('pt-BR', options);
+      const timeStr = now.toLocaleTimeString('pt-BR', { hour12: false });
+      const clockEl = document.getElementById("liveClock");
+      if (clockEl) {
+        clockEl.innerText = `${dateStr} • ${timeStr}`;
+      }
+    }
 
     function detectAutoShift() {
       const now = new Date();
@@ -1723,7 +1691,6 @@
 
       const elementsToUpdate = {
         regArea: template.area,
-        metaInboundTHP: template.metaInboundTHP,
         metaOutboundTHP: template.metaOutboundTHP,
         tlTimeAbertura: template.timeline.abertura,
         tlTimeFast: template.timeline.fast,
@@ -1837,8 +1804,20 @@
       }
       const avgRealIdle = idleControlHours > 0 ? (totalRealIdle / idleControlHours) : 0;
       const avgMetaIdle = idleControlHours > 0 ? (totalMetaIdle / idleControlHours) : 0;
+      
+      // Alerta visual de IDLE no formulário baseado no atingimento geral de conformidade (Compliance real precisa ser >= 95%)
+      const idleComplianceReal = Math.max(0, 100 - avgRealIdle);
       const wtRealIdleEl = document.getElementById("wtRealIdle");
-      if (wtRealIdleEl) wtRealIdleEl.innerText = `${avgRealIdle.toFixed(1)}% (Meta: ${avgMetaIdle.toFixed(1)}%)`;
+      if (wtRealIdleEl) {
+        wtRealIdleEl.innerText = `${idleComplianceReal.toFixed(1)}% (Inat: ${avgRealIdle.toFixed(1)}%)`;
+        if (idleComplianceReal < 95) {
+          wtRealIdleEl.style.color = "var(--color-critico)";
+          wtRealIdleEl.style.fontWeight = "bold";
+        } else {
+          wtRealIdleEl.style.color = "";
+          wtRealIdleEl.style.fontWeight = "";
+        }
+      }
 
       // COT Loop
       let totalMetaCot = 0, totalRealCot = 0, cotHours = 0;
@@ -1866,12 +1845,14 @@
       const wtRealCotEl = document.getElementById("wtRealCot");
       if (wtRealCotEl) wtRealCotEl.innerText = `${avgRealCot}%`;
 
-      const pInboundMeta = parseFloat(document.getElementById("metaInboundTHP")?.value) || 0;
-      const pInboundReal = parseFloat(document.getElementById("realInboundTHP")?.value) || 0;
       const pOutboundMeta = parseFloat(document.getElementById("metaOutboundTHP")?.value) || 0;
       const pOutboundReal = parseFloat(document.getElementById("realOutboundTHP")?.value) || 0;
 
+      // FAST START & STRONG FINISH METAS E REAIS
+      const mFast = parseFloat(document.getElementById("metaFastStart")?.value) || 85;
       const realFast = parseFloat(document.getElementById("realFastStart")?.value) || 0;
+      
+      const mStrong = parseFloat(document.getElementById("metaStrongFinish")?.value) || 85;
       const realStrong = parseFloat(document.getElementById("realStrongFinish")?.value) || 0;
 
       const wtRealFastEl = document.getElementById("wtRealFast");
@@ -1922,9 +1903,9 @@
       };
 
       updateRowVisuals("wtResThp", "wtImpactThp", evaluateImpact(realThpPerformance, 100));
-      updateRowVisuals("wtResFast", "wtImpactFast", evaluateImpact(realFast, 85));
+      updateRowVisuals("wtResFast", "wtImpactFast", evaluateImpact(realFast, mFast));
       updateRowVisuals("wtResCot", "wtImpactCot", evaluateImpact(avgRealCot, avgMetaCot));
-      updateRowVisuals("wtResStrong", "wtImpactStrong", evaluateImpact(realStrong, 85));
+      updateRowVisuals("wtResStrong", "wtImpactStrong", evaluateImpact(realStrong, mStrong));
       updateRowVisuals("wtRes5s", "wtImpact5s", evaluateImpact(avg5S, 100));
       updateRowVisuals("wtResIdle", "wtImpactIdle", evaluateImpact(avgRealIdle, avgMetaIdle, true));
 
@@ -1955,7 +1936,7 @@
         avg5S: avg5S,
         avgRealIdle: avgRealIdle,
         avgRealCot: avgRealCot,
-        inboundPerformance: pInboundMeta > 0 ? Math.round((pInboundReal / pInboundMeta) * 100) : 0,
+        idleComplianceReal: idleComplianceReal,
         outboundPerformance: pOutboundMeta > 0 ? Math.round((pOutboundReal / pOutboundMeta) * 100) : 0
       };
     }
@@ -1983,17 +1964,19 @@
 
       const getNumVal = id => parseFloat(document.getElementById(id)?.value) || 0;
 
+      const recordId = document.getElementById("registrarTurnoForm").dataset.currentRecordId || Date.now().toString();
+
       const newRecord = {
-        id: Date.now().toString(),
+        id: recordId,
         date: document.getElementById("regDate")?.value || new Date().toISOString().split('T')[0],
         psName: psName,
         shift: selectedShift,
-        area: document.getElementById("regArea")?.value || "",
-        metaInbound: getNumVal("metaInboundTHP"),
-        realInbound: getNumVal("realInboundTHP"),
+        area: document.getElementById("regArea")?.value || template.area,
         metaOutbound: getNumVal("metaOutboundTHP"),
         realOutbound: getNumVal("realOutboundTHP"),
+        metaFastStart: getNumVal("metaFastStart"),
         realFastStart: getNumVal("realFastStart"),
+        metaStrongFinish: getNumVal("metaStrongFinish"),
         realStrongFinish: getNumVal("realStrongFinish"),
         volPlan: getNumVal("regVolPlan"),
         volReal: getNumVal("regVolReal"),
@@ -2007,6 +1990,7 @@
         },
         realIdle: Math.round(live.avgRealIdle),
         realCot: Math.round(live.avgRealCot),
+        idleCompliance: Math.round(live.idleComplianceReal),
         s5: {
           seiri: getNumVal("s5Seiri"),
           seiton: getNumVal("s5Seiton"),
@@ -2021,21 +2005,28 @@
         hourlyIdleMeta: template.matrixIdleMeta,
         hourlyIdleReal: matrixIdleReal,
         hourlyCOTMeta: template.matrixCotMeta,
-        hourlyCOTReal: matrixCotReal
+        hourlyCOTReal: matrixCotReal,
+        validatedBy: "",
+        validationDate: ""
       };
 
-      records = records.filter(r => !(r.date === newRecord.date && r.shift === newRecord.shift));
+      // Evita duplicações no banco de dados local
+      records = records.filter(r => r.id !== newRecord.id);
       records.push(newRecord);
       localStorage.setItem("kronos_records", JSON.stringify(records));
 
       showToast("Gravando e Sincronizando dados...");
       sendToGoogleSheets(newRecord);
+      
+      // Limpa estado de edição do formulário
+      delete document.getElementById("registrarTurnoForm").dataset.currentRecordId;
       switchView("dashboard");
     }
 
     function resetForm() {
       const form = document.getElementById("registrarTurnoForm");
       if (form) form.reset();
+      delete form.dataset.currentRecordId;
       const regSiteEl = document.getElementById("regSite");
       if (regSiteEl) regSiteEl.value = "BRFPE1";
       onShiftChange();
@@ -2052,11 +2043,11 @@
 
       const titles = {
         dashboard: ["Dashboard Geral", "Visão geral do turno ativo e controle de SLA em tempo real."],
-        registrar: ["Registrar Turno / PS", "Configure metas, pesos operacionais e registre a volumetria horária."],
+        registrar: ["Registrar Turno / PS", "Configure metas, pesos operacionais e registre a volumetria horária de Checking."],
         historico: ["Histórico Temporal", "Relação cronológica completa dos turnos e fechamentos operacionais."],
         ranking: ["Ranking Operacional", "Desempenho comparativo de equipes, PS responsáveis e turnos."],
         warroom: ["War Room", "Métricas analíticas táticas de controle e planos de contingência operacional."],
-        tendencias: ["Análise de Tendências", "Gráficos de evolução histórica do Score e THP operacional."],
+        tendencias: ["Análise de Tendências", "Gráficos de evolução histórica do Score e THP operacional de Checking."],
         exportacoes: ["Exportações & Configurações de API", "Extraia relatórios formatados ou integre o KRONOS com planilhas corporativas."]
       };
 
@@ -2088,42 +2079,9 @@
       if (kpiTotal) kpiTotal.innerText = records.length;
 
       if (active) {
-        const elementsToUpdate = {
-          regDate: active.date,
-          regShift: active.shift,
-          regPSName: active.psName || "",
-          regVolPlan: active.volPlan !== undefined ? active.volPlan : "",
-          regVolReal: active.volReal !== undefined ? active.volReal : "",
-          metaInboundTHP: active.metaInbound !== undefined ? active.metaInbound : "",
-          realInboundTHP: active.realInbound !== undefined ? active.realInbound : "",
-          metaOutboundTHP: active.metaOutbound !== undefined ? active.metaOutbound : "",
-          realOutboundTHP: active.realOutbound !== undefined ? active.realOutbound : "",
-          realFastStart: active.realFastStart !== undefined ? active.realFastStart : "",
-          realStrongFinish: active.realStrongFinish !== undefined ? active.realStrongFinish : "",
-          regGeneralNotes: active.notes || ""
-        };
-
-        for (const [id, value] of Object.entries(elementsToUpdate)) {
-          const el = document.getElementById(id);
-          if (el) el.value = value;
-        }
-
-        const template = turnos[active.shift];
-        if (template && template.horarios) {
-          template.horarios.forEach((_, i) => {
-            const tReal = document.getElementById(`thp_real_${i}`);
-            const iReal = document.getElementById(`idle_real_${i}`);
-            const cReal = document.getElementById(`cot_real_${i}`);
-            if (tReal) tReal.value = (active.hourlyTHPReal && active.hourlyTHPReal[i] !== undefined) ? active.hourlyTHPReal[i] : "";
-            if (iReal) iReal.value = (active.hourlyIdleReal && active.hourlyIdleReal[i] !== undefined) ? active.hourlyIdleReal[i] : "";
-            if (cReal) cReal.value = (active.hourlyCOTReal && active.hourlyCOTReal[i] !== undefined) ? active.hourlyCOTReal[i] : "";
-          });
-        }
-
-        const live = calculateLiveScores();
         updateGauge(active.score, active.classification);
-        updateDashboardKPIs(active, live);
-        renderDetailedFlowPanelsLive(active, live);
+        updateDashboardKPIs(active);
+        renderDetailedFlowPanelsLive(active);
         updateVolumeChart(active);
         renderOpTabs();
       } else {
@@ -2152,117 +2110,88 @@
       }
     }
 
-    function updateDashboardKPIs(active, live) {
+    function updateDashboardKPIs(active) {
       const updateEl = (id, text) => { const el = document.getElementById(id); if (el) el.innerText = text; };
 
-      updateEl("dashKpiInboundPct", `${live.inboundPerformance}%`);
-      updateEl("dashKpiInboundMeta", active.metaInbound);
-      updateEl("dashKpiInboundReal", active.realInbound);
-
-      const inBadge = document.getElementById("inboundBadgeStatus");
-      if (inBadge) {
-        inBadge.innerText = live.inboundPerformance >= 100 ? "SLA OK" : "DESVIO";
-        inBadge.className = "badge-status " + (live.inboundPerformance >= 100 ? "badge-excelente" : "badge-critico");
-      }
-
-      updateEl("dashKpiOutboundPct", `${live.outboundPerformance}%`);
+      const thpPerf = active.metaOutbound > 0 ? Math.round((active.realOutbound / active.metaOutbound) * 100) : 0;
+      updateEl("dashKpiOutboundPct", `${thpPerf}%`);
       updateEl("dashKpiOutboundMeta", active.metaOutbound);
       updateEl("dashKpiOutboundReal", active.realOutbound);
 
       const outBadge = document.getElementById("outboundBadgeStatus");
       if (outBadge) {
-        outBadge.innerText = live.outboundPerformance >= 100 ? "SLA OK" : "DESVIO";
-        outBadge.className = "badge-status " + (live.outboundPerformance >= 100 ? "badge-excelente" : "badge-critico");
+        outBadge.innerText = thpPerf >= 100 ? "SLA OK" : "DESVIO";
+        outBadge.className = "badge-status " + (thpPerf >= 100 ? "badge-excelente" : "badge-critico");
       }
 
       updateEl("dashKpiFast", `${active.realFastStart}%`);
+      const fastMetaVal = active.metaFastStart !== undefined ? active.metaFastStart : 85;
+      updateEl("dashKpiFastMeta", `${fastMetaVal}%`);
+      updateEl("dashKpiFastReal", `${active.realFastStart}%`);
       const fastBadge = document.getElementById("fastBadgeStatus");
       if (fastBadge) {
-        fastBadge.innerText = active.realFastStart >= 85 ? "SLA OK" : "DESVIO";
-        fastBadge.className = "badge-status " + (active.realFastStart >= 85 ? "badge-excelente" : "badge-critico");
+        fastBadge.innerText = active.realFastStart >= fastMetaVal ? "SLA OK" : "DESVIO";
+        fastBadge.className = "badge-status " + (active.realFastStart >= fastMetaVal ? "badge-excelente" : "badge-critico");
       }
 
       updateEl("dashKpiStrong", `${active.realStrongFinish}%`);
+      const strongMetaVal = active.metaStrongFinish !== undefined ? active.metaStrongFinish : 85;
+      updateEl("dashKpiStrongMeta", `${strongMetaVal}%`);
+      updateEl("dashKpiStrongReal", `${active.realStrongFinish}%`);
       const strongBadge = document.getElementById("strongBadgeStatus");
       if (strongBadge) {
-        strongBadge.innerText = active.realStrongFinish >= 85 ? "SLA OK" : "DESVIO";
-        strongBadge.className = "badge-status " + (active.realStrongFinish >= 85 ? "badge-excelente" : "badge-critico");
+        strongBadge.innerText = active.realStrongFinish >= strongMetaVal ? "SLA OK" : "DESVIO";
+        strongBadge.className = "badge-status " + (active.realStrongFinish >= strongMetaVal ? "badge-excelente" : "badge-critico");
       }
     }
 
-    function renderDetailedFlowPanelsLive(active, live) {
-      const inBody = document.getElementById("inboundFlowTableBody");
+    function renderDetailedFlowPanelsLive(active) {
       const outBody = document.getElementById("outboundFlowTableBody");
-
-      if (inBody) {
-        inBody.innerHTML = `
-          <tr>
-            <td>Idle Indicator</td>
-            <td style="text-align: center;">5.0%</td>
-            <td style="text-align: center;">${live.avgRealIdle.toFixed(1)}%</td>
-            <td style="text-align: center;">${(live.avgRealIdle - 5.0).toFixed(1)}%</td>
-            <td style="text-align: right;"><span class="badge-status ${live.avgRealIdle <= 5.0 ? 'badge-excelente' : 'badge-critico'}">${live.avgRealIdle <= 5.0 ? 'SLA OK' : 'DESVIO'}</span></td>
-          </tr>
-          <tr>
-            <td>Fast Start</td>
-            <td style="text-align: center;">85%</td>
-            <td style="text-align: center;">${active.realFastStart}%</td>
-            <td style="text-align: center;">${active.realFastStart - 85}%</td>
-            <td style="text-align: right;"><span class="badge-status ${active.realFastStart >= 85 ? 'badge-excelente' : 'badge-critico'}">${active.realFastStart >= 85 ? 'SLA OK' : 'DESVIO'}</span></td>
-          </tr>
-          <tr>
-            <td>Strong Finish</td>
-            <td style="text-align: center;">85%</td>
-            <td style="text-align: center;">${active.realStrongFinish}%</td>
-            <td style="text-align: center;">${active.realStrongFinish - 85}%</td>
-            <td style="text-align: right;"><span class="badge-status ${active.realStrongFinish >= 85 ? 'badge-excelente' : 'badge-critico'}">${active.realStrongFinish >= 85 ? 'SLA OK' : 'DESVIO'}</span></td>
-          </tr>
-        `;
-      }
-
-      const inUtil = Math.max(0, 100 - live.avgRealIdle);
-      const inGapStart = 85 - active.realFastStart;
-      const inGapReal = active.metaInbound > 0 ? Math.round(((active.realInbound - active.metaInbound) / active.metaInbound) * 100) : 0;
-
-      const setEl = (id, text) => { const el = document.getElementById(id); if (el) el.innerText = text; };
-
-      setEl("inboundUtilVal", `${inUtil.toFixed(1)}%`);
-      setEl("inboundEfVal", `${live.inboundPerformance}%`);
-      setEl("inboundGapStartVal", `${inGapStart > 0 ? '+' : ''}${inGapStart}%`);
-      setEl("inboundGapRealVal", `${inGapReal >= 0 ? '+' : ''}${inGapReal}%`);
+      const rawIdle = active.realIdle !== undefined ? active.realIdle : 0;
+      const complIdle = active.idleCompliance !== undefined ? active.idleCompliance : (100 - rawIdle);
 
       if (outBody) {
         outBody.innerHTML = `
           <tr>
-            <td>COT Performance</td>
+            <td>Checking Performance</td>
             <td style="text-align: center;">100%</td>
-            <td style="text-align: center;">${live.avgRealCot}%</td>
-            <td style="text-align: center;">${live.avgRealCot - 100}%</td>
-            <td style="text-align: right;"><span class="badge-status ${live.avgRealCot >= 100 ? 'badge-excelente' : 'badge-critico'}">${live.avgRealCot >= 100 ? 'SLA OK' : 'DESVIO'}</span></td>
+            <td style="text-align: center;">${active.metaOutbound > 0 ? Math.round((active.realOutbound / active.metaOutbound)*100) : 0}%</td>
+            <td style="text-align: center;">${(active.realOutbound - active.metaOutbound)} THP</td>
+            <td style="text-align: right;"><span class="badge-status ${active.realOutbound >= active.metaOutbound ? 'badge-excelente' : 'badge-critico'}">${active.realOutbound >= active.metaOutbound ? 'SLA OK' : 'DESVIO'}</span></td>
           </tr>
           <tr>
-            <td>Idle Indicator</td>
-            <td style="text-align: center;">8.0%</td>
-            <td style="text-align: center;">${live.avgRealIdle.toFixed(1)}%</td>
-            <td style="text-align: center;">${(live.avgRealIdle - 8.0).toFixed(1)}%</td>
-            <td style="text-align: right;"><span class="badge-status ${live.avgRealIdle <= 8.0 ? 'badge-excelente' : 'badge-critico'}">${live.avgRealIdle <= 8.0 ? 'SLA OK' : 'DESVIO'}</span></td>
+            <td>IDLE Compliance (Inat: ${rawIdle}%)</td>
+            <td style="text-align: center;">>= 95%</td>
+            <td style="text-align: center; ${complIdle < 95 ? 'color: var(--color-critico); font-weight: bold;' : ''}">${complIdle}%</td>
+            <td style="text-align: center;">${(complIdle - 95).toFixed(1)}%</td>
+            <td style="text-align: right;"><span class="badge-status ${complIdle >= 95 ? 'badge-excelente' : 'badge-critico'}">${complIdle >= 95 ? 'SLA OK' : 'DESVIO'}</span></td>
           </tr>
           <tr>
             <td>Fast Start</td>
-            <td style="text-align: center;">85%</td>
+            <td style="text-align: center;">${active.metaFastStart || 85}%</td>
             <td style="text-align: center;">${active.realFastStart}%</td>
-            <td style="text-align: center;">${active.realFastStart - 85}%</td>
-            <td style="text-align: right;"><span class="badge-status ${active.realFastStart >= 85 ? 'badge-excelente' : 'badge-critico'}">${active.realFastStart >= 85 ? 'SLA OK' : 'DESVIO'}</span></td>
+            <td style="text-align: center;">${active.realFastStart - (active.metaFastStart || 85)}%</td>
+            <td style="text-align: right;"><span class="badge-status ${active.realFastStart >= (active.metaFastStart || 85) ? 'badge-excelente' : 'badge-critico'}">${active.realFastStart >= (active.metaFastStart || 85) ? 'SLA OK' : 'DESVIO'}</span></td>
+          </tr>
+          <tr>
+            <td>Strong Finish</td>
+            <td style="text-align: center;">${active.metaStrongFinish || 85}%</td>
+            <td style="text-align: center;">${active.realStrongFinish}%</td>
+            <td style="text-align: center;">${active.realStrongFinish - (active.metaStrongFinish || 85)}%</td>
+            <td style="text-align: right;"><span class="badge-status ${active.realStrongFinish >= (active.metaStrongFinish || 85) ? 'badge-excelente' : 'badge-critico'}">${active.realStrongFinish >= (active.metaStrongFinish || 85) ? 'SLA OK' : 'DESVIO'}</span></td>
           </tr>
         `;
       }
 
-      const outUtil = Math.max(0, 100 - live.avgRealIdle);
-      const outGapStart = 85 - active.realFastStart;
+      const outUtil = Math.max(0, complIdle);
+      const thpPerf = active.metaOutbound > 0 ? Math.round((active.realOutbound / active.metaOutbound) * 100) : 0;
+      const outGapStart = (active.metaFastStart || 85) - active.realFastStart;
       const outGapReal = active.metaOutbound > 0 ? Math.round(((active.realOutbound - active.metaOutbound) / active.metaOutbound) * 100) : 0;
 
+      const setEl = (id, text) => { const el = document.getElementById(id); if (el) el.innerText = text; };
+
       setEl("outboundUtilVal", `${outUtil.toFixed(1)}%`);
-      setEl("outboundEfVal", `${live.outboundPerformance}%`);
+      setEl("outboundEfVal", `${thpPerf}%`);
       setEl("outboundGapStartVal", `${outGapStart > 0 ? '+' : ''}${outGapStart}%`);
       setEl("outboundGapRealVal", `${outGapReal >= 0 ? '+' : ''}${outGapReal}%`);
     }
@@ -2270,21 +2199,15 @@
     function renderEmptyDashboardState() {
       updateGauge(0, "-");
       const emptyKpiIds = [
-        "dashKpiInboundPct", "dashKpiInboundMeta", "dashKpiInboundReal",
         "dashKpiOutboundPct", "dashKpiOutboundMeta", "dashKpiOutboundReal",
         "dashKpiFast", "dashKpiStrong"
       ];
       emptyKpiIds.forEach(id => { const el = document.getElementById(id); if (el) el.innerText = "-"; });
 
-      const inBody = document.getElementById("inboundFlowTableBody");
       const outBody = document.getElementById("outboundFlowTableBody");
-      if (inBody) inBody.innerHTML = `<tr><td colspan="5" class="empty-state-message">Sem dados para a data ativa</td></tr>`;
       if (outBody) outBody.innerHTML = `<tr><td colspan="5" class="empty-state-message">Sem dados para a data ativa</td></tr>`;
 
-      const flowFooterIds = [
-        "inboundUtilVal", "inboundEfVal", "inboundGapStartVal", "inboundGapRealVal",
-        "outboundUtilVal", "outboundEfVal", "outboundGapStartVal", "outboundGapRealVal"
-      ];
+      const flowFooterIds = ["outboundUtilVal", "outboundEfVal", "outboundGapStartVal", "outboundGapRealVal"];
       flowFooterIds.forEach(id => { const el = document.getElementById(id); if (el) el.innerText = "-"; });
 
       if (volumeChart) {
@@ -2303,19 +2226,19 @@
       volumeChart = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['Inbound', 'Outbound'],
+          labels: ['Checking Volume (THP)'],
           datasets: [
             {
               label: 'Meta',
-              data: [active.metaInbound || 0, active.metaOutbound || 0],
+              data: [active.metaOutbound || 0],
               backgroundColor: 'rgba(255, 255, 255, 0.05)',
               borderColor: 'rgba(212, 175, 55, 0.5)',
               borderWidth: 1
             },
             {
               label: 'Realizado',
-              data: [active.realInbound || 0, active.realOutbound || 0],
-              backgroundColor: ['#00f0ff', '#d4af37'],
+              data: [active.realOutbound || 0],
+              backgroundColor: ['#d4af37'],
               borderRadius: 4
             }
           ]
@@ -2333,19 +2256,6 @@
     }
 
     function switchOpTab(tab) {
-      activeOpTab = tab;
-      document.getElementById("tabBtnInbound").classList.remove("active-tab");
-      document.getElementById("tabBtnOutbound").classList.remove("active-tab");
-      document.getElementById("tabContentInbound").style.display = "none";
-      document.getElementById("tabContentOutbound").style.display = "none";
-
-      if (tab === 'inbound') {
-        document.getElementById("tabBtnInbound").classList.add("active-tab");
-        document.getElementById("tabContentInbound").style.display = "block";
-      } else {
-        document.getElementById("tabBtnOutbound").classList.add("active-tab");
-        document.getElementById("tabContentOutbound").style.display = "block";
-      }
       renderOpTabs();
     }
 
@@ -2363,45 +2273,31 @@
         return true;
       });
 
-      const inBody = document.querySelector("#opTabInboundTable tbody");
       const outBody = document.querySelector("#opTabOutboundTable tbody");
-
-      if (!inBody || !outBody) return;
-
-      inBody.innerHTML = "";
+      if (!outBody) return;
       outBody.innerHTML = "";
 
       if (filtered.length === 0) {
-        const fallback = `<tr><td colspan="7" class="empty-state-message">Nenhum dado condizente com os filtros atuais.</td></tr>`;
-        inBody.innerHTML = fallback;
-        outBody.innerHTML = fallback;
+        outBody.innerHTML = `<tr><td colspan="8" class="empty-state-message">Nenhum dado condizente com os filtros atuais.</td></tr>`;
         return;
       }
 
       filtered.forEach(r => {
-        const pctIn = r.metaInbound > 0 ? Math.round((r.realInbound / r.metaInbound) * 100) : 0;
-        inBody.innerHTML += `
-          <tr>
-            <td>${r.date}</td>
-            <td><strong>${r.psName || ""}</strong></td>
-            <td>${r.shift}</td>
-            <td>${r.area}</td>
-            <td>${r.metaInbound || 0} THP</td>
-            <td>${r.realInbound || 0} THP</td>
-            <td><span class="badge-status ${pctIn >= 100 ? 'badge-excelente' : 'badge-critico'}">${pctIn}%</span></td>
-          </tr>
-        `;
-
         const pctOut = r.metaOutbound > 0 ? Math.round((r.realOutbound / r.metaOutbound) * 100) : 0;
+        const validationStatus = r.validatedBy 
+          ? `<span class="badge-status badge-excelente" style="font-size: 0.6rem;">Aprovado por: ${r.validatedBy}</span>`
+          : `<span class="badge-status badge-atencao" style="font-size: 0.6rem; cursor: pointer;" onclick="showValidationModal('${r.id}')">Validar Score</span>`;
+
         outBody.innerHTML += `
           <tr>
             <td>${r.date}</td>
             <td><strong>${r.psName || ""}</strong></td>
             <td>${r.shift}</td>
-            <td>${r.area}</td>
+            <td>${r.area || "Checking"}</td>
             <td>${r.metaOutbound || 0} THP</td>
             <td>${r.realOutbound || 0} THP</td>
             <td><span class="badge-status ${pctOut >= 100 ? 'badge-excelente' : 'badge-critico'}">${pctOut}%</span></td>
+            <td>${validationStatus}</td>
           </tr>
         `;
       });
@@ -2421,15 +2317,20 @@
 
       sorted.forEach(r => {
         const tr = document.createElement("tr");
+        const valStatus = r.validatedBy 
+          ? `<span class="badge-status badge-excelente" style="font-size: 0.6rem;">Assinado: ${r.validatedBy}</span>` 
+          : `<span class="badge-status badge-atencao" style="font-size: 0.6rem; cursor: pointer;" onclick="showValidationModal('${r.id}')">Pendente</span>`;
+
         tr.innerHTML = `
           <td>${r.date}</td>
           <td><strong>${r.shift}</strong></td>
           <td>${r.psName || ""}</td>
-          <td>${r.area}</td>
-          <td>${r.realInbound} / ${r.metaInbound} THP</td>
+          <td>${r.area || "Checking"}</td>
           <td>${r.realOutbound} / ${r.metaOutbound} THP</td>
           <td><span class="badge-status ${r.score >= 95 ? 'badge-elite' : (r.score >= 80 ? 'badge-ok' : 'badge-critico')}">${r.score}% SLA</span></td>
+          <td>${valStatus}</td>
           <td style="text-align: right; display: flex; gap: 6px; justify-content: flex-end;">
+            <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.7rem;" onclick="generateValidationLink('${r.id}')">Link Validação</button>
             <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.7rem;" onclick="loadRecordToForm('${r.id}')">Carregar</button>
             <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.7rem;" onclick="deleteRecord('${r.id}')">Excluir</button>
           </td>
@@ -2438,26 +2339,87 @@
       });
     }
 
+    function showValidationModal(id) {
+      const r = records.find(record => record.id === id);
+      if (!r) {
+        showToast("Registro operacional não localizado.", "error");
+        return;
+      }
+      activeValidationId = id;
+      document.getElementById("valModalDate").innerText = r.date;
+      document.getElementById("valModalShift").innerText = r.shift;
+      document.getElementById("valModalPS").innerText = r.psName;
+      document.getElementById("valModalScore").innerText = `${r.score}% SLA [${r.classification.toUpperCase()}]`;
+      document.getElementById("valSupervisorName").value = r.validatedBy || "";
+      
+      document.getElementById("validationModal").style.display = "grid";
+    }
+
+    function closeValidationModal() {
+      document.getElementById("validationModal").style.display = "none";
+      activeValidationId = null;
+    }
+
+    function confirmSupervisorValidation() {
+      const supervisorName = document.getElementById("valSupervisorName").value.trim();
+      if (!supervisorName) {
+        showToast("Insira o nome do supervisor para assinar.", "warning");
+        return;
+      }
+
+      const r = records.find(record => record.id === activeValidationId);
+      if (r) {
+        r.validatedBy = supervisorName;
+        r.validationDate = new Date().toISOString().split('T')[0];
+        localStorage.setItem("kronos_records", JSON.stringify(records));
+        
+        showToast("Score de turno homologado e validado com sucesso.");
+        sendToGoogleSheets(r);
+        closeValidationModal();
+        
+        // Remove parâmetro de validação da URL para evitar loops
+        if (window.location.search.includes("validate=")) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        renderHistory();
+        renderOpTabs();
+      }
+    }
+
+    function generateValidationLink(id) {
+      const baseUrl = window.location.origin + window.location.pathname;
+      const finalLink = `${baseUrl}?validate=${id}`;
+      navigator.clipboard.writeText(finalLink).then(() => {
+        showToast("Link de validação copiado. Envie para o supervisor.");
+      }).catch(() => {
+        showToast("Falha ao gerar link automaticamente.", "error");
+      });
+    }
+
     function loadRecordToForm(id) {
       const record = records.find(r => r.id === id);
       if (!record) return;
+
+      document.getElementById("registrarTurnoForm").dataset.currentRecordId = record.id;
 
       const elementsToUpdate = {
         regDate: record.date,
         regPSName: record.psName || "",
         regShift: record.shift,
+        regArea: record.area || "Checking",
         regVolPlan: record.volPlan !== undefined ? record.volPlan : "",
         regVolReal: record.volReal !== undefined ? record.volReal : "",
-        metaInboundTHP: record.metaInbound !== undefined ? record.metaInbound : "",
-        realInboundTHP: record.realInbound !== undefined ? record.realInbound : "",
         metaOutboundTHP: record.metaOutbound !== undefined ? record.metaOutbound : "",
         realOutboundTHP: record.realOutbound !== undefined ? record.realOutbound : "",
+        metaFastStart: record.metaFastStart !== undefined ? record.metaFastStart : 85,
         realFastStart: record.realFastStart !== undefined ? record.realFastStart : "",
+        metaStrongFinish: record.metaStrongFinish !== undefined ? record.metaStrongFinish : 85,
         realStrongFinish: record.realStrongFinish !== undefined ? record.realStrongFinish : "",
-        s5Seiri: record.s5 ? record.s5.seiri : "",
-        s5Seiton: record.s5 ? record.s5.seiton : "",
-        s5Seiso: record.s5 ? record.s5.seiso : "",
-        s5Shitsuke: record.s5 ? record.s5.shitsuke : "",
+        s5Seiri: record.s5 ? record.s5.seiri : "100",
+        s5Seiton: record.s5 ? record.s5.seiton : "100",
+        s5Seiso: record.s5 ? record.s5.seiso : "100",
+        s5Shitsuke: record.s5 ? record.s5.shitsuke : "100",
         regGeneralNotes: record.notes || ""
       };
 
@@ -2556,9 +2518,9 @@
       const setEl = (id, text) => { const el = document.getElementById(id); if (el) el.innerText = text; };
 
       if (records.length === 0) {
-        setEl("wrBestKpiName", "-"); setEl("wrBestKpiMeta", "-"); setEl("wrBestKpiReal", "-");
-        setEl("wrWorstKpiName", "-"); setEl("wrWorstKpiMeta", "-"); setEl("wrWorstKpiReal", "-");
-        setEl("wrInboundConsolidated", "-"); setEl("wrOutboundConsolidated", "-");
+        setEl("wrBestKpiName", "-"); setEl("wrBestKpiReal", "-");
+        setEl("wrWorstKpiName", "-"); setEl("wrWorstKpiReal", "-");
+        setEl("wrOutboundConsolidated", "-"); setEl("wrIdleConsolidated", "-");
         setEl("wrFastActual", "-"); setEl("wrBestPsName", "-"); setEl("wrBestPsScore", "0%");
         setEl("warRoomTrend", "Sem dados");
         const psTbody = document.querySelector("#wrPsRankingTable tbody");
@@ -2568,36 +2530,54 @@
         return;
       }
 
-      const latest = records[records.length - 1];
-      const inboundPerf = latest.metaInbound > 0 ? (latest.realInbound / latest.metaInbound) * 100 : 0;
-      const outboundPerf = latest.metaOutbound > 0 ? (latest.realOutbound / latest.metaOutbound) * 100 : 0;
+      // NOVO CÁLCULO WAR ROOM: Traz os melhores e piores indicadores de TODOS os turnos de forma agregada e consolidada
+      let totalFastSum = 0, totalStrongSum = 0, totalThpPctSum = 0, totalIdleComplianceSum = 0, totalCotSum = 0;
+      let recordCount = records.length;
 
-      const candidates = [
-        { name: "Inbound", real: Math.round(inboundPerf), meta: 100 },
-        { name: "Outbound", real: Math.round(outboundPerf), meta: 100 },
-        { name: "Fast Start", real: latest.realFastStart || 0, meta: 85 },
-        { name: "Strong Finish", real: latest.realStrongFinish || 0, meta: 85 },
-        { name: "COT", real: latest.realCot || 0, meta: 100 },
-        { name: "Idle", real: 100 - (latest.realIdle || 0), meta: 95 }
+      records.forEach(r => {
+        totalFastSum += (r.realFastStart || 0);
+        totalStrongSum += (r.realStrongFinish || 0);
+        const thpPerf = r.metaOutbound > 0 ? (r.realOutbound / r.metaOutbound) * 100 : 0;
+        totalThpPctSum += thpPerf;
+        totalIdleComplianceSum += (r.idleCompliance !== undefined ? r.idleCompliance : (100 - (r.realIdle || 0)));
+        totalCotSum += (r.realCot || 0);
+      });
+
+      const avgFast = Math.round(totalFastSum / recordCount);
+      const avgStrong = Math.round(totalStrongSum / recordCount);
+      const avgThp = Math.round(totalThpPctSum / recordCount);
+      const avgIdleCompliance = Math.round(totalIdleComplianceSum / recordCount);
+      const avgCot = Math.round(totalCotSum / recordCount);
+
+      const listKpis = [
+        { name: "Checking THP", real: avgThp },
+        { name: "Fast Start", real: avgFast },
+        { name: "Strong Finish", real: avgStrong },
+        { name: "COT Compliance", real: avgCot },
+        { name: "IDLE Compliance", real: avgIdleCompliance }
       ];
 
-      candidates.sort((a, b) => (a.real - a.meta) - (b.real - b.meta));
-      const worst = candidates[0];
-      const best = candidates[candidates.length - 1];
+      // Ordenação para encontrar o melhor e pior no geral acumulado de todos os turnos
+      listKpis.sort((a,b) => b.real - a.real);
+      const best = listKpis[0];
+      const worst = listKpis[listKpis.length - 1];
 
-      setEl("wrBestKpiName", best.name); setEl("wrBestKpiMeta", `${best.meta}%`); setEl("wrBestKpiReal", `${best.real}%`);
-      setEl("wrWorstKpiName", worst.name); setEl("wrWorstKpiMeta", `${worst.meta}%`); setEl("wrWorstKpiReal", `${worst.real}%`);
+      setEl("wrBestKpiName", best.name); 
+      setEl("wrBestKpiReal", `${best.real}%`);
+      setEl("wrWorstKpiName", worst.name); 
+      setEl("wrWorstKpiReal", `${worst.real}%`);
 
-      setEl("wrInboundConsolidated", `${Math.round(inboundPerf)}%`);
-      setEl("wrOutboundConsolidated", `${Math.round(outboundPerf)}%`);
-      
-      setEl("wrFastActual", `${latest.realFastStart || 0}%`);
+      setEl("wrOutboundConsolidated", `${avgThp}%`);
+      setEl("wrIdleConsolidated", `${avgIdleCompliance}%`);
+      setEl("wrFastActual", `${avgFast}%`);
+
       const fastBadge = document.getElementById("wrFastStatus");
       if (fastBadge) {
-        fastBadge.innerText = (latest.realFastStart || 0) >= 85 ? "SLA OK" : "DESVIO";
-        fastBadge.className = "badge-status " + ((latest.realFastStart || 0) >= 85 ? "badge-excelente" : "badge-critico");
+        fastBadge.innerText = avgFast >= 85 ? "SLA OK" : "DESVIO";
+        fastBadge.className = "badge-status " + (avgFast >= 85 ? "badge-excelente" : "badge-critico");
       }
 
+      // Ranking de PS e Turnos
       const leadersMap = {};
       const shiftsMap = {};
       records.forEach(r => {
@@ -2664,8 +2644,8 @@
       const scores = lastSeven.map(r => r.score);
       const targets = lastSeven.map(() => 95);
 
-      const realTHPs = lastSeven.map(r => (r.realInbound || 0) + (r.realOutbound || 0));
-      const metaTHPs = lastSeven.map(r => (r.metaInbound || 0) + (r.metaOutbound || 0));
+      const realTHPs = lastSeven.map(r => (r.realOutbound || 0));
+      const metaTHPs = lastSeven.map(r => (r.metaOutbound || 0));
 
       if (trendScoreChart) trendScoreChart.destroy();
       if (trendThpChart) trendThpChart.destroy();
@@ -2808,28 +2788,24 @@
 
         <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse; margin-bottom: 20px;">
           <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-            <td style="padding: 6px 0; color: #8491a5;">Volumetria Inbound</td>
-            <td style="text-align: right;">${active.realInbound || 0} / ${active.metaInbound || 0} THP</td>
-          </tr>
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-            <td style="padding: 6px 0; color: #8491a5;">Volumetria Outbound</td>
+            <td style="padding: 6px 0; color: #8491a5;">Volumetria Checking</td>
             <td style="text-align: right;">${active.realOutbound || 0} / ${active.metaOutbound || 0} THP</td>
           </tr>
           <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
             <td style="padding: 6px 0; color: #8491a5;">Fast Start</td>
-            <td style="text-align: right;">${active.realFastStart || 0}%</td>
+            <td style="text-align: right;">${active.realFastStart || 0}% / ${active.metaFastStart || 85}%</td>
           </tr>
           <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
             <td style="padding: 6px 0; color: #8491a5;">Strong Finish</td>
-            <td style="text-align: right;">${active.realStrongFinish || 0}%</td>
+            <td style="text-align: right;">${active.realStrongFinish || 0}% / ${active.metaStrongFinish || 85}%</td>
           </tr>
           <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
             <td style="padding: 6px 0; color: #8491a5;">Média Auditoria 5S</td>
             <td style="text-align: right;">${scoreAvg5S}%</td>
           </tr>
           <tr>
-            <td style="padding: 6px 0; color: #8491a5;">Ociosidade (IDLE)</td>
-            <td style="text-align: right;">${active.realIdle || 0}%</td>
+            <td style="padding: 6px 0; color: #8491a5;">Conformidade IDLE</td>
+            <td style="text-align: right;">${active.idleCompliance || 0}%</td>
           </tr>
         </table>
 
@@ -2860,9 +2836,9 @@
         return;
       }
 
-      let csv = "ID;Data;Turno;PS_Responsavel;Area;Inbound_Meta;Inbound_Real;Outbound_Meta;Outbound_Real;FastStart_Real;StrongFinish_Real;Idle_Media;COT_Media;Score;Classificacao;Resumo_Ocorrencias\n";
+      let csv = "ID;Data;Turno;PS_Responsavel;Area;Checking_Meta;Checking_Real;FastStart_Meta;FastStart_Real;StrongFinish_Meta;StrongFinish_Real;Idle_Media;COT_Media;Score;Classificacao;Supervisor;Resumo_Ocorrencias\n";
       records.forEach(r => {
-        csv += `${r.id};${r.date};${r.shift};${r.psName || ""};${r.area};${r.metaInbound || 0};${r.realInbound || 0};${r.metaOutbound || 0};${r.realOutbound || 0};${r.realFastStart || 0};${r.realStrongFinish || 0};${r.realIdle || 0};${r.realCot || 0};${r.score};${r.classification};"${(r.notes || "").replace(/"/g, '""')}"\n`;
+        csv += `${r.id};${r.date};${r.shift};${r.psName || ""};${r.area || "Checking"};${r.metaOutbound || 0};${r.realOutbound || 0};${r.metaFastStart || 85};${r.realFastStart || 0};${r.metaStrongFinish || 85};${r.realStrongFinish || 0};${r.realIdle || 0};${r.realCot || 0};${r.score};${r.classification};${r.validatedBy || ""};"${(r.notes || "").replace(/"/g, '""')}"\n`;
       });
 
       const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
@@ -2886,21 +2862,19 @@
 ----------------------------------------
 *Data:* ${active.date} | *Turno:* ${active.shift}
 *PS Responsável:* ${active.psName || ""}
+*Área:* ${active.area || "Checking"}
 
 *🏆 Score Ponderado de Turno:* ${active.score}% SLA [${active.classification.toUpperCase()}]
+*Validação do Supervisor:* ${active.validatedBy ? 'VALIDADO POR ' + active.validatedBy.toUpperCase() : 'PENDENTE'}
 
-*📈 Fluxo Inbound:*
-• Meta Planejada: ${active.metaInbound || 0} THP
-• Realizado Acumulado: ${active.realInbound || 0} THP
-
-*📉 Fluxo Outbound:*
+*📉 Fluxo Checking & Outbound:*
 • Meta Planejada: ${active.metaOutbound || 0} THP
 • Realizado Acumulado: ${active.realOutbound || 0} THP
 
 *🛠 Indicadores de Eficiência:*
-• Fast Start: ${active.realFastStart || 0}%
-• Strong Finish: ${active.realStrongFinish || 0}%
-• Média Ociosidade (IDLE): ${active.realIdle || 0}%
+• Fast Start: ${active.realFastStart || 0}% (Meta: ${active.metaFastStart || 85}%)
+• Strong Finish: ${active.realStrongFinish || 0}% (Meta: ${active.metaStrongFinish || 85}%)
+• Conformidade IDLE (Ociosidade): ${active.idleCompliance || 0}% (Meta: >=95%)
 • Média Atingimento COT: ${active.realCot || 0}%
 
 *📝 Resumo Geral das Ocorrências:*
@@ -2950,7 +2924,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
     function syncWithGoogleSheets() {
       const badge = document.getElementById("connectionBadge");
       if (!configApiUrl) {
-        showToast("Modo local ativo. Configure a URL da API Web App nas configurações.", "warning");
+        showToast("Modo local ativo.", "warning");
         const cached = localStorage.getItem("kronos_records");
         records = cached ? JSON.parse(cached) : [];
         loadActiveData();
@@ -2966,7 +2940,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
         badge.style.color = "var(--color-atencao)";
       }
 
-      showToast("Sincronizando dados com o Google Sheets...");
+      showToast("Sincronizando com Google Sheets...");
       
       fetch(`${configApiUrl}?action=getRecords`, { method: "GET", mode: "cors" })
         .then(res => {
@@ -2974,7 +2948,9 @@ ${active.notes || "Sem observações adicionais gravadas."}
           return res.json();
         })
         .then(data => {
-          records = data || [];
+          // Mescla dados locais que ainda não foram sincronizados
+          const localOnly = records.filter(local => !data.some(remote => remote.id === local.id));
+          records = [...data, ...localOnly];
           localStorage.setItem("kronos_records", JSON.stringify(records));
           showToast("Dados sincronizados com o servidor central.");
           
@@ -2991,7 +2967,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
         })
         .catch(err => {
           console.error("Erro de sincronização:", err);
-          showToast("Servidor off-line. Utilizando cache persistido.", "error");
+          showToast("Servidor central off-line. Utilizando cache persistido.", "error");
           
           const cached = localStorage.getItem("kronos_records");
           records = cached ? JSON.parse(cached) : [];
@@ -3011,7 +2987,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
 
     function sendToGoogleSheets(record) {
       if (!configApiUrl) {
-        showToast("Salvo localmente.", "info");
+        showToast("Salvo localmente no navegador.", "info");
         syncWithGoogleSheets();
         return;
       }
@@ -3033,7 +3009,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
       })
       .catch(err => {
         console.error("Erro ao enviar dados:", err);
-        showToast("Erro ao sincronizar. O registro foi armazenado localmente para posterior reenvio.", "error");
+        showToast("Erro de envio. Armazenado localmente para posterior reenvio.", "error");
         syncWithGoogleSheets();
       });
     }
