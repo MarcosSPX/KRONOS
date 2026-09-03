@@ -9,7 +9,7 @@
   
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
+ 
   <style>
     :root {
       --bg-main: #050608;
@@ -34,13 +34,13 @@
       --radius-md: 6px;
       --transition-premium: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
-
+ 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
+ 
     body {
       font-family: 'Inter', sans-serif;
       background-color: var(--bg-main);
@@ -50,7 +50,7 @@
       overflow: hidden;
       background-image: radial-gradient(circle at 5% 5%, rgba(0, 240, 255, 0.02) 0%, transparent 35%), radial-gradient(circle at 95% 95%, rgba(212, 175, 55, 0.02) 0%, transparent 35%);
     }
-
+ 
     aside {
       width: 250px;
       background-color: var(--bg-sidebar);
@@ -61,7 +61,7 @@
       flex-shrink: 0;
       z-index: 10;
     }
-
+ 
     .brand-section {
       padding: 20px 16px;
       display: flex;
@@ -69,7 +69,7 @@
       gap: 12px;
       border-bottom: 1px solid var(--border-gold);
     }
-
+ 
     .brand-gear-container {
       position: relative;
       width: 36px;
@@ -78,7 +78,7 @@
       align-items: center;
       justify-content: center;
     }
-
+ 
     .brand-gear {
       position: absolute;
       width: 100%;
@@ -87,7 +87,7 @@
       border-radius: 50%;
       animation: rotateCog 15s linear infinite;
     }
-
+ 
     .brand-gear-center {
       width: 8px;
       height: 8px;
@@ -96,7 +96,7 @@
       box-shadow: 0 0 8px var(--electric-blue);
       z-index: 2;
     }
-
+ 
     .brand-title h1 {
       font-family: 'Cinzel', serif;
       font-size: 1.15rem;
@@ -104,7 +104,7 @@
       color: #fff;
       text-shadow: 0 0 10px var(--gold-glow);
     }
-
+ 
     .brand-title span {
       font-size: 0.6rem;
       color: var(--text-muted);
@@ -112,7 +112,7 @@
       text-transform: uppercase;
       display: block;
     }
-
+ 
     .nav-menu {
       list-style: none;
       padding: 12px 8px;
@@ -121,7 +121,7 @@
       gap: 4px;
       flex-grow: 1;
     }
-
+ 
     .nav-item {
       display: flex;
       align-items: center;
@@ -135,24 +135,24 @@
       transition: var(--transition-premium);
       border-left: 3px solid transparent;
     }
-
+ 
     .nav-item:hover {
       background-color: rgba(255, 255, 255, 0.02);
       color: var(--text-primary);
     }
-
+ 
     .nav-item.active {
       background: linear-gradient(90deg, rgba(212, 175, 55, 0.08), transparent);
       color: var(--text-primary);
       border-left-color: var(--gold-metallic);
       font-weight: 600;
     }
-
+ 
     .sidebar-footer {
       padding: 16px;
       border-top: 1px solid var(--border-gold);
     }
-
+ 
     .conn-status {
       display: inline-flex;
       align-items: center;
@@ -165,7 +165,7 @@
       font-size: 0.7rem;
       font-weight: bold;
     }
-
+ 
     .conn-status::before {
       content: '';
       width: 5px;
@@ -174,20 +174,20 @@
       border-radius: 50%;
       box-shadow: 0 0 6px var(--color-atencao);
     }
-
+ 
     .sidebar-footer p {
       font-size: 0.65rem;
       color: var(--text-muted);
       margin-top: 6px;
     }
-
+ 
     main {
       flex-grow: 1;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
-
+ 
     header {
       padding: 12px 24px;
       border-bottom: 1px solid var(--border-gold);
@@ -198,51 +198,51 @@
       background-color: rgba(10, 12, 16, 0.8);
       backdrop-filter: blur(10px);
     }
-
+ 
     .page-title h2 {
       font-family: 'Cinzel', serif;
       font-size: 1.2rem;
       letter-spacing: 1px;
     }
-
+ 
     .page-title p {
       font-size: 0.75rem;
       color: var(--text-muted);
       margin-top: 1px;
     }
-
+ 
     .workspace {
       padding: 16px 24px;
       overflow-y: auto;
       flex-grow: 1;
     }
-
+ 
     .view-panel {
       display: none;
     }
-
+ 
     .view-panel.active {
       display: block;
       animation: viewFadeIn 0.3s ease-out;
     }
-
+ 
     .grid-layout {
       display: grid;
       gap: 12px;
       margin-bottom: 16px;
     }
-
+ 
     .cols-5 { grid-template-columns: repeat(5, 1fr); }
     .cols-4 { grid-template-columns: repeat(4, 1fr); }
     .cols-3 { grid-template-columns: repeat(3, 1fr); }
     .cols-2 { grid-template-columns: repeat(2, 1fr); }
     .cols-1 { grid-template-columns: 1fr; }
-
+ 
     @media (max-width: 1400px) {
       .cols-4 { grid-template-columns: repeat(2, 1fr); }
       .cols-3 { grid-template-columns: repeat(1, 1fr); }
     }
-
+ 
     .kronos-card {
       background-color: var(--bg-card);
       border: 1px solid var(--border-gold);
@@ -252,7 +252,7 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
       transition: var(--transition-premium);
     }
-
+ 
     .kronos-card::after {
       content: '';
       position: absolute;
@@ -262,19 +262,19 @@
       height: 100%;
       background: var(--gold-metallic);
     }
-
+ 
     .kronos-card:hover {
       transform: translateY(-1px);
       box-shadow: 0 6px 20px var(--gold-glow);
     }
-
+ 
     .kronos-card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 6px;
     }
-
+ 
     .kronos-card-title {
       font-size: 0.7rem;
       text-transform: uppercase;
@@ -282,7 +282,7 @@
       color: var(--text-muted);
       font-weight: bold;
     }
-
+ 
     .gauge-wrapper {
       display: flex;
       flex-direction: column;
@@ -290,19 +290,19 @@
       justify-content: center;
       padding: 4px 0;
     }
-
+ 
     .gauge-svg {
       width: 150px;
       height: 85px;
     }
-
+ 
     .gauge-track {
       fill: none;
       stroke: rgba(255, 255, 255, 0.03);
       stroke-width: 12;
       stroke-linecap: round;
     }
-
+ 
     .gauge-fill {
       fill: none;
       stroke: url(#gauge-gold-grad);
@@ -312,14 +312,14 @@
       stroke-dashoffset: 283;
       transition: stroke-dashoffset 1s ease-in-out;
     }
-
+ 
     .gauge-value {
       font-family: 'Share Tech Mono', monospace;
       font-size: 2.2rem;
       font-weight: 700;
       fill: #fff;
     }
-
+ 
     .badge-status {
       display: inline-flex;
       align-items: center;
@@ -330,13 +330,13 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-
+ 
     .badge-elite { background-color: rgba(212, 175, 55, 0.15); color: var(--color-elite); border: 1px solid rgba(212, 175, 55, 0.3); }
     .badge-excelente { background-color: rgba(0, 230, 118, 0.15); color: var(--color-excelente); border: 1px solid rgba(0, 230, 118, 0.3); }
     .badge-ok { background-color: rgba(0, 176, 255, 0.15); color: var(--color-ok); border: 1px solid rgba(0, 176, 255, 0.3); }
     .badge-atencao { background-color: rgba(255, 235, 59, 0.15); color: var(--color-atencao); border: 1px solid rgba(255, 235, 59, 0.3); }
     .badge-critico { background-color: rgba(255, 23, 68, 0.15); color: var(--color-critico); border: 1px solid rgba(255, 23, 68, 0.3); }
-
+ 
     .timeline-card {
       background-color: var(--bg-card);
       border: 1px solid var(--border-gold);
@@ -344,28 +344,28 @@
       padding: 16px 20px;
       margin-bottom: 16px;
     }
-
+ 
     .timeline-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
     }
-
+ 
     .timeline-title {
       font-family: 'Cinzel', serif;
       font-size: 0.9rem;
       letter-spacing: 1px;
       color: var(--gold-metallic);
     }
-
+ 
     .timeline-track-container {
       display: flex;
       justify-content: space-between;
       position: relative;
       padding: 10px 0;
     }
-
+ 
     .timeline-track-container::before {
       content: '';
       position: absolute;
@@ -377,7 +377,7 @@
       transform: translateY(-50%);
       z-index: 1;
     }
-
+ 
     .timeline-node-step {
       display: flex;
       flex-direction: column;
@@ -386,7 +386,7 @@
       z-index: 2;
       width: 20%;
     }
-
+ 
     .timeline-bullet {
       width: 16px;
       height: 16px;
@@ -396,12 +396,12 @@
       box-shadow: 0 0 10px var(--gold-glow);
       transition: var(--transition-premium);
     }
-
+ 
     .timeline-node-step.active .timeline-bullet {
       border-color: var(--electric-blue);
       box-shadow: 0 0 12px var(--blue-glow);
     }
-
+ 
     .timeline-node-label {
       font-size: 0.7rem;
       font-weight: bold;
@@ -409,14 +409,14 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-
+ 
     .timeline-node-time {
       font-family: 'Share Tech Mono', monospace;
       font-size: 0.65rem;
       color: var(--text-muted);
       margin-top: 2px;
     }
-
+ 
     .matrix-wrapper {
       background-color: var(--bg-card);
       border: 1px solid var(--border-gold);
@@ -424,7 +424,7 @@
       margin-bottom: 16px;
       overflow: hidden;
     }
-
+ 
     .matrix-title-bar {
       background-color: #121824;
       color: white;
@@ -437,18 +437,18 @@
       justify-content: space-between;
       align-items: center;
     }
-
+ 
     .matrix-table-scroll {
       width: 100%;
       overflow-x: auto;
     }
-
+ 
     .matrix-table {
       width: 100%;
       border-collapse: collapse;
       min-width: 900px;
     }
-
+ 
     .matrix-table th {
       background-color: rgba(255, 255, 255, 0.01);
       color: var(--text-muted);
@@ -459,13 +459,13 @@
       border: 1px solid var(--border-gold);
       text-align: center;
     }
-
+ 
     .matrix-table td {
       padding: 4px 6px;
       border: 1px solid var(--border-gold);
       text-align: center;
     }
-
+ 
     .matrix-table td.row-header {
       text-align: left;
       font-weight: 700;
@@ -474,7 +474,7 @@
       background-color: rgba(255, 255, 255, 0.02);
       width: 180px;
     }
-
+ 
     .matrix-table input {
       width: 100%;
       background-color: var(--bg-input);
@@ -487,24 +487,24 @@
       font-size: 0.8rem;
       outline: none;
     }
-
+ 
     .matrix-table input:focus {
       border-color: var(--gold-metallic);
     }
-
+ 
     .pct-calc-cell {
       font-family: 'Share Tech Mono', monospace;
       font-weight: bold;
       font-size: 0.8rem;
     }
-
+ 
     .form-group {
       display: flex;
       flex-direction: column;
       gap: 4px;
       margin-bottom: 10px;
     }
-
+ 
     .form-group label {
       font-size: 0.7rem;
       font-weight: bold;
@@ -512,7 +512,7 @@
       color: var(--text-muted);
       letter-spacing: 0.5px;
     }
-
+ 
     input, select, textarea {
       background-color: var(--bg-input);
       border: 1px solid var(--border-color);
@@ -523,24 +523,24 @@
       outline: none;
       transition: var(--transition-premium);
     }
-
+ 
     input:focus, select:focus, textarea:focus {
       border-color: var(--gold-metallic);
       box-shadow: 0 0 8px var(--gold-glow);
     }
-
+ 
     .table-responsive {
       width: 100%;
       overflow-x: auto;
       margin-top: 6px;
     }
-
+ 
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 0.75rem;
     }
-
+ 
     th {
       background-color: rgba(255, 255, 255, 0.01);
       color: var(--text-muted);
@@ -551,16 +551,16 @@
       border-bottom: 1px solid var(--border-gold);
       text-align: left;
     }
-
+ 
     td {
       padding: 8px 12px;
       border-bottom: 1px solid var(--border-color);
     }
-
+ 
     tr:hover td {
       background-color: rgba(255, 255, 255, 0.01);
     }
-
+ 
     .btn {
       display: inline-flex;
       align-items: center;
@@ -574,56 +574,61 @@
       border: none;
       transition: var(--transition-premium);
     }
-
+ 
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+ 
     .btn-gold {
       background: linear-gradient(135deg, var(--gold-metallic), var(--gold-dark));
       color: var(--bg-main);
       box-shadow: 0 3px 10px var(--gold-glow);
     }
-
+ 
     .btn-gold:hover {
       filter: brightness(1.1);
       transform: translateY(-0.5px);
     }
-
+ 
     .btn-secondary {
       background-color: transparent;
       color: var(--text-primary);
       border: 1px solid var(--border-gold);
     }
-
+ 
     .btn-secondary:hover {
       background-color: rgba(255, 255, 255, 0.02);
       border-color: var(--electric-blue);
     }
-
+ 
     .btn-secondary.active-tab {
       background-color: rgba(212, 175, 55, 0.15);
       border-color: var(--gold-metallic);
     }
-
+ 
     .btn-danger {
       background-color: rgba(255, 23, 68, 0.1);
       color: var(--color-critico);
       border: 1px solid rgba(255, 23, 68, 0.2);
     }
-
+ 
     .btn-danger:hover {
       background-color: rgba(255, 23, 68, 0.15);
     }
-
+ 
     .chart-box {
       height: 200px;
       position: relative;
     }
-
+ 
     .flow-panel-container {
       display: grid;
       grid-template-columns: 1fr;
       gap: 12px;
       margin-bottom: 16px;
     }
-
+ 
     .flow-card {
       background-color: var(--bg-card);
       border: 1px solid var(--border-gold);
@@ -633,7 +638,7 @@
       flex-direction: column;
       justify-content: space-between;
     }
-
+ 
     .flow-header {
       border-bottom: 1px solid rgba(212, 175, 55, 0.1);
       padding-bottom: 6px;
@@ -643,7 +648,7 @@
       letter-spacing: 0.5px;
       color: var(--electric-blue);
     }
-
+ 
     .flow-footer {
       margin-top: 8px;
       padding-top: 8px;
@@ -653,29 +658,29 @@
       gap: 6px;
       text-align: center;
     }
-
+ 
     .flow-footer-metric {
       font-size: 0.65rem;
       color: var(--text-muted);
     }
-
+ 
     .flow-footer-value {
       font-family: 'Share Tech Mono', monospace;
       font-weight: bold;
       font-size: 0.85rem;
       color: #fff;
     }
-
+ 
     @keyframes rotateCog {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
+ 
     @keyframes viewFadeIn {
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
+ 
     .toast-container {
       position: fixed;
       bottom: 16px;
@@ -685,7 +690,7 @@
       gap: 8px;
       z-index: 10000;
     }
-
+ 
     .toast {
       background-color: var(--bg-card);
       border: 1px solid var(--border-gold);
@@ -700,7 +705,7 @@
       animation: viewFadeIn 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
       transition: opacity 0.25s ease;
     }
-
+ 
     .empty-state-message {
       padding: 30px;
       text-align: center;
@@ -711,7 +716,7 @@
   </style>
 </head>
 <body>
-
+ 
   <aside>
     <div>
       <div class="brand-section">
@@ -750,11 +755,11 @@
     </div>
     <div class="sidebar-footer">
       <div class="conn-status" id="connectionBadge">Conectando...</div>
-      <p>KRONOS Engine v2.1 • BRFPE1</p>
+      <p>KRONOS Engine v2.2 • BRFPE1</p>
       <p style="opacity: 0.5;">Controle do tempo. Domínio da operação.</p>
     </div>
   </aside>
-
+ 
   <main>
     <header>
       <div class="page-title">
@@ -768,12 +773,12 @@
         <div class="form-group" style="margin-bottom:0;">
           <input type="date" id="headerFilterDate" style="padding: 4px 8px; font-size: 0.75rem;" onchange="loadActiveData()">
         </div>
-        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" onclick="syncWithGoogleSheets()">
+        <button class="btn btn-secondary" id="btnSyncSheets" style="padding: 6px 12px; font-size: 0.75rem;" onclick="syncWithGoogleSheets()">
           Sincronizar Planilha
         </button>
       </div>
     </header>
-
+ 
     <div class="workspace">
       
       <!-- VIEW: DASHBOARD -->
@@ -804,7 +809,7 @@
             </div>
             <div style="font-size: 0.6rem; color: var(--text-muted); text-align: center; margin-top: -4px;">STATUS OPERACIONAL ACTV</div>
           </div>
-
+ 
           <!-- CARD 2: CHECKING ATUAL -->
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
             <div class="kronos-card-header">
@@ -819,7 +824,7 @@
             </div>
             <div style="font-size: 0.6rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2px;">META TARGET: 100% THP</div>
           </div>
-
+ 
           <!-- CARD 3: FAST START -->
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
             <div class="kronos-card-header">
@@ -832,7 +837,7 @@
             </div>
             <div style="font-size: 0.6rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2px;">CHECK START COLETIVO</div>
           </div>
-
+ 
           <!-- CARD 4: STRONG FINISH -->
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
             <div class="kronos-card-header">
@@ -845,9 +850,9 @@
             </div>
             <div style="font-size: 0.6rem; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2px;">CONTROLE DE ENCERRAMENTO</div>
           </div>
-
+ 
         </div>
-
+ 
         <!-- DETALHAMENTO POR FLUXO SECTION -->
         <h3 style="font-family: 'Cinzel', serif; font-size: 0.95rem; letter-spacing: 1px; color: var(--gold-metallic); margin-bottom: 8px; margin-top: 4px;">DETALHAMENTO DO CONTROLE DE CHECKING</h3>
         
@@ -890,7 +895,7 @@
             </div>
           </div>
         </div>
-
+ 
         <div class="grid-layout cols-3">
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between;">
             <div class="kronos-card-header">
@@ -899,7 +904,7 @@
             <div style="font-family: 'Share Tech Mono', monospace; font-size: 2rem; font-weight: bold; margin: 4px 0;" id="dashKpiTotal">0</div>
             <div style="font-size: 0.65rem; color: var(--text-muted);">Banco de dados integrado KRONOS</div>
           </div>
-
+ 
           <div class="kronos-card" style="grid-column: span 2; display: flex; flex-direction: column; justify-content: space-between;">
             <div class="kronos-card-header">
               <span class="kronos-card-title">Volume Realizado vs Meta (THP)</span>
@@ -909,7 +914,7 @@
             </div>
           </div>
         </div>
-
+ 
         <!-- TIMELINE COMPONENT -->
         <div class="timeline-card">
           <div class="timeline-header">
@@ -944,7 +949,7 @@
             </div>
           </div>
         </div>
-
+ 
         <!-- OPERATIONAL TABS -->
         <div class="kronos-card" style="margin-bottom: 16px;">
           <div style="display: flex; gap: 8px; margin-bottom: 8px; border-bottom: 1px solid var(--border-gold); padding-bottom: 6px; align-items: center; justify-content: space-between;">
@@ -953,7 +958,7 @@
               <button class="btn btn-secondary active-tab" style="padding: 4px 10px; font-size: 0.7rem;" id="tabBtnOutbound">CHECKING & OUTBOUND</button>
             </div>
           </div>
-
+ 
           <div class="grid-layout cols-4" style="gap: 8px; margin-bottom: 8px;">
             <div class="form-group">
               <label>Filtrar Turno</label>
@@ -977,7 +982,7 @@
               <input type="text" id="tabFilterArea" style="padding: 4px;" placeholder="Filtrar Função..." oninput="renderOpTabs()">
             </div>
           </div>
-
+ 
           <div id="tabContentOutbound">
             <div class="table-responsive">
               <table id="opTabOutboundTable">
@@ -1000,9 +1005,9 @@
             </div>
           </div>
         </div>
-
+ 
       </div>
-
+ 
       <!-- VIEW: REGISTRAR TURNO / PS -->
       <div id="view-registrar" class="view-panel">
         <form id="registrarTurnoForm" onsubmit="handleFormSubmit(event)">
@@ -1033,7 +1038,7 @@
                 <input type="text" id="regSite" value="BRFPE1" readonly style="background-color: rgba(255,255,255,0.02); color: var(--text-muted);">
               </div>
             </div>
-
+ 
             <div class="grid-layout cols-3" style="gap: 10px; margin-top: 8px;">
               <div class="form-group">
                 <label>Área de Atuação</label>
@@ -1049,7 +1054,7 @@
               </div>
             </div>
           </div>
-
+ 
           <!-- Matriz Dinâmica de Controle Horário -->
           <div class="matrix-wrapper">
             <div class="matrix-title-bar">
@@ -1094,7 +1099,7 @@
               </table>
             </div>
           </div>
-
+ 
           <div class="grid-layout cols-2">
             <div class="kronos-card">
               <div class="kronos-card-header">
@@ -1111,7 +1116,7 @@
                 </div>
               </div>
             </div>
-
+ 
             <div class="kronos-card">
               <div class="kronos-card-header">
                 <span class="kronos-card-title">Configurações da Pontuação Ponderada</span>
@@ -1143,7 +1148,7 @@
                       <td style="padding: 4px; text-align: center;" id="wtMetaFast">85%</td>
                       <td style="padding: 4px; text-align: center;" id="wtRealFast">0%</td>
                       <td style="padding: 4px;"><input type="number" id="pesoFast" value="15" style="width: 100%; padding: 2px;" oninput="calculateLiveScores()"></td>
-                      <td style="padding: 4px; text-align: center;" id="wtResThp">-</td>
+                      <td style="padding: 4px; text-align: center;" id="wtResFast">-</td>
                       <td style="padding: 4px; text-align: right;" id="wtImpactFast">-</td>
                     </tr>
                     <tr>
@@ -1183,7 +1188,7 @@
               </div>
             </div>
           </div>
-
+ 
           <div class="grid-layout cols-3">
             <div class="kronos-card">
               <div class="kronos-card-header">
@@ -1202,7 +1207,7 @@
                 <textarea id="justFastStart" rows="2" placeholder="Desvio < Meta..."></textarea>
               </div>
             </div>
-
+ 
             <div class="kronos-card">
               <div class="kronos-card-header">
                 <span class="kronos-card-title">Strong Finish Control</span>
@@ -1220,7 +1225,7 @@
                 <textarea id="justStrongFinish" rows="2" placeholder="Desvio < Meta..."></textarea>
               </div>
             </div>
-
+ 
             <div class="kronos-card">
               <div class="kronos-card-header">
                 <span class="kronos-card-title">Auditoria 5S Coletiva</span>
@@ -1245,7 +1250,7 @@
               </div>
             </div>
           </div>
-
+ 
           <!-- OBSERVATIONS & CONTEXT FIELD -->
           <div class="kronos-card" style="margin-bottom: 16px;">
             <div class="kronos-card-header">
@@ -1256,14 +1261,14 @@
               <textarea id="regGeneralNotes" rows="4" style="resize: vertical; font-family: sans-serif; line-height: 1.3;" placeholder="Anotações gerais..." required oninput="calculateLiveScores()"></textarea>
             </div>
           </div>
-
+ 
           <div style="display: flex; gap: 12px; justify-content: flex-end;">
             <button class="btn btn-secondary" type="button" onclick="resetForm()">Limpar Tudo</button>
-            <button class="btn btn-gold" type="submit">Gravar Dados de Turno</button>
+            <button class="btn btn-gold" type="submit" id="btnSubmitTurno">Gravar Dados de Turno</button>
           </div>
         </form>
       </div>
-
+ 
       <!-- VIEW: HISTORICO TEMPORAL -->
       <div id="view-historico" class="view-panel">
         <div class="kronos-card">
@@ -1291,7 +1296,7 @@
           </div>
         </div>
       </div>
-
+ 
       <!-- VIEW: RANKING OPERACIONAL -->
       <div id="view-ranking" class="view-panel">
         <div class="grid-layout cols-2">
@@ -1315,7 +1320,7 @@
               </table>
             </div>
           </div>
-
+ 
           <div class="kronos-card">
             <div class="kronos-card-header">
               <span class="kronos-card-title">Performance por Turno (Média Consolidada)</span>
@@ -1338,7 +1343,7 @@
           </div>
         </div>
       </div>
-
+ 
       <!-- VIEW: WAR ROOM -->
       <div id="view-warroom" class="view-panel">
         <div class="grid-layout cols-4" style="gap: 12px; margin-bottom: 16px;">
@@ -1357,7 +1362,7 @@
               </div>
             </div>
           </div>
-
+ 
           <!-- CARD B: PIOR KPI -->
           <div class="kronos-card">
             <div class="kronos-card-header" style="border-bottom: 1px solid rgba(255, 23, 68, 0.2); padding-bottom: 4px;">
@@ -1373,7 +1378,7 @@
               </div>
             </div>
           </div>
-
+ 
           <!-- CARD C: RESULTADO CHECKING CONSOLIDADO -->
           <div class="kronos-card">
             <div class="kronos-card-header" style="border-bottom: 1px solid rgba(0, 176, 255, 0.2); padding-bottom: 4px;">
@@ -1384,7 +1389,7 @@
               <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">Aproveitamento consolidado das metas Checking</p>
             </div>
           </div>
-
+ 
           <!-- CARD D: MÉDIA IDLE COMPLIANCE -->
           <div class="kronos-card">
             <div class="kronos-card-header" style="border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 4px;">
@@ -1396,7 +1401,7 @@
             </div>
           </div>
         </div>
-
+ 
         <div class="grid-layout cols-4">
           <!-- CARD E: FAST ATUAL -->
           <div class="kronos-card">
@@ -1409,7 +1414,7 @@
               <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Meta: <span id="wrFastMeta">85%</span></div>
             </div>
           </div>
-
+ 
           <!-- CARD E2: STRONG FINISH ATUAL -->
           <div class="kronos-card">
             <div class="kronos-card-header">
@@ -1421,7 +1426,7 @@
               <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Meta: <span id="wrStrongMeta">85%</span></div>
             </div>
           </div>
-
+ 
           <!-- CARD F: MELHOR PS -->
           <div class="kronos-card">
             <div class="kronos-card-header">
@@ -1433,7 +1438,7 @@
               <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Score Médio: <span id="wrBestPsScore" style="font-family: 'Share Tech Mono', monospace;">0%</span></div>
             </div>
           </div>
-
+ 
           <!-- CARD G: MÉDIA OPERACIONAL KRONOS -->
           <div class="kronos-card">
             <div class="kronos-card-header">
@@ -1445,7 +1450,7 @@
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Média histórica global acumulada</p>
           </div>
         </div>
-
+ 
         <div class="grid-layout cols-2" style="margin-top: 12px;">
           <div class="kronos-card">
             <div class="kronos-card-header">
@@ -1467,7 +1472,7 @@
               </table>
             </div>
           </div>
-
+ 
           <div class="kronos-card">
             <div class="kronos-card-header">
               <span class="kronos-card-title">Ranking de Turnos</span>
@@ -1489,7 +1494,7 @@
             </div>
           </div>
         </div>
-
+ 
         <div class="grid-layout cols-1" style="margin-top: 12px;">
           <div class="kronos-card">
             <div class="kronos-card-header">
@@ -1514,7 +1519,7 @@
           </div>
         </div>
       </div>
-
+ 
       <!-- VIEW: TENDENCIAS -->
       <div id="view-tendencias" class="view-panel">
         <div class="grid-layout cols-2">
@@ -1536,7 +1541,7 @@
           </div>
         </div>
       </div>
-
+ 
       <!-- VIEW: EXPORTACOES -->
       <div id="view-exportacoes" class="view-panel">
         <div class="grid-layout cols-4">
@@ -1566,12 +1571,12 @@
           </div>
         </div>
       </div>
-
+ 
     </div>
   </main>
-
+ 
   <div class="toast-container" id="toastContainer"></div>
-
+ 
   <!-- CONFIGURATION MODAL -->
   <div id="configModal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; place-items:center;">
     <div class="kronos-card" style="width: 500px; max-width: 90%;">
@@ -1580,7 +1585,7 @@
       </div>
       <div class="form-group" style="margin-top: 10px;">
         <label>URL Web App do Script</label>
-        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbz_bwW_6oKumKnl0vFBqQkduMELkPPGv19L-lF9NKsuArJnWR9tXmwPP8JBrtV_gQQf/exec">
+        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbzzFV0fD_L_hK54KGSQFwoUCRzEAvzag_mqRazl59UzfCX2P0ue0xCx-dEeGCqdPhT1/exec">
       </div>
       <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 20px;">Insira a URL obtida ao realizar a implantação de Web App na sua planilha oficial para ativação de ponte.</p>
       <div style="display: flex; gap:12px; justify-content:flex-end;">
@@ -1589,7 +1594,7 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- SUPERVISOR VALIDATION MODAL -->
   <div id="validationModal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10001; place-items:center;">
     <div class="kronos-card" style="width: 550px; max-width: 95%;">
@@ -1608,16 +1613,28 @@
           <label>Nome Completo do Supervisor (Assinatura)</label>
           <input type="text" id="valSupervisorName" placeholder="Assinatura de aprovação" required>
         </div>
+        <div class="form-group">
+          <label>Comentário (obrigatório em caso de reprovação)</label>
+          <textarea id="valComment" rows="2" placeholder="Observações da validação..."></textarea>
+        </div>
       </div>
       <div style="display: flex; gap: 12px; justify-content: flex-end;">
         <button class="btn btn-secondary" onclick="closeValidationModal()">Fechar</button>
-        <button class="btn btn-gold" onclick="confirmSupervisorValidation()">Aprovar e Assinar Turno</button>
+        <button class="btn btn-danger" onclick="confirmSupervisorValidation('REJECTED')">Reprovar Turno</button>
+        <button class="btn btn-gold" onclick="confirmSupervisorValidation('VALIDATED')">Aprovar e Assinar Turno</button>
       </div>
     </div>
   </div>
-
+ 
   <script>
-    // Configurações globais e templates de turno corporativos
+    // ===================================================================
+    // KRONOS FRONT-END — v2.2
+    // Fonte da verdade dos dados: Google Sheets, via API Google Apps Script.
+    // ===================================================================
+ 
+    // Configurações globais e templates de turno corporativos (METAS padrão,
+    // não são dados de resultado/real — servem apenas de ponto de partida
+    // editável para o registro de cada turno).
     const turnos = {
       T1: {
         inicio: "06:00",
@@ -1653,8 +1670,10 @@
         timeline: { abertura: "22:00", fast: "23:00", controle: "02:00", finish: "05:00", fechamento: "06:00" }
       }
     };
-
-    // Estrutura de persistência segura local que mitiga bloqueios do navegador
+ 
+    // Cache local de contingência apenas — NUNCA é a fonte da verdade.
+    // Usado somente quando não há URL de API configurada (modo local) ou
+    // quando o servidor está indisponível (modo offline / cache de leitura).
     const fallbackMemoryStorage = {};
     const safeStorage = {
       get(key) {
@@ -1672,7 +1691,7 @@
         }
       }
     };
-
+ 
     // Estado centralizado da aplicação (KRONOS Store)
     const KronosState = {
       records: [],
@@ -1681,43 +1700,47 @@
       volumeChart: null,
       trendScoreChart: null,
       trendThpChart: null,
-
+      isSyncing: false,
+      syncRequestId: 0,
+ 
       setRecords(newRecords) {
         this.records = newRecords;
-        safeStorage.set("kronos_records", JSON.stringify(newRecords));
+        // O cache local é só uma cópia de leitura para o modo offline —
+        // não é usado como base para decidir o que existe de verdade.
+        safeStorage.set("kronos_records_cache", JSON.stringify(newRecords));
       },
       getRecords() {
         return this.records;
       }
     };
-
+ 
     window.addEventListener("DOMContentLoaded", () => {
       try {
         setInterval(updateLiveClock, 1000);
         updateLiveClock();
       } catch (e) { console.error("Erro ao iniciar relógio:", e); }
-
+ 
       try {
         const regDateEl = document.getElementById("regDate");
         const hFilterDateEl = document.getElementById("headerFilterDate");
         const todayString = new Date().toISOString().split('T')[0];
-
+ 
         if (regDateEl) regDateEl.value = todayString;
         if (hFilterDateEl) hFilterDateEl.value = todayString;
-
+ 
         const autoShift = detectAutoShift();
         const regShiftEl = document.getElementById("regShift");
         if (regShiftEl) regShiftEl.value = autoShift;
-
+ 
         onShiftChange(true);
       } catch (e) { console.error("Erro ao inicializar formulários:", e); }
-
+ 
       try { startSystemCountdown(); } catch (e) { console.error("Erro no relógio regressivo:", e); }
       try { checkApiConnection(); } catch (e) { console.error("Erro ao validar ponte API:", e); }
-
+ 
       // Inicializa a sincronização com o banco de dados oficial
       try { syncWithGoogleSheets(); } catch (e) { console.error("Erro ao sincronizar planilha:", e); }
-
+ 
       // Leitura de link externo para validação rápida do supervisor
       try {
         const urlParams = new URLSearchParams(window.location.search);
@@ -1727,7 +1750,7 @@
         }
       } catch (e) { console.error("Erro ao verificar parâmetro de validação externo:", e); }
     });
-
+ 
     function updateLiveClock() {
       const now = new Date();
       const options = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'America/Recife' };
@@ -1738,33 +1761,39 @@
         clockEl.innerText = `${dateStr} • ${timeStr}`;
       }
     }
-
+ 
     function detectAutoShift() {
       const now = new Date();
       const hrs = now.getHours();
       const mins = now.getMinutes();
       const decTime = hrs + mins / 60;
-
+ 
       if (decTime >= 6.0 && decTime < 14.5) return "T1";
       if (decTime >= 14.5 && decTime < 22.0) return "T2";
       return "T3";
     }
-
-    // Gerador de UUID seguro para rastreabilidade de dados
+ 
+    // Gerador de identificador único e estável para rastreabilidade de dados
+    // (RECORD_ID). Usa crypto.randomUUID quando disponível (navegadores
+    // modernos / contexto seguro); cai para um gerador de fallback apenas
+    // quando a API não existe.
     function generateUUID() {
+      if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        return window.crypto.randomUUID();
+      }
       return 'kr-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
       });
     }
-
+ 
     function onShiftChange(initDefaults = true) {
       const regShiftEl = document.getElementById("regShift");
       if (!regShiftEl) return;
       const selectedShift = regShiftEl.value;
       const template = turnos[selectedShift];
       if (!template) return;
-
+ 
       if (initDefaults) {
         const elementsToUpdate = {
           regArea: template.area,
@@ -1777,13 +1806,13 @@
           regVolReal: "",
           realOutboundTHP: ""
         };
-
+ 
         for (const [id, value] of Object.entries(elementsToUpdate)) {
           const el = document.getElementById(id);
           if (el) el.value = value;
         }
       }
-
+ 
       const labelsToUpdate = {
         tlTimeAbertura: template.timeline.abertura,
         tlTimeFast: template.timeline.fast,
@@ -1791,16 +1820,16 @@
         tlTimeFinish: template.timeline.finish,
         tlTimeFechamento: template.timeline.fechamento
       };
-
+ 
       for (const [id, value] of Object.entries(labelsToUpdate)) {
         const el = document.getElementById(id);
         if (el) el.innerText = value;
       }
-
+ 
       renderHourlyMatrixForms(template, initDefaults);
       calculateLiveScores();
     }
-
+ 
     function renderHourlyMatrixForms(template, initDefaults = true) {
       const headerRow = document.getElementById("matrixHeaderRow");
       const rows = {
@@ -1814,38 +1843,38 @@
         cotReal: document.getElementById("cotRowReal"),
         cotPct: document.getElementById("cotRowPct")
       };
-
+ 
       if (!headerRow || Object.values(rows).some(el => !el)) return;
-
+ 
       headerRow.innerHTML = "<th>Indicador / Hora</th>";
       for (const row of Object.values(rows)) {
         while (row.cells.length > 1) row.deleteCell(1);
       }
-
+ 
       template.horarios.forEach((hour, i) => {
         headerRow.innerHTML += `<th>${hour}</th>`;
         
         rows.thpMeta.innerHTML += `<td><input type="number" id="thp_meta_${i}" value="${initDefaults ? (template.matrixThpMeta[i] || 0) : ''}" oninput="calculateLiveScores()"></td>`;
         rows.thpReal.innerHTML += `<td><input type="number" id="thp_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
         rows.thpPct.innerHTML += `<td id="thp_pct_${i}" class="pct-calc-cell">-</td>`;
-
+ 
         rows.idleMeta.innerHTML += `<td><input type="number" id="idle_meta_${i}" value="${initDefaults ? (template.matrixIdleMeta[i] || 0) : ''}" oninput="calculateLiveScores()"></td>`;
         rows.idleReal.innerHTML += `<td><input type="number" id="idle_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
         rows.idlePct.innerHTML += `<td id="idle_pct_${i}" class="pct-calc-cell">-</td>`;
-
+ 
         rows.cotMeta.innerHTML += `<td><input type="number" id="cot_meta_${i}" value="${initDefaults ? (template.matrixCotMeta[i] || 0) : ''}" oninput="calculateLiveScores()"></td>`;
         rows.cotReal.innerHTML += `<td><input type="number" id="cot_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
         rows.cotPct.innerHTML += `<td id="cot_pct_${i}" class="pct-calc-cell">-</td>`;
       });
     }
-
+ 
     function calculateLiveScores() {
       const regShiftEl = document.getElementById("regShift");
       if (!regShiftEl) return { score: 0 };
       const selectedShift = regShiftEl.value;
       const template = turnos[selectedShift];
       if (!template) return { score: 0 };
-
+ 
       const len = template.horarios.length;
       
       // Processamento e cálculo de volumetria THP
@@ -1855,7 +1884,7 @@
         const realVal = parseFloat(document.getElementById(`thp_real_${i}`)?.value) || 0;
         totalMetaThp += metaVal;
         totalRealThp += realVal;
-
+ 
         let pct = 0;
         if (metaVal > 0) pct = Math.round((realVal / metaVal) * 100);
         else if (realVal > 0) pct = 100;
@@ -1870,7 +1899,7 @@
       const realThpPerformance = totalMetaThp > 0 ? Math.min(100, Math.round((totalRealThp / totalMetaThp) * 100)) : 100;
       const wtRealThpEl = document.getElementById("wtRealThp");
       if (wtRealThpEl) wtRealThpEl.innerText = `${realThpPerformance}%`;
-
+ 
       // Processamento de IDLE (Ociosidade Operacional)
       let totalMetaIdle = 0, totalRealIdle = 0, idleControlHours = 0;
       for (let i = 0; i < len; i++) {
@@ -1879,7 +1908,7 @@
         totalMetaIdle += metaVal;
         totalRealIdle += realVal;
         if (metaVal > 0 || realVal > 0) idleControlHours++;
-
+ 
         const diff = realVal - metaVal;
         const cell = document.getElementById(`idle_pct_${i}`);
         if (cell) {
@@ -1908,7 +1937,7 @@
           wtRealIdleEl.style.fontWeight = "";
         }
       }
-
+ 
       // Processamento e validação de COT (Cut Off Time)
       let totalMetaCot = 0, totalRealCot = 0, cotHours = 0;
       for (let i = 0; i < len; i++) {
@@ -1917,7 +1946,7 @@
         totalMetaCot += metaVal;
         totalRealCot += realVal;
         if (metaVal > 0 || realVal > 0) cotHours++;
-
+ 
         const diff = realVal - metaVal;
         const cell = document.getElementById(`cot_pct_${i}`);
         if (cell) {
@@ -1934,45 +1963,45 @@
       const avgMetaCot = cotHours > 0 ? Math.round(totalMetaCot / cotHours) : 100;
       const wtRealCotEl = document.getElementById("wtRealCot");
       if (wtRealCotEl) wtRealCotEl.innerText = `${avgRealCot}%`;
-
+ 
       const pOutboundMeta = parseFloat(document.getElementById("metaOutboundTHP")?.value) || 0;
       const pOutboundReal = parseFloat(document.getElementById("realOutboundTHP")?.value) || 0;
-
+ 
       // Fast Start & Strong Finish
       const mFast = parseFloat(document.getElementById("metaFastStart")?.value) || 85;
       const realFast = parseFloat(document.getElementById("realFastStart")?.value) || 0;
       
       const mStrong = parseFloat(document.getElementById("metaStrongFinish")?.value) || 85;
       const realStrong = parseFloat(document.getElementById("realStrongFinish")?.value) || 0;
-
+ 
       const wtRealFastEl = document.getElementById("wtRealFast");
       const wtRealStrongEl = document.getElementById("wtRealStrong");
       if (wtRealFastEl) wtRealFastEl.innerText = `${realFast}%`;
       if (wtRealStrongEl) wtRealStrongEl.innerText = `${realStrong}%`;
-
+ 
       const s5Seiri = parseFloat(document.getElementById("s5Seiri")?.value) || 0;
       const s5Seiton = parseFloat(document.getElementById("s5Seiton")?.value) || 0;
       const s5Seiso = parseFloat(document.getElementById("s5Seiso")?.value) || 0;
       const s5Shitsuke = parseFloat(document.getElementById("s5Shitsuke")?.value) || 0;
       const avg5S = Math.round((s5Seiri + s5Seiton + s5Seiso + s5Shitsuke) / 4);
-
+ 
       const wtReal5sEl = document.getElementById("wtReal5s");
       if (wtReal5sEl) wtReal5sEl.innerText = `${avg5S}%`;
-
+ 
       const wThp = parseFloat(document.getElementById("pesoThp")?.value) || 0;
       const wFast = parseFloat(document.getElementById("pesoFast")?.value) || 0;
       const wCot = parseFloat(document.getElementById("pesoCot")?.value) || 0;
       const wStrong = parseFloat(document.getElementById("pesoStrong")?.value) || 0;
       const w5s = parseFloat(document.getElementById("peso5s")?.value) || 0;
       const wIdle = parseFloat(document.getElementById("pesoIdle")?.value) || 0;
-
+ 
       const sumWeights = wThp + wFast + wCot + wStrong + w5s + wIdle;
       const wBadge = document.getElementById("weightTotalBadge");
       if (wBadge) {
         wBadge.innerText = `Soma: ${sumWeights}%`;
         wBadge.className = "badge-status " + (sumWeights !== 100 ? "badge-critico" : "badge-excelente");
       }
-
+ 
       const evaluateImpact = (real, meta, isNegativeTarget = false) => {
         if (isNegativeTarget) {
           return real <= meta ? { res: "SLA OK", imp: "POSITIVO", style: "color: var(--color-excelente);" } 
@@ -1981,7 +2010,7 @@
         return real >= meta ? { res: "Atingido", imp: "POSITIVO", style: "color: var(--color-excelente);" } 
                              : { res: "Desvio", imp: "NEGATIVO", style: "color: var(--color-critico);" };
       };
-
+ 
       const updateRowVisuals = (idRes, idImp, data) => {
         const elRes = document.getElementById(idRes);
         const elImp = document.getElementById(idImp);
@@ -1991,34 +2020,34 @@
           elImp.setAttribute("style", data.style);
         }
       };
-
+ 
       updateRowVisuals("wtResThp", "wtImpactThp", evaluateImpact(realThpPerformance, 100));
       updateRowVisuals("wtResFast", "wtImpactFast", evaluateImpact(realFast, mFast));
       updateRowVisuals("wtResCot", "wtImpactCot", evaluateImpact(avgRealCot, avgMetaCot));
       updateRowVisuals("wtResStrong", "wtImpactStrong", evaluateImpact(realStrong, mStrong));
       updateRowVisuals("wtRes5s", "wtImpact5s", evaluateImpact(avg5S, 100));
       updateRowVisuals("wtResIdle", "wtImpactIdle", evaluateImpact(avgRealIdle, avgMetaIdle, true));
-
+ 
       let calculatedScore = 0;
       calculatedScore += (realThpPerformance * (wThp / 100));
       calculatedScore += (realFast * (wFast / 100));
       calculatedScore += (avg5S * (w5s / 100));
       calculatedScore += (realStrong * (wStrong / 100));
-
+ 
       if (avgRealCot >= avgMetaCot) {
         calculatedScore += wCot; 
       } else {
         const cotPenalty = ((avgMetaCot - avgRealCot) / 10) * 10;
         calculatedScore += Math.max(0, wCot - cotPenalty);
       }
-
+ 
       if (avgRealIdle <= avgMetaIdle) {
         calculatedScore += wIdle;
       } else {
         const idlePenalty = (avgRealIdle - avgMetaIdle) * 5;
         calculatedScore += Math.max(0, wIdle - idlePenalty);
       }
-
+ 
       const finalScore = Math.min(100, Math.max(0, Math.round(calculatedScore)));
       
       return {
@@ -2030,32 +2059,87 @@
         outboundPerformance: pOutboundMeta > 0 ? Math.round((pOutboundReal / pOutboundMeta) * 100) : 0
       };
     }
-
-    function handleFormSubmit(event) {
+ 
+    // ===================================================================
+    // CAMADA DE COMUNICAÇÃO COM A API (Google Apps Script)
+    // Padrão único de chamada + padrão único de resposta esperado:
+    // { success: boolean, message: string, data?: any, error?: string }
+    // ===================================================================
+    async function callKronosApi(action, { method = "GET", data = null } = {}) {
+      if (!KronosState.configApiUrl) {
+        throw new Error("NO_API_CONFIGURED");
+      }
+ 
+      let response;
+      try {
+        if (method === "GET") {
+          const url = new URL(KronosState.configApiUrl);
+          url.searchParams.set("action", action);
+          if (data) {
+            Object.entries(data).forEach(([k, v]) => url.searchParams.set(k, v));
+          }
+          response = await fetch(url.toString(), { method: "GET", mode: "cors" });
+        } else {
+          response = await fetch(KronosState.configApiUrl, {
+            method: "POST",
+            mode: "cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" }, // evita preflight CORS
+            body: JSON.stringify({ action, data })
+          });
+        }
+      } catch (networkErr) {
+        console.error(`Falha de rede na ação "${action}":`, networkErr);
+        throw new Error("NETWORK_ERROR");
+      }
+ 
+      if (!response.ok) {
+        throw new Error(`HTTP_${response.status}`);
+      }
+ 
+      let payload;
+      try {
+        payload = await response.json();
+      } catch (parseErr) {
+        console.error(`Resposta inválida (não-JSON) para ação "${action}":`, parseErr);
+        throw new Error("INVALID_RESPONSE");
+      }
+ 
+      if (!payload || payload.success !== true) {
+        const msg = (payload && payload.message) || "Falha ao processar a solicitação no servidor.";
+        console.error(`API retornou erro para ação "${action}":`, payload && payload.error);
+        throw new Error(msg);
+      }
+ 
+      return payload.data;
+    }
+ 
+    async function handleFormSubmit(event) {
       event.preventDefault();
-
+ 
       const psName = document.getElementById("regPSName")?.value.trim() || "";
       if (!psName) {
         showToast("Identificação do PS responsável é obrigatória.", "error");
         return;
       }
-
+ 
       const selectedShift = document.getElementById("regShift")?.value || "T1";
       const template = turnos[selectedShift];
       const len = template.horarios.length;
       const live = calculateLiveScores();
-
+ 
       const matrixThpReal = [], matrixIdleReal = [], matrixCotReal = [];
       for (let i = 0; i < len; i++) {
         matrixThpReal.push(parseFloat(document.getElementById(`thp_real_${i}`)?.value) || 0);
         matrixIdleReal.push(parseFloat(document.getElementById(`idle_real_${i}`)?.value) || 0);
         matrixCotReal.push(parseFloat(document.getElementById(`cot_real_${i}`)?.value) || 0);
       }
-
+ 
       const getNumVal = id => parseFloat(document.getElementById(id)?.value) || 0;
-      const recordId = document.getElementById("registrarTurnoForm").dataset.currentRecordId || generateUUID();
-
-      const newRecord = {
+      const form = document.getElementById("registrarTurnoForm");
+      const isUpdate = !!form.dataset.currentRecordId;
+      const recordId = form.dataset.currentRecordId || generateUUID();
+ 
+      const record = {
         id: recordId,
         date: document.getElementById("regDate")?.value || new Date().toISOString().split('T')[0],
         psName: psName,
@@ -2095,39 +2179,58 @@
         hourlyIdleReal: matrixIdleReal,
         hourlyCOTMeta: template.matrixCotMeta,
         hourlyCOTReal: matrixCotReal,
+        validationStatus: "PENDING",
         validatedBy: "",
-        validationDate: ""
+        validationDate: "",
+        validationComment: ""
       };
-
-      const updatedRecords = KronosState.getRecords().filter(r => r.id !== newRecord.id);
-      updatedRecords.push(newRecord);
-      KronosState.setRecords(updatedRecords);
-
-      showToast("Gravando e Sincronizando dados...");
-      sendToGoogleSheets(newRecord);
-      
-      delete document.getElementById("registrarTurnoForm").dataset.currentRecordId;
-      switchView("dashboard");
+ 
+      const submitBtn = document.getElementById("btnSubmitTurno");
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.innerText = "Gravando..."; }
+      showToast("Gravando e sincronizando dados...");
+ 
+      try {
+        if (!KronosState.configApiUrl) {
+          // Modo local: sem ponte configurada, grava apenas no cache do navegador.
+          const updated = KronosState.getRecords().filter(r => r.id !== record.id);
+          updated.push(record);
+          KronosState.setRecords(updated);
+          showToast("Salvo localmente (sem integração com Google Sheets configurada).", "warning");
+        } else {
+          await callKronosApi(isUpdate ? "updateRecord" : "createRecord", { method: "POST", data: record });
+          showToast("Registro gravado com sucesso no Google Sheets.");
+          await syncWithGoogleSheets();
+        }
+ 
+        delete form.dataset.currentRecordId;
+        switchView("dashboard");
+      } catch (err) {
+        console.error("Erro ao gravar registro de turno:", err);
+        showToast(`Não foi possível salvar o registro. ${err.message === "NO_API_CONFIGURED" ? "" : err.message}`, "error");
+        // Não navega e não limpa o formulário — os dados do usuário permanecem intactos.
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Gravar Dados de Turno"; }
+      }
     }
-
+ 
     function resetForm() {
       const form = document.getElementById("registrarTurnoForm");
       if (form) form.reset();
-      delete form.dataset.currentRecordId;
+      if (form) delete form.dataset.currentRecordId;
       const regSiteEl = document.getElementById("regSite");
       if (regSiteEl) regSiteEl.value = "BRFPE1";
       onShiftChange(true);
     }
-
+ 
     function switchView(viewId) {
       document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
       const activeNav = Array.from(document.querySelectorAll(".nav-menu .nav-item")).find(i => i.outerHTML.includes(`switchView('${viewId}')`));
       if (activeNav) activeNav.classList.add("active");
-
+ 
       document.querySelectorAll(".view-panel").forEach(panel => panel.classList.remove("active"));
       const targetPanel = document.getElementById(`view-${viewId}`);
       if (targetPanel) targetPanel.classList.add("active");
-
+ 
       const titles = {
         dashboard: ["Dashboard Geral", "Visão geral do turno ativo e controle de SLA em tempo real."],
         registrar: ["Registrar Turno / PS", "Configure metas, pesos operacionais e registre a volumetria horária de Checking."],
@@ -2137,21 +2240,21 @@
         tendencias: ["Análise de Tendências", "Gráficos de evolução histórica do Score e THP operacional de Checking."],
         exportacoes: ["Exportações & Configurações de API", "Extraia relatórios formatados ou integre o KRONOS com planilhas corporativas."]
       };
-
+ 
       if (titles[viewId]) {
         const vHeaderTitle = document.getElementById("viewHeaderTitle");
         const vHeaderSub = document.getElementById("viewHeaderSubtitle");
         if (vHeaderTitle) vHeaderTitle.innerText = titles[viewId][0];
         if (vHeaderSub) vHeaderSub.innerText = titles[viewId][1];
       }
-
+ 
       if (viewId === 'dashboard') loadActiveData();
       else if (viewId === 'tendencias') renderTrendCharts();
       else if (viewId === 'ranking') renderRankings();
       else if (viewId === 'warroom') renderWarRoom();
       else if (viewId === 'historico') renderHistory();
     }
-
+ 
     function loadActiveData() {
       const headerFilterEl = document.getElementById("headerFilterDate");
       const filterDate = headerFilterEl ? headerFilterEl.value : "";
@@ -2162,10 +2265,10 @@
         active = currentRecords[currentRecords.length - 1];
         if (headerFilterEl && active) headerFilterEl.value = active.date;
       }
-
+ 
       const kpiTotal = document.getElementById("dashKpiTotal");
       if (kpiTotal) kpiTotal.innerText = currentRecords.length;
-
+ 
       if (active) {
         updateGauge(active.score, active.classification);
         updateDashboardKPIs(active);
@@ -2176,20 +2279,20 @@
         renderEmptyDashboardState();
       }
     }
-
+ 
     function updateGauge(score, classification) {
       const fill = document.getElementById("gaugeFill");
       const valText = document.getElementById("gaugeTextValue");
       const badge = document.getElementById("scoreBadge");
-
+ 
       if (valText) valText.textContent = score;
       const offset = 283 - (283 * score) / 100;
       if (fill) fill.style.strokeDashoffset = offset;
-
+ 
       if (badge) {
         badge.className = "badge-status";
         badge.innerText = classification || "-";
-
+ 
         if (score >= 95) badge.classList.add("badge-elite");
         else if (score >= 90) badge.classList.add("badge-excelente");
         else if (score >= 80) badge.classList.add("badge-ok");
@@ -2197,21 +2300,21 @@
         else badge.classList.add("badge-critico");
       }
     }
-
+ 
     function updateDashboardKPIs(active) {
       const updateEl = (id, text) => { const el = document.getElementById(id); if (el) el.innerText = text; };
-
+ 
       const thpPerf = active.metaOutbound > 0 ? Math.round((active.realOutbound / active.metaOutbound) * 100) : 0;
       updateEl("dashKpiOutboundPct", `${thpPerf}%`);
       updateEl("dashKpiOutboundMeta", active.metaOutbound);
       updateEl("dashKpiOutboundReal", active.realOutbound);
-
+ 
       const outBadge = document.getElementById("outboundBadgeStatus");
       if (outBadge) {
         outBadge.innerText = thpPerf >= 100 ? "SLA OK" : "DESVIO";
         outBadge.className = "badge-status " + (thpPerf >= 100 ? "badge-excelente" : "badge-critico");
       }
-
+ 
       updateEl("dashKpiFast", `${active.realFastStart}%`);
       const fastMetaVal = active.metaFastStart !== undefined ? active.metaFastStart : 85;
       updateEl("dashKpiFastMeta", `${fastMetaVal}%`);
@@ -2221,7 +2324,7 @@
         fastBadge.innerText = active.realFastStart >= fastMetaVal ? "SLA OK" : "DESVIO";
         fastBadge.className = "badge-status " + (active.realFastStart >= fastMetaVal ? "badge-excelente" : "badge-critico");
       }
-
+ 
       updateEl("dashKpiStrong", `${active.realStrongFinish}%`);
       const strongMetaVal = active.metaStrongFinish !== undefined ? active.metaStrongFinish : 85;
       updateEl("dashKpiStrongMeta", `${strongMetaVal}%`);
@@ -2232,12 +2335,12 @@
         strongBadge.className = "badge-status " + (active.realStrongFinish >= strongMetaVal ? "badge-excelente" : "badge-critico");
       }
     }
-
+ 
     function renderDetailedFlowPanelsLive(active) {
       const outBody = document.getElementById("outboundFlowTableBody");
       const rawIdle = active.realIdle !== undefined ? active.realIdle : 0;
       const complIdle = active.idleCompliance !== undefined ? active.idleCompliance : (100 - rawIdle);
-
+ 
       if (outBody) {
         outBody.innerHTML = `
           <tr>
@@ -2270,20 +2373,20 @@
           </tr>
         `;
       }
-
+ 
       const outUtil = Math.max(0, complIdle);
       const thpPerf = active.metaOutbound > 0 ? Math.round((active.realOutbound / active.metaOutbound) * 100) : 0;
       const outGapStart = (active.metaFastStart || 85) - active.realFastStart;
       const outGapReal = active.metaOutbound > 0 ? Math.round(((active.realOutbound - active.metaOutbound) / active.metaOutbound) * 100) : 0;
-
+ 
       const setEl = (id, text) => { const el = document.getElementById(id); if (el) el.innerText = text; };
-
+ 
       setEl("outboundUtilVal", `${outUtil.toFixed(1)}%`);
       setEl("outboundEfVal", `${thpPerf}%`);
       setEl("outboundGapStartVal", `${outGapStart > 0 ? '+' : ''}${outGapStart}%`);
       setEl("outboundGapRealVal", `${outGapReal >= 0 ? '+' : ''}${outGapReal}%`);
     }
-
+ 
     function renderEmptyDashboardState() {
       updateGauge(0, "-");
       const emptyKpiIds = [
@@ -2291,26 +2394,26 @@
         "dashKpiFast", "dashKpiStrong"
       ];
       emptyKpiIds.forEach(id => { const el = document.getElementById(id); if (el) el.innerText = "-"; });
-
+ 
       const outBody = document.getElementById("outboundFlowTableBody");
       if (outBody) outBody.innerHTML = `<tr><td colspan="5" class="empty-state-message">Sem dados para a data ativa</td></tr>`;
-
+ 
       const flowFooterIds = ["outboundUtilVal", "outboundEfVal", "outboundGapStartVal", "outboundGapRealVal"];
       flowFooterIds.forEach(id => { const el = document.getElementById(id); if (el) el.innerText = "-"; });
-
+ 
       if (KronosState.volumeChart) {
         KronosState.volumeChart.destroy();
         KronosState.volumeChart = null;
       }
       renderOpTabs();
     }
-
+ 
     function updateVolumeChart(active) {
       const canvasEl = document.getElementById("headerVolumeChart");
       if (!canvasEl) return;
       const ctx = canvasEl.getContext("2d");
       if (KronosState.volumeChart) KronosState.volumeChart.destroy();
-
+ 
       KronosState.volumeChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -2342,13 +2445,13 @@
         }
       });
     }
-
+ 
     function renderOpTabs() {
       const fShift = document.getElementById("tabFilterShift")?.value;
       const fPS = document.getElementById("tabFilterPS")?.value.toLowerCase();
       const fDate = document.getElementById("tabFilterDate")?.value;
       const fArea = document.getElementById("tabFilterArea")?.value.toLowerCase();
-
+ 
       const filtered = KronosState.getRecords().filter(r => {
         if (fShift && r.shift !== fShift) return false;
         if (fPS && !r.psName.toLowerCase().includes(fPS)) return false;
@@ -2356,22 +2459,20 @@
         if (fArea && !r.area.toLowerCase().includes(fArea)) return false;
         return true;
       });
-
+ 
       const outBody = document.querySelector("#opTabOutboundTable tbody");
       if (!outBody) return;
       outBody.innerHTML = "";
-
+ 
       if (filtered.length === 0) {
         outBody.innerHTML = `<tr><td colspan="8" class="empty-state-message">Nenhum dado condizente com os filtros atuais.</td></tr>`;
         return;
       }
-
+ 
       filtered.forEach(r => {
         const pctOut = r.metaOutbound > 0 ? Math.round((r.realOutbound / r.metaOutbound) * 100) : 0;
-        const validationStatus = r.validatedBy 
-          ? `<span class="badge-status badge-excelente" style="font-size: 0.6rem;">Aprovado por: ${r.validatedBy}</span>`
-          : `<span class="badge-status badge-atencao" style="font-size: 0.6rem; cursor: pointer;" onclick="showValidationModal('${r.id}')">Validar Score</span>`;
-
+        const validationStatus = renderValidationBadge(r);
+ 
         outBody.innerHTML += `
           <tr>
             <td>${r.date}</td>
@@ -2386,27 +2487,35 @@
         `;
       });
     }
-
+ 
+    function renderValidationBadge(r) {
+      if (r.validationStatus === "VALIDATED" || (r.validatedBy && r.validationStatus !== "REJECTED")) {
+        return `<span class="badge-status badge-excelente" style="font-size: 0.6rem;">Aprovado por: ${r.validatedBy}</span>`;
+      }
+      if (r.validationStatus === "REJECTED") {
+        return `<span class="badge-status badge-critico" style="font-size: 0.6rem; cursor: pointer;" onclick="showValidationModal('${r.id}')">Reprovado por: ${r.validatedBy}</span>`;
+      }
+      return `<span class="badge-status badge-atencao" style="font-size: 0.6rem; cursor: pointer;" onclick="showValidationModal('${r.id}')">Validar Score</span>`;
+    }
+ 
     function renderHistory() {
       const tbody = document.getElementById("historicoTableBody");
       if (!tbody) return;
       tbody.innerHTML = "";
-
+ 
       const currentRecords = KronosState.getRecords();
-
+ 
       if (currentRecords.length === 0) {
         tbody.innerHTML = `<tr><td colspan="8" class="empty-state-message">Nenhum registro armazenado no banco corporativo.</td></tr>`;
         return;
       }
-
+ 
       const sorted = [...currentRecords].sort((a, b) => new Date(b.date) - new Date(a.date));
-
+ 
       sorted.forEach(r => {
         const tr = document.createElement("tr");
-        const valStatus = r.validatedBy 
-          ? `<span class="badge-status badge-excelente" style="font-size: 0.6rem;">Assinado: ${r.validatedBy}</span>` 
-          : `<span class="badge-status badge-atencao" style="font-size: 0.6rem; cursor: pointer;" onclick="showValidationModal('${r.id}')">Pendente</span>`;
-
+        const valStatus = renderValidationBadge(r);
+ 
         tr.innerHTML = `
           <td>${r.date}</td>
           <td><strong>${r.shift}</strong></td>
@@ -2424,7 +2533,7 @@
         tbody.appendChild(tr);
       });
     }
-
+ 
     function showValidationModal(id) {
       const r = KronosState.getRecords().find(record => record.id === id);
       if (!r) {
@@ -2437,42 +2546,67 @@
       document.getElementById("valModalPS").innerText = r.psName;
       document.getElementById("valModalScore").innerText = `${r.score}% SLA [${r.classification.toUpperCase()}]`;
       document.getElementById("valSupervisorName").value = r.validatedBy || "";
+      document.getElementById("valComment").value = r.validationComment || "";
       
       document.getElementById("validationModal").style.display = "grid";
     }
-
+ 
     function closeValidationModal() {
       document.getElementById("validationModal").style.display = "none";
       KronosState.activeValidationId = null;
     }
-
-    function confirmSupervisorValidation() {
+ 
+    async function confirmSupervisorValidation(decision) {
       const supervisorName = document.getElementById("valSupervisorName").value.trim();
+      const comment = document.getElementById("valComment").value.trim();
+ 
       if (!supervisorName) {
         showToast("Insira o nome do supervisor para assinar.", "warning");
         return;
       }
-
-      const allRecords = KronosState.getRecords();
-      const r = allRecords.find(record => record.id === KronosState.activeValidationId);
-      if (r) {
-        r.validatedBy = supervisorName;
-        r.validationDate = new Date().toISOString().split('T')[0];
-        KronosState.setRecords(allRecords);
-        
-        showToast("Score de turno homologado e validado com sucesso.");
-        sendToGoogleSheets(r);
+      if (decision === "REJECTED" && !comment) {
+        showToast("Informe o motivo da reprovação no campo de comentário.", "warning");
+        return;
+      }
+ 
+      const id = KronosState.activeValidationId;
+      const action = decision === "REJECTED" ? "rejectScore" : "validateScore";
+      const nowStr = new Date().toISOString().split('T')[0];
+ 
+      try {
+        if (!KronosState.configApiUrl) {
+          const allRecords = KronosState.getRecords();
+          const r = allRecords.find(record => record.id === id);
+          if (r) {
+            r.validationStatus = decision;
+            r.validatedBy = supervisorName;
+            r.validationDate = nowStr;
+            r.validationComment = comment;
+            KronosState.setRecords(allRecords);
+          }
+        } else {
+          await callKronosApi(action, {
+            method: "POST",
+            data: { id, validatedBy: supervisorName, comment }
+          });
+          await syncWithGoogleSheets();
+        }
+ 
+        showToast(decision === "REJECTED" ? "Turno reprovado e registrado." : "Score de turno homologado e validado com sucesso.");
         closeValidationModal();
-        
+ 
         if (window.location.search.includes("validate=")) {
           window.history.replaceState({}, document.title, window.location.pathname);
         }
-
+ 
         renderHistory();
         renderOpTabs();
+      } catch (err) {
+        console.error("Erro ao validar/reprovar score:", err);
+        showToast(`Não foi possível registrar a validação. ${err.message}`, "error");
       }
     }
-
+ 
     function generateValidationLink(id) {
       const baseUrl = window.location.origin + window.location.pathname;
       const finalLink = `${baseUrl}?validate=${id}`;
@@ -2482,20 +2616,20 @@
         showToast("Falha ao gerar link automaticamente.", "error");
       });
     }
-
+ 
     function loadRecordToForm(id) {
       const record = KronosState.getRecords().find(r => r.id === id);
       if (!record) return;
-
+ 
       document.getElementById("registrarTurnoForm").dataset.currentRecordId = record.id;
-
+ 
       // Sincroniza o seletor de turno
       const regShift = document.getElementById("regShift");
       if (regShift) regShift.value = record.shift;
-
-      // ExecutaonShiftChange sem templates estáticos
+ 
+      // Executa onShiftChange sem sobrescrever com templates estáticos
       onShiftChange(false);
-
+ 
       const elementsToUpdate = {
         regDate: record.date,
         regPSName: record.psName || "",
@@ -2514,12 +2648,12 @@
         s5Shitsuke: record.s5 ? record.s5.shitsuke : "100",
         regGeneralNotes: record.notes || ""
       };
-
+ 
       for (const [elId, val] of Object.entries(elementsToUpdate)) {
         const el = document.getElementById(elId);
         if (el) el.value = val;
       }
-
+ 
       // Restaura a Matriz Operacional Horária do Registro
       const template = turnos[record.shift];
       if (template && template.horarios) {
@@ -2530,7 +2664,7 @@
           const idleRealEl = document.getElementById(`idle_real_${i}`);
           const cotMetaEl = document.getElementById(`cot_meta_${i}`);
           const cotRealEl = document.getElementById(`cot_real_${i}`);
-
+ 
           if (thpMetaEl) thpMetaEl.value = (record.hourlyTHPMeta && record.hourlyTHPMeta[i] !== undefined) ? record.hourlyTHPMeta[i] : (template.matrixThpMeta[i] || 0);
           if (thpRealEl) thpRealEl.value = (record.hourlyTHPReal && record.hourlyTHPReal[i] !== undefined) ? record.hourlyTHPReal[i] : "";
           if (idleMetaEl) idleMetaEl.value = (record.hourlyIdleMeta && record.hourlyIdleMeta[i] !== undefined) ? record.hourlyIdleMeta[i] : (template.matrixIdleMeta[i] || 0);
@@ -2539,55 +2673,61 @@
           if (cotRealEl) cotRealEl.value = (record.hourlyCOTReal && record.hourlyCOTReal[i] !== undefined) ? record.hourlyCOTReal[i] : "";
         });
       }
-
+ 
       calculateLiveScores();
       switchView("registrar");
       showToast("Dados do fechamento carregados com segurança.");
     }
-
-    function deleteRecord(id) {
-      if (confirm("Confirmar a exclusão permanente deste fechamento operacional no Google Sheets?")) {
-        const updated = KronosState.getRecords().filter(r => r.id !== id);
-        KronosState.setRecords(updated);
-        showToast("Fechamento deletado do repositório local.");
-        
+ 
+    async function deleteRecord(id) {
+      if (!confirm("Confirmar a exclusão permanente deste fechamento operacional no Google Sheets?")) return;
+ 
+      try {
         if (KronosState.configApiUrl) {
-          fetch(`${KronosState.configApiUrl}?action=deleteRecord&id=${id}`, { method: "GET", mode: "cors" })
-            .then(() => { showToast("Sincronizado remoção com a nuvem."); syncWithGoogleSheets(); });
+          await callKronosApi("deleteRecord", { method: "POST", data: { id } });
+          showToast("Registro removido do Google Sheets.");
+          await syncWithGoogleSheets();
         } else {
+          const updated = KronosState.getRecords().filter(r => r.id !== id);
+          KronosState.setRecords(updated);
+          showToast("Fechamento deletado do repositório local.");
           renderHistory();
+          renderOpTabs();
         }
+      } catch (err) {
+        console.error("Erro ao excluir registro:", err);
+        showToast(`Não foi possível excluir o registro. ${err.message}`, "error");
       }
     }
-
+ 
     function renderRankings() {
       const leadersMap = {};
       const shiftsMap = {};
       const currentRecords = KronosState.getRecords();
-
+ 
       currentRecords.forEach(r => {
         const psName = r.psName || "Sem PS";
         if (!leadersMap[psName]) leadersMap[psName] = { scoreSum: 0, count: 0 };
         leadersMap[psName].scoreSum += r.score;
         leadersMap[psName].count++;
-
+ 
         if (!shiftsMap[r.shift]) shiftsMap[r.shift] = { scoreSum: 0, count: 0 };
         shiftsMap[r.shift].scoreSum += r.score;
         shiftsMap[r.shift].count++;
       });
-
+ 
       const leaderRanking = Object.keys(leadersMap).map(k => ({
         name: k,
         avg: Math.round(leadersMap[k].scoreSum / leadersMap[k].count),
         count: leadersMap[k].count
       })).sort((a,b) => b.avg - a.avg);
-
+ 
       const shiftRanking = Object.keys(shiftsMap).map(k => ({
         name: k,
         avg: Math.round(shiftsMap[k].scoreSum / shiftsMap[k].count),
         count: shiftsMap[k].count
       })).sort((a,b) => b.avg - a.avg);
-
+ 
       const lBody = document.querySelector("#rankingLeadersTable tbody");
       if (lBody) {
         lBody.innerHTML = "";
@@ -2599,7 +2739,7 @@
           });
         }
       }
-
+ 
       const sBody = document.querySelector("#rankingShiftsTable tbody");
       if (sBody) {
         sBody.innerHTML = "";
@@ -2612,11 +2752,11 @@
         }
       }
     }
-
+ 
     function renderWarRoom() {
       const setEl = (id, text) => { const el = document.getElementById(id); if (el) el.innerText = text; };
       const currentRecords = KronosState.getRecords();
-
+ 
       if (currentRecords.length === 0) {
         setEl("wrBestKpiName", "-"); setEl("wrBestKpiReal", "-");
         setEl("wrWorstKpiName", "-"); setEl("wrWorstKpiReal", "-");
@@ -2631,10 +2771,10 @@
         if (recTbody) recTbody.innerHTML = `<tr><td colspan="5" class="empty-state-message">Sem dados disponíveis</td></tr>`;
         return;
       }
-
+ 
       let totalFastSum = 0, totalStrongSum = 0, totalThpPctSum = 0, totalIdleComplianceSum = 0, totalCotSum = 0;
       let recordCount = currentRecords.length;
-
+ 
       currentRecords.forEach(r => {
         totalFastSum += (r.realFastStart || 0);
         totalStrongSum += (r.realStrongFinish || 0);
@@ -2643,13 +2783,13 @@
         totalIdleComplianceSum += (r.idleCompliance !== undefined ? r.idleCompliance : (100 - (r.realIdle || 0)));
         totalCotSum += (r.realCot || 0);
       });
-
+ 
       const avgFast = Math.round(totalFastSum / recordCount);
       const avgStrong = Math.round(totalStrongSum / recordCount);
       const avgThp = Math.round(totalThpPctSum / recordCount);
       const avgIdleCompliance = Math.round(totalIdleComplianceSum / recordCount);
       const avgCot = Math.round(totalCotSum / recordCount);
-
+ 
       const listKpis = [
         { name: "Checking THP", real: avgThp },
         { name: "Fast Start", real: avgFast },
@@ -2657,38 +2797,38 @@
         { name: "COT Compliance", real: avgCot },
         { name: "IDLE Compliance", real: avgIdleCompliance }
       ];
-
+ 
       listKpis.sort((a,b) => b.real - a.real);
       const best = listKpis[0];
       const worst = listKpis[listKpis.length - 1];
-
+ 
       setEl("wrBestKpiName", best.name); 
       setEl("wrBestKpiReal", `${best.real}%`);
       setEl("wrWorstKpiName", worst.name); 
       setEl("wrWorstKpiReal", `${worst.real}%`);
-
+ 
       setEl("wrOutboundConsolidated", `${avgThp}%`);
       setEl("wrIdleConsolidated", `${avgIdleCompliance}%`);
       setEl("wrFastActual", `${avgFast}%`);
       setEl("wrStrongActual", `${avgStrong}%`);
-
+ 
       const avgFastMeta = Math.round(currentRecords.reduce((acc, r) => acc + (r.metaFastStart || 85), 0) / recordCount);
       const avgStrongMeta = Math.round(currentRecords.reduce((acc, r) => acc + (r.metaStrongFinish || 85), 0) / recordCount);
       setEl("wrFastMeta", `${avgFastMeta}%`);
       setEl("wrStrongMeta", `${avgStrongMeta}%`);
-
+ 
       const fastBadge = document.getElementById("wrFastStatus");
       if (fastBadge) {
         fastBadge.innerText = avgFast >= avgFastMeta ? "SLA OK" : "DESVIO";
         fastBadge.className = "badge-status " + (avgFast >= avgFastMeta ? "badge-excelente" : "badge-critico");
       }
-
+ 
       const strongBadge = document.getElementById("wrStrongStatus");
       if (strongBadge) {
         strongBadge.innerText = avgStrong >= avgStrongMeta ? "SLA OK" : "DESVIO";
         strongBadge.className = "badge-status " + (avgStrong >= avgStrongMeta ? "badge-excelente" : "badge-critico");
       }
-
+ 
       const pickBest = (getValue, higherIsBetter = true) => {
         let bestRecord = null, bestValue = null;
         currentRecords.forEach(r => {
@@ -2701,7 +2841,7 @@
         });
         return { value: bestValue, record: bestRecord };
       };
-
+ 
       const recordKpis = [
         { name: "Checking THP", best: pickBest(r => r.metaOutbound > 0 ? Math.round((r.realOutbound / r.metaOutbound) * 100) : null) },
         { name: "Fast Start", best: pickBest(r => r.realFastStart) },
@@ -2709,7 +2849,7 @@
         { name: "COT Compliance", best: pickBest(r => r.realCot) },
         { name: "IDLE Compliance", best: pickBest(r => r.idleCompliance !== undefined ? r.idleCompliance : (100 - (r.realIdle || 0))) }
       ];
-
+ 
       const recTbody = document.getElementById("wrRecordsTableBody");
       if (recTbody) {
         recTbody.innerHTML = "";
@@ -2727,7 +2867,7 @@
           recTbody.innerHTML = `<tr><td colspan="5" class="empty-state-message">Sem dados suficientes</td></tr>`;
         }
       }
-
+ 
       const leadersMap = {};
       const shiftsMap = {};
       currentRecords.forEach(r => {
@@ -2735,32 +2875,32 @@
         if (!leadersMap[psName]) leadersMap[psName] = { scoreSum: 0, count: 0 };
         leadersMap[psName].scoreSum += r.score;
         leadersMap[psName].count++;
-
+ 
         if (!shiftsMap[r.shift]) shiftsMap[r.shift] = { scoreSum: 0, count: 0 };
         shiftsMap[r.shift].scoreSum += r.score;
         shiftsMap[r.shift].count++;
       });
-
+ 
       const leaderRanking = Object.keys(leadersMap).map(k => ({
         name: k,
         avg: Math.round(leadersMap[k].scoreSum / leadersMap[k].count),
         count: leadersMap[k].count
       })).sort((a,b) => b.avg - a.avg);
-
+ 
       const shiftRanking = Object.keys(shiftsMap).map(k => ({
         name: k,
         avg: Math.round(shiftsMap[k].scoreSum / shiftsMap[k].count),
         count: shiftsMap[k].count
       })).sort((a,b) => b.avg - a.avg);
-
+ 
       if (leaderRanking.length > 0) {
         setEl("wrBestPsName", leaderRanking[0].name);
         setEl("wrBestPsScore", `${leaderRanking[0].avg}%`);
       }
-
+ 
       const avgGlobal = Math.round(currentRecords.reduce((acc, curr) => acc + curr.score, 0) / currentRecords.length);
       setEl("warRoomTrend", `${avgGlobal}% SLA`);
-
+ 
       const psTbody = document.querySelector("#wrPsRankingTable tbody");
       if (psTbody) {
         psTbody.innerHTML = "";
@@ -2768,7 +2908,7 @@
           psTbody.innerHTML += `<tr><td><strong>${i+1}º</strong></td><td><strong>${l.name}</strong></td><td>${l.avg}% SLA</td><td>${l.count} turnos</td></tr>`;
         });
       }
-
+ 
       const shiftTbody = document.querySelector("#wrShiftRankingTable tbody");
       if (shiftTbody) {
         shiftTbody.innerHTML = "";
@@ -2777,31 +2917,31 @@
         });
       }
     }
-
+ 
     function renderTrendCharts() {
       const elScore = document.getElementById("chartTrendScore");
       const elThp = document.getElementById("chartTrendTHP");
       if (!elScore || !elThp) return;
-
+ 
       const currentRecords = KronosState.getRecords();
-
+ 
       if (currentRecords.length === 0) {
         document.getElementById("trendScoreContainer").innerHTML = `<p class="empty-state-message">Sem dados para plotagem de tendências</p>`;
         document.getElementById("trendThpContainer").innerHTML = `<p class="empty-state-message">Sem dados para plotagem de tendências</p>`;
         return;
       }
-
+ 
       const lastSeven = [...currentRecords].slice(-7);
       const labels = lastSeven.map(r => `${r.date.substring(8, 10)}/${r.date.substring(5, 7)} (${r.shift})`);
       const scores = lastSeven.map(r => r.score);
       const targets = lastSeven.map(() => 95);
-
+ 
       const realTHPs = lastSeven.map(r => (r.realOutbound || 0));
       const metaTHPs = lastSeven.map(r => (r.metaOutbound || 0));
-
+ 
       if (KronosState.trendScoreChart) KronosState.trendScoreChart.destroy();
       if (KronosState.trendThpChart) KronosState.trendThpChart.destroy();
-
+ 
       KronosState.trendScoreChart = new Chart(elScore.getContext("2d"), {
         type: 'line',
         data: {
@@ -2835,7 +2975,7 @@
           }
         }
       });
-
+ 
       KronosState.trendThpChart = new Chart(elThp.getContext("2d"), {
         type: 'bar',
         data: {
@@ -2866,7 +3006,7 @@
         }
       });
     }
-
+ 
     function startSystemCountdown() {
       setInterval(() => {
         const now = new Date();
@@ -2875,13 +3015,13 @@
         
         let target = new Date();
         target.setHours(limits[activeShift][0], limits[activeShift][1], 0, 0);
-
+ 
         if (activeShift === "T3" && now.getHours() >= 22) {
           target.setDate(target.getDate() + 1);
         } else if (now > target) {
           target.setDate(target.getDate() + 1);
         }
-
+ 
         const diff = target - now;
         const countdownEl = document.getElementById("kronosTimerCountdown");
         
@@ -2897,7 +3037,7 @@
         }
       }, 1000);
     }
-
+ 
     function exportCardExecutivo() {
       const currentRecords = KronosState.getRecords();
       const active = currentRecords[currentRecords.length - 1];
@@ -2905,7 +3045,7 @@
         showToast("Nenhuma medição cadastrada no sistema.", "error");
         return;
       }
-
+ 
       const card = document.createElement("div");
       card.style.position = "absolute";
       card.style.left = "-9999px";
@@ -2916,9 +3056,9 @@
       card.style.borderRadius = "14px";
       card.style.color = "#fff";
       card.style.fontFamily = "Inter, sans-serif";
-
+ 
       const scoreAvg5S = Math.round((((active.s5?.seiri || 0) + (active.s5?.seiton || 0) + (active.s5?.seiso || 0) + (active.s5?.shitsuke || 0)) / 4));
-
+ 
       card.innerHTML = `
         <h1 style="font-family: 'Cinzel', serif; font-size: 1.4rem; color: #d4af37; margin-bottom: 5px;">KRONOS COMMAND CENTER</h1>
         <p style="font-size: 0.75rem; color: #8491a5; margin-bottom: 20px;">Relatório de Desempenho Operacional - BRFPE1</p>
@@ -2933,12 +3073,12 @@
             <p><strong>${active.shift} - ${active.psName || ""}</strong></p>
           </div>
         </div>
-
+ 
         <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; text-align: center; border: 1px solid rgba(212,175,55,0.2); margin-bottom: 20px;">
           <p style="font-size: 0.75rem; color: #8491a5; margin-bottom: 5px;">SCORE PONDERADO DE TURNO</p>
           <p style="font-family: 'Share Tech Mono', monospace; font-size: 2.8rem; font-weight: bold; color: #00f0ff;">${active.score}% SLA</p>
         </div>
-
+ 
         <table style="width: 100%; font-size: 0.8rem; border-collapse: collapse; margin-bottom: 20px;">
           <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
             <td style="padding: 6px 0; color: #8491a5;">Volumetria Checking</td>
@@ -2961,15 +3101,15 @@
             <td style="text-align: right;">${active.idleCompliance || 0}%</td>
           </tr>
         </table>
-
+ 
         <div style="font-size: 0.75rem; border-top: 1px solid rgba(212,175,55,0.15); padding-top: 15px;">
           <p style="color: #8491a5; margin-bottom: 5px;">RESUMO GERAL DAS OCORRÊNCIAS</p>
           <p style="font-style: italic; color: #eee; line-height: 1.3;">"${active.notes}"</p>
         </div>
       `;
-
+ 
       document.body.appendChild(card);
-
+ 
       html2canvas(card).then(canvas => {
         const link = document.createElement('a');
         link.download = `KRONOS_BRFPE1_${active.date}_${active.shift}.png`;
@@ -2982,19 +3122,19 @@
         showToast("Erro ao compilar o card em formato de imagem.", "error");
       });
     }
-
+ 
     function exportToExcel() {
       const currentRecords = KronosState.getRecords();
       if (currentRecords.length === 0) {
         showToast("Nenhum registro disponível para exportação.", "error");
         return;
       }
-
+ 
       let csv = "ID;Data;Turno;PS_Responsavel;Area;Checking_Meta;Checking_Real;FastStart_Meta;FastStart_Real;StrongFinish_Meta;StrongFinish_Real;Idle_Media;COT_Media;Score;Classificacao;Supervisor;Resumo_Ocorrencias\n";
       currentRecords.forEach(r => {
         csv += `${r.id};${r.date};${r.shift};${r.psName || ""};${r.area || "Checking"};${r.metaOutbound || 0};${r.realOutbound || 0};${r.metaFastStart || 85};${r.realFastStart || 0};${r.metaStrongFinish || 85};${r.realStrongFinish || 0};${r.realIdle || 0};${r.realCot || 0};${r.score};${r.classification};${r.validatedBy || ""};"${(r.notes || "").replace(/"/g, '""')}"\n`;
       });
-
+ 
       const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
@@ -3004,7 +3144,7 @@
       document.body.removeChild(link);
       showToast("Exportação iniciada.");
     }
-
+ 
     function copiarResSummary() {
       const currentRecords = KronosState.getRecords();
       const active = currentRecords[currentRecords.length - 1];
@@ -3012,37 +3152,37 @@
         showToast("Nenhum fechamento ativo disponível.", "error");
         return;
       }
-
+ 
       const text = `*👑 KRONOS — OPERATIONAL TIME INTELLIGENCE PLATFORM*
 ----------------------------------------
 *Data:* ${active.date} | *Turno:* ${active.shift}
 *PS Responsável:* ${active.psName || ""}
 *Área:* ${active.area || "Checking"}
-
+ 
 *🏆 Score Ponderado de Turno:* ${active.score}% SLA [${active.classification.toUpperCase()}]
 *Validação do Supervisor:* ${active.validatedBy ? 'VALIDADO POR ' + active.validatedBy.toUpperCase() : 'PENDENTE'}
-
+ 
 *📉 Fluxo Checking & Outbound:*
 • Meta Planejada: ${active.metaOutbound || 0} THP
 • Realizado Acumulado: ${active.realOutbound || 0} THP
-
+ 
 *🛠 Indicadores de Eficiência:*
 • Fast Start: ${active.realFastStart || 0}% (Meta: ${active.metaFastStart || 85}%)
 • Strong Finish: ${active.realStrongFinish || 0}% (Meta: ${active.metaStrongFinish || 85}%)
 • Conformidade IDLE (Ociosidade): ${active.idleCompliance || 0}% (Meta: >=95%)
 • Média Atingimento COT: ${active.realCot || 0}%
-
+ 
 *📝 Resumo Geral das Ocorrências:*
 ${active.notes || "Sem observações adicionais gravadas."}
 ----------------------------------------`;
-
+ 
       navigator.clipboard.writeText(text).then(() => {
         showToast("Relatório de turno copiado para a área de transferência.");
       }).catch(() => {
         showToast("Falha de permissão no navegador para copiar o texto.", "error");
       });
     }
-
+ 
     function toggleConfigModal() {
       const m = document.getElementById("configModal");
       if (!m) return;
@@ -3050,7 +3190,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
       const apiInput = document.getElementById("configApiUrl");
       if (apiInput) apiInput.value = KronosState.configApiUrl;
     }
-
+ 
     function saveApiConfig() {
       const apiInput = document.getElementById("configApiUrl");
       const newUrl = apiInput ? apiInput.value.trim() : "";
@@ -3061,7 +3201,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
       checkApiConnection();
       syncWithGoogleSheets();
     }
-
+ 
     function checkApiConnection() {
       const badge = document.getElementById("connectionBadge");
       if (badge) {
@@ -3076,99 +3216,84 @@ ${active.notes || "Sem observações adicionais gravadas."}
         }
       }
     }
-
-    function syncWithGoogleSheets() {
+ 
+    // Sincronização central. Google Sheets é a ÚNICA fonte da verdade quando
+    // há uma ponte de API configurada: a resposta do servidor SUBSTITUI por
+    // completo os dados locais (nada é mesclado às cegas), evitando
+    // reaparecimento de registros já excluídos remotamente e divergências
+    // entre o que o usuário vê e o que realmente existe na planilha.
+    // Um guard de concorrência garante que apenas a resposta da chamada mais
+    // recente é aplicada, mesmo que respostas cheguem fora de ordem.
+    async function syncWithGoogleSheets() {
+      if (KronosState.isSyncing) return; // evita chamadas simultâneas
+      const requestId = ++KronosState.syncRequestId;
+      KronosState.isSyncing = true;
+ 
       const badge = document.getElementById("connectionBadge");
-      if (!KronosState.configApiUrl) {
-        showToast("Modo local ativo.");
-        const cached = safeStorage.get("kronos_records");
-        KronosState.setRecords(cached ? JSON.parse(cached) : []);
-        loadActiveData();
-        renderHistory();
-        renderRankings();
-        renderWarRoom();
-        renderTrendCharts();
-        return;
-      }
-
-      if (badge) {
-        badge.innerText = "Sincronizando...";
-        badge.style.color = "var(--color-atencao)";
-      }
-
-      showToast("Sincronizando com Google Sheets...");
-      
-      fetch(`${KronosState.configApiUrl}?action=getRecords`, { method: "GET", mode: "cors" })
-        .then(res => {
-          if (!res.ok) throw new Error("Erro de comunicação.");
-          return res.json();
-        })
-        .then(data => {
-          const localOnly = KronosState.getRecords().filter(local => !data.some(remote => remote.id === local.id));
-          const merged = [...data, ...localOnly];
-          KronosState.setRecords(merged);
-          showToast("Dados sincronizados com o servidor central.");
-          
+      const syncBtn = document.getElementById("btnSyncSheets");
+      if (syncBtn) syncBtn.disabled = true;
+ 
+      try {
+        if (!KronosState.configApiUrl) {
           if (badge) {
-            badge.innerText = "Conexão Ativa";
-            badge.style.color = "var(--color-excelente)";
+            badge.innerText = "Modo Local";
+            badge.style.color = "var(--color-atencao)";
           }
-
-          loadActiveData();
-          renderHistory();
-          renderRankings();
-          renderWarRoom();
-          renderTrendCharts();
-        })
-        .catch(err => {
-          console.error("Erro de sincronização:", err);
-          showToast("Servidor central offline. Utilizando cache do navegador.", "error");
-          
-          const cached = safeStorage.get("kronos_records");
+          const cached = safeStorage.get("kronos_records_cache");
           KronosState.setRecords(cached ? JSON.parse(cached) : []);
-          
-          if (badge) {
-            badge.innerText = "Modo Offline";
-            badge.style.color = "var(--color-critico)";
-          }
-
-          loadActiveData();
-          renderHistory();
-          renderRankings();
-          renderWarRoom();
-          renderTrendCharts();
-        });
-    }
-
-    function sendToGoogleSheets(record) {
-      if (!KronosState.configApiUrl) {
-        showToast("Salvo localmente no navegador.");
-        syncWithGoogleSheets();
-        return;
-      }
-
-      fetch(KronosState.configApiUrl, {
-        method: "POST",
-        mode: "cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(record)
-      })
-      .then(res => res.json())
-      .then(res => {
-        if (res && res.status === "success") {
-          showToast("Informações gravadas no Google Sheets.");
-        } else {
-          showToast(`Erro retornado pela planilha: ${res.message}`, "error");
+          renderAllViews();
+          return;
         }
-        syncWithGoogleSheets();
-      })
-      .catch(err => {
-        console.error("Erro ao enviar dados:", err);
-        showToast("Erro ao gravar em nuvem. Mantido em cache para reenvio.", "error");
-        syncWithGoogleSheets();
-      });
+ 
+        if (badge) {
+          badge.innerText = "Sincronizando...";
+          badge.style.color = "var(--color-atencao)";
+        }
+ 
+        const data = await callKronosApi("getData", { method: "GET" });
+        if (requestId !== KronosState.syncRequestId) return; // resposta obsoleta, descarta
+ 
+        const records = (data && data.records) || [];
+        KronosState.setRecords(records);
+ 
+        if (badge) {
+          badge.innerText = "Conexão Ativa";
+          badge.style.color = "var(--color-excelente)";
+          badge.style.borderColor = "rgba(0, 230, 118, 0.2)";
+        }
+ 
+        renderAllViews();
+      } catch (err) {
+        if (requestId !== KronosState.syncRequestId) return;
+        console.error("Erro de sincronização:", err);
+        showToast("Servidor central indisponível. Utilizando cache local do navegador.", "error");
+ 
+        const cached = safeStorage.get("kronos_records_cache");
+        KronosState.setRecords(cached ? JSON.parse(cached) : []);
+ 
+        if (badge) {
+          badge.innerText = "Modo Offline";
+          badge.style.color = "var(--color-critico)";
+          badge.style.borderColor = "rgba(255, 23, 68, 0.2)";
+        }
+ 
+        renderAllViews();
+      } finally {
+        if (requestId === KronosState.syncRequestId) {
+          KronosState.isSyncing = false;
+          if (syncBtn) syncBtn.disabled = false;
+        }
+      }
     }
-
+ 
+    function renderAllViews() {
+      loadActiveData();
+      renderHistory();
+      renderRankings();
+      renderWarRoom();
+      renderTrendCharts();
+    }
+ 
     function showToast(msg, type = "info") {
       const container = document.getElementById("toastContainer");
       if (!container) return;
@@ -3179,7 +3304,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
       
       t.innerText = msg;
       container.appendChild(t);
-
+ 
       setTimeout(() => {
         t.style.opacity = "0";
         setTimeout(() => t.remove(), 300);
@@ -3188,3 +3313,4 @@ ${active.notes || "Sem observações adicionais gravadas."}
   </script>
 </body>
 </html>
+ 
