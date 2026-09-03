@@ -755,7 +755,7 @@
     </div>
     <div class="sidebar-footer">
       <div class="conn-status" id="connectionBadge">Conectando...</div>
-      <p>KRONOS Engine v2.3 • BRFPE1</p>
+      <p>KRONOS Engine v2.4 • BRFPE1</p>
       <p style="opacity: 0.5;">Controle do tempo. Domínio da operação.</p>
     </div>
   </aside>
@@ -775,6 +775,9 @@
         </div>
         <button class="btn btn-secondary" id="btnSyncSheets" style="padding: 6px 12px; font-size: 0.75rem;" onclick="syncWithGoogleSheets()">
           Sincronizar Planilha
+        </button>
+        <button class="btn btn-gold" id="btnDirectSync" style="padding: 6px 12px; font-size: 0.75rem;" onclick="sincronizacaoDireta()">
+          Sincronização Direta
         </button>
       </div>
     </header>
@@ -1585,9 +1588,9 @@
       </div>
       <div class="form-group" style="margin-top: 10px;">
         <label>URL Web App do Script</label>
-        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbwn2sdhCAwCaiX32VPFqpryQ3eWOjbbFrdBxXF04zR3y6fC8KtagzLLhZChD_weHs9qvg/exec">
+        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
       </div>
-      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 20px;">Insira a URL obtida ao realizar a implantação de Web App na sua planilha oficial para ativação de ponte.</p>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 20px;">Insira a URL obtida ao realizar a implantação de Web App na sua planilha oficial para ativação de ponte. A URL deve terminar em <strong>/exec</strong> (nunca /dev), e a implantação precisa ter sido criada como "Nova implantação" após a última alteração no Code.gs, com acesso "Qualquer pessoa".</p>
       <div style="display: flex; gap:12px; justify-content:flex-end;">
         <button class="btn btn-secondary" onclick="toggleConfigModal()">Cancelar</button>
         <button class="btn btn-gold" onclick="saveApiConfig()">Salvar Integração</button>
@@ -1626,9 +1629,23 @@
     </div>
   </div>
  
+  <!-- DIAGNOSTIC MODAL -->
+  <div id="diagModal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10002; place-items:center;">
+    <div class="kronos-card" style="width: 620px; max-width: 95%;">
+      <div class="kronos-card-header">
+        <span class="kronos-card-title" style="color: var(--color-critico);">Diagnóstico de Sincronização Direta</span>
+      </div>
+      <div id="diagModalBody" style="font-size: 0.8rem; margin: 10px 0; line-height: 1.4;"></div>
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button class="btn btn-secondary" onclick="copyDiagnostic()">Copiar Diagnóstico</button>
+        <button class="btn btn-gold" onclick="closeDiagModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+ 
   <script>
     // ===================================================================
-    // KRONOS FRONT-END — v2.3
+    // KRONOS FRONT-END — v2.4
     // Fonte da verdade dos dados: Google Sheets, via API Google Apps Script.
     // ===================================================================
  
@@ -2080,10 +2097,11 @@
         if (method === "GET") {
           const url = new URL(KronosState.configApiUrl);
           url.searchParams.set("action", action);
+          url.searchParams.set("_ts", Date.now()); // evita respostas em cache de proxy/navegador
           if (data) {
             Object.entries(data).forEach(([k, v]) => url.searchParams.set(k, v));
           }
-          response = await fetch(url.toString(), { method: "GET", mode: "cors" });
+          response = await fetch(url.toString(), { method: "GET", mode: "cors", cache: "no-store" });
         } else {
           response = await fetch(KronosState.configApiUrl, {
             method: "POST",
@@ -2094,19 +2112,23 @@
         }
       } catch (networkErr) {
         console.error(`Falha de rede na ação "${action}":`, networkErr);
-        throw new Error("NETWORK_ERROR");
+        throw new Error("NETWORK_ERROR: " + networkErr.message);
       }
  
       if (!response.ok) {
         throw new Error(`HTTP_${response.status}`);
       }
  
+      const rawText = await response.text();
       let payload;
       try {
-        payload = await response.json();
+        payload = JSON.parse(rawText);
       } catch (parseErr) {
-        console.error(`Resposta inválida (não-JSON) para ação "${action}":`, parseErr);
-        throw new Error("INVALID_RESPONSE");
+        console.error(`Resposta inválida (não-JSON) para ação "${action}":`, rawText.slice(0, 300));
+        const looksLikeHtml = /<html|<!DOCTYPE/i.test(rawText);
+        throw new Error(looksLikeHtml
+          ? "INVALID_RESPONSE: o servidor devolveu uma página HTML em vez de JSON (provável tela de login/permissão do Apps Script)."
+          : "INVALID_RESPONSE: resposta não é JSON válido.");
       }
  
       if (!payload || payload.success !== true) {
@@ -3286,7 +3308,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
       } catch (err) {
         if (requestId !== KronosState.syncRequestId) return;
         console.error("Erro de sincronização:", err);
-        showToast("Servidor central indisponível. Utilizando cache local do navegador.", "error");
+        showToast(`Servidor central indisponível: ${err.message}. Utilizando cache local do navegador.`, "error");
  
         const cached = safeStorage.get("kronos_records_cache");
         KronosState.setRecords(cached ? JSON.parse(cached) : []);
@@ -3304,6 +3326,119 @@ ${active.notes || "Sem observações adicionais gravadas."}
           if (syncBtn) syncBtn.disabled = false;
         }
       }
+    }
+ 
+    // ===================================================================
+    // SINCRONIZAÇÃO DIRETA COM DIAGNÓSTICO
+    // Faz a mesma leitura da planilha que syncWithGoogleSheets(), mas nunca
+    // engole o erro: mostra HTTP status, se a resposta veio como JSON ou
+    // HTML (sinal de tela de login/permissão do Apps Script) e um preview
+    // bruto da resposta, para localizar exatamente onde a ponte quebrou.
+    // ===================================================================
+    async function sincronizacaoDireta() {
+      const btn = document.getElementById("btnDirectSync");
+ 
+      if (!KronosState.configApiUrl) {
+        showToast("Configure a URL do Web App antes de sincronizar.", "warning");
+        toggleConfigModal();
+        return;
+      }
+ 
+      if (btn) { btn.disabled = true; btn.innerText = "Sincronizando..."; }
+      showToast("Executando sincronização direta com o Apps Script...");
+
+      const diag = {
+        url: KronosState.configApiUrl,
+        timestamp: new Date().toISOString(),
+        etapa: "iniciando"
+      };
+
+      try {
+        diag.etapa = "montando_requisicao";
+        const testUrl = new URL(KronosState.configApiUrl);
+        testUrl.searchParams.set("action", "getData");
+        testUrl.searchParams.set("_ts", Date.now());
+
+        diag.etapa = "fetch_enviado";
+        const response = await fetch(testUrl.toString(), { method: "GET", mode: "cors", cache: "no-store" });
+        diag.httpStatus = response.status;
+        diag.httpOk = response.ok;
+        diag.contentType = response.headers.get("content-type") || "(não informado)";
+
+        const rawText = await response.text();
+        diag.tamanhoResposta = rawText.length;
+        diag.previewResposta = rawText.slice(0, 500);
+
+        let payload;
+        try {
+          payload = JSON.parse(rawText);
+          diag.etapa = "json_ok";
+        } catch (parseErr) {
+          diag.etapa = "json_parse_falhou";
+          const pareceHtml = /<html|<!DOCTYPE/i.test(rawText);
+          showDiagnosticModal(diag, pareceHtml
+            ? "O servidor respondeu com uma página HTML em vez de JSON — isso normalmente significa que a implantação do Web App não está com acesso \"Qualquer pessoa\", ou que você editou o Code.gs mas não criou uma NOVA implantação (a URL /exec antiga continua servindo a versão anterior)."
+            : "A resposta do servidor não é um JSON válido. Veja o preview bruto abaixo.");
+          throw new Error("Resposta inválida do servidor (não é JSON).");
+        }
+
+        if (!payload || payload.success !== true) {
+          diag.etapa = "api_retornou_erro";
+          diag.mensagemApi = payload && payload.message;
+          diag.erroApi = payload && payload.error;
+          showDiagnosticModal(diag, "O Apps Script respondeu, mas retornou erro: " + ((payload && (payload.message || payload.error)) || "desconhecido") + ". Confira o Code.gs (CONFIG.SPREADSHEET_ID, nome da aba REGISTROS, e se setupKronosSheets() já foi executado).");
+          throw new Error((payload && payload.message) || "Erro retornado pela API.");
+        }
+
+        const records = (payload.data && payload.data.records) || [];
+        KronosState.setRecords(records);
+        renderAllViews();
+
+        const badge = document.getElementById("connectionBadge");
+        if (badge) {
+          badge.innerText = "Conexão Ativa";
+          badge.style.color = "var(--color-excelente)";
+          badge.style.borderColor = "rgba(0, 230, 118, 0.2)";
+        }
+
+        showToast(`Sincronização direta concluída: ${records.length} registro(s) carregado(s) da planilha.`);
+      } catch (err) {
+        console.error("Falha na sincronização direta:", err, diag);
+        diag.erroFinal = err.message;
+        if (diag.etapa !== "json_parse_falhou" && diag.etapa !== "api_retornou_erro") {
+          showDiagnosticModal(diag, "Falha de rede/CORS ao contatar o Apps Script. Confira: (1) a URL termina em /exec; (2) a implantação está ATIVA com acesso \"Qualquer pessoa\"; (3) você criou uma NOVA implantação (não apenas salvou) após a última alteração no Code.gs.");
+        }
+        showToast(`Sincronização direta falhou: ${err.message}`, "error");
+      } finally {
+        if (btn) { btn.disabled = false; btn.innerText = "Sincronização Direta"; }
+      }
+    }
+
+    function showDiagnosticModal(diag, hint) {
+      const modal = document.getElementById("diagModal");
+      const body = document.getElementById("diagModalBody");
+      if (!modal || !body) return;
+      const diagJson = JSON.stringify(diag, null, 2).replace(/</g, "&lt;");
+      body.innerHTML = `
+        <p style="margin-bottom:10px;"><strong>Diagnóstico:</strong> ${hint}</p>
+        <pre style="background:var(--bg-input); padding:10px; border-radius:6px; font-size:0.7rem; white-space:pre-wrap; max-height:240px; overflow:auto; border:1px solid var(--border-color);">${diagJson}</pre>
+      `;
+      modal.style.display = "grid";
+      window._kronosLastDiag = diag;
+    }
+
+    function closeDiagModal() {
+      const modal = document.getElementById("diagModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function copyDiagnostic() {
+      if (!window._kronosLastDiag) return;
+      navigator.clipboard.writeText(JSON.stringify(window._kronosLastDiag, null, 2)).then(() => {
+        showToast("Diagnóstico copiado para a área de transferência.");
+      }).catch(() => {
+        showToast("Falha ao copiar o diagnóstico.", "error");
+      });
     }
  
     function renderAllViews() {
