@@ -1401,7 +1401,7 @@
           </div>
         </div>
 
-        <div class="grid-layout cols-3">
+        <div class="grid-layout cols-4">
           <!-- CARD E: FAST ATUAL -->
           <div class="kronos-card">
             <div class="kronos-card-header">
@@ -1410,7 +1410,19 @@
             </div>
             <div style="margin-top: 10px;">
               <div style="font-size: 1.6rem; font-weight: bold; font-family: 'Share Tech Mono', monospace;" id="wrFastActual">-</div>
-              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Meta de Tolerância Geral: 85%</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Meta: <span id="wrFastMeta">85%</span></div>
+            </div>
+          </div>
+
+          <!-- CARD E2: STRONG FINISH ATUAL -->
+          <div class="kronos-card">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Média Strong Finish</span>
+              <span class="badge-status badge-atencao" id="wrStrongStatus">-</span>
+            </div>
+            <div style="margin-top: 10px;">
+              <div style="font-size: 1.6rem; font-weight: bold; font-family: 'Share Tech Mono', monospace;" id="wrStrongActual">-</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Meta: <span id="wrStrongMeta">85%</span></div>
             </div>
           </div>
 
@@ -1476,6 +1488,30 @@
                 </thead>
                 <tbody>
                   <tr><td colspan="4" class="empty-state-message">Sem dados disponíveis</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-layout cols-1" style="margin-top: 12px;">
+          <div class="kronos-card">
+            <div class="kronos-card-header">
+              <span class="kronos-card-title">Recordes Operacionais — Melhor Marca por Indicador (Todos os Turnos)</span>
+            </div>
+            <div class="table-responsive">
+              <table id="wrRecordsTable">
+                <thead>
+                  <tr>
+                    <th>Indicador</th>
+                    <th>Melhor Marca</th>
+                    <th>PS</th>
+                    <th>Turno</th>
+                    <th>Data</th>
+                  </tr>
+                </thead>
+                <tbody id="wrRecordsTableBody">
+                  <tr><td colspan="5" class="empty-state-message">Sem dados disponíveis</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1548,7 +1584,7 @@
       </div>
       <div class="form-group" style="margin-top: 10px;">
         <label>URL Web App do Script</label>
-        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/.../exec">
+        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbyYOYAtXKdI6MHnVnZ1-EL3SIUO_ghUxTJemILmwdLPvvyAM6Rn_TWgZPSpGvESRqRz/exec">
       </div>
       <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 20px;">Insira a URL obtida ao realizar a implantação de Web App na sua planilha oficial para ativação de ponte.</p>
       <div style="display: flex; gap:12px; justify-content:flex-end;">
@@ -1622,42 +1658,73 @@
       }
     };
 
+    // Wrapper seguro de armazenamento: usa localStorage quando disponível,
+    // e cai para memória (mantém os dados durante a sessão) quando o
+    // ambiente onde a página está rodando bloqueia localStorage. Sem isso,
+    // um erro aqui interrompia TODO o script (relógio, sincronização e
+    // gravação de turno paravam de funcionar juntos).
+    const memoryStorageFallback = {};
+    const safeStorage = {
+      get(key) {
+        try {
+          return localStorage.getItem(key);
+        } catch (e) {
+          return memoryStorageFallback[key] !== undefined ? memoryStorageFallback[key] : null;
+        }
+      },
+      set(key, value) {
+        try {
+          localStorage.setItem(key, value);
+        } catch (e) {
+          memoryStorageFallback[key] = value;
+        }
+      }
+    };
+
     let records = [];
     let volumeChart = null;
     let trendScoreChart = null;
     let trendThpChart = null;
-    let configApiUrl = localStorage.getItem("kronos_config_api_url") || "";
+    let configApiUrl = safeStorage.get("kronos_config_api_url") || "";
     let activeValidationId = null;
 
     window.addEventListener("DOMContentLoaded", () => {
-      const regDateEl = document.getElementById("regDate");
-      const hFilterDateEl = document.getElementById("headerFilterDate");
-      const todayString = new Date().toISOString().split('T')[0];
-      
-      if (regDateEl) regDateEl.value = todayString;
-      if (hFilterDateEl) hFilterDateEl.value = todayString;
-      
-      const autoShift = detectAutoShift();
-      const regShiftEl = document.getElementById("regShift");
-      if (regShiftEl) regShiftEl.value = autoShift;
+      // Inicia o relógio primeiro e isoladamente: mesmo que outra etapa
+      // de inicialização falhe, hora/data continuam atualizando.
+      try {
+        setInterval(updateLiveClock, 1000);
+        updateLiveClock();
+      } catch (e) { console.error("Falha ao iniciar relógio:", e); }
 
-      // Inicia Relógio Dinâmico
-      setInterval(updateLiveClock, 1000);
-      updateLiveClock();
+      try {
+        const regDateEl = document.getElementById("regDate");
+        const hFilterDateEl = document.getElementById("headerFilterDate");
+        const todayString = new Date().toISOString().split('T')[0];
 
-      onShiftChange();
-      startSystemCountdown();
-      checkApiConnection();
+        if (regDateEl) regDateEl.value = todayString;
+        if (hFilterDateEl) hFilterDateEl.value = todayString;
+
+        const autoShift = detectAutoShift();
+        const regShiftEl = document.getElementById("regShift");
+        if (regShiftEl) regShiftEl.value = autoShift;
+
+        onShiftChange();
+      } catch (e) { console.error("Falha ao preparar formulário de turno:", e); }
+
+      try { startSystemCountdown(); } catch (e) { console.error("Falha no countdown:", e); }
+      try { checkApiConnection(); } catch (e) { console.error("Falha ao checar conexão:", e); }
 
       // Sincronização inicial com o servidor central de planilhas
-      syncWithGoogleSheets();
+      try { syncWithGoogleSheets(); } catch (e) { console.error("Falha na sincronização inicial:", e); }
 
       // Verifica parâmetros de link externo para validação direta do supervisor
-      const urlParams = new URLSearchParams(window.location.search);
-      const validateId = urlParams.get('validate');
-      if (validateId) {
-        setTimeout(() => showValidationModal(validateId), 1500);
-      }
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const validateId = urlParams.get('validate');
+        if (validateId) {
+          setTimeout(() => showValidationModal(validateId), 1500);
+        }
+      } catch (e) { console.error("Falha ao ler link de validação:", e); }
     });
 
     function updateLiveClock() {
@@ -2013,7 +2080,7 @@
       // Evita duplicações no banco de dados local
       records = records.filter(r => r.id !== newRecord.id);
       records.push(newRecord);
-      localStorage.setItem("kronos_records", JSON.stringify(records));
+      safeStorage.set("kronos_records", JSON.stringify(records));
 
       showToast("Gravando e Sincronizando dados...");
       sendToGoogleSheets(newRecord);
@@ -2371,7 +2438,7 @@
       if (r) {
         r.validatedBy = supervisorName;
         r.validationDate = new Date().toISOString().split('T')[0];
-        localStorage.setItem("kronos_records", JSON.stringify(records));
+        safeStorage.set("kronos_records", JSON.stringify(records));
         
         showToast("Score de turno homologado e validado com sucesso.");
         sendToGoogleSheets(r);
@@ -2450,7 +2517,7 @@
     function deleteRecord(id) {
       if (confirm("Confirmar a exclusão permanente deste fechamento operacional no Google Sheets?")) {
         records = records.filter(r => r.id !== id);
-        localStorage.setItem("kronos_records", JSON.stringify(records));
+        safeStorage.set("kronos_records", JSON.stringify(records));
         showToast("Fechamento deletado do repositório local.");
         
         if (configApiUrl) {
@@ -2521,12 +2588,14 @@
         setEl("wrBestKpiName", "-"); setEl("wrBestKpiReal", "-");
         setEl("wrWorstKpiName", "-"); setEl("wrWorstKpiReal", "-");
         setEl("wrOutboundConsolidated", "-"); setEl("wrIdleConsolidated", "-");
-        setEl("wrFastActual", "-"); setEl("wrBestPsName", "-"); setEl("wrBestPsScore", "0%");
+        setEl("wrFastActual", "-"); setEl("wrStrongActual", "-"); setEl("wrBestPsName", "-"); setEl("wrBestPsScore", "0%");
         setEl("warRoomTrend", "Sem dados");
         const psTbody = document.querySelector("#wrPsRankingTable tbody");
         const shiftTbody = document.querySelector("#wrShiftRankingTable tbody");
+        const recTbody = document.getElementById("wrRecordsTableBody");
         if (psTbody) psTbody.innerHTML = `<tr><td colspan="4" class="empty-state-message">Sem registros na base de dados</td></tr>`;
         if (shiftTbody) shiftTbody.innerHTML = `<tr><td colspan="4" class="empty-state-message">Sem registros na base de dados</td></tr>`;
+        if (recTbody) recTbody.innerHTML = `<tr><td colspan="5" class="empty-state-message">Sem dados disponíveis</td></tr>`;
         return;
       }
 
@@ -2570,11 +2639,64 @@
       setEl("wrOutboundConsolidated", `${avgThp}%`);
       setEl("wrIdleConsolidated", `${avgIdleCompliance}%`);
       setEl("wrFastActual", `${avgFast}%`);
+      setEl("wrStrongActual", `${avgStrong}%`);
+
+      // Meta média (ponderada pelos registros) de Fast Start e Strong Finish
+      const avgFastMeta = Math.round(records.reduce((acc, r) => acc + (r.metaFastStart || 85), 0) / recordCount);
+      const avgStrongMeta = Math.round(records.reduce((acc, r) => acc + (r.metaStrongFinish || 85), 0) / recordCount);
+      setEl("wrFastMeta", `${avgFastMeta}%`);
+      setEl("wrStrongMeta", `${avgStrongMeta}%`);
 
       const fastBadge = document.getElementById("wrFastStatus");
       if (fastBadge) {
-        fastBadge.innerText = avgFast >= 85 ? "SLA OK" : "DESVIO";
-        fastBadge.className = "badge-status " + (avgFast >= 85 ? "badge-excelente" : "badge-critico");
+        fastBadge.innerText = avgFast >= avgFastMeta ? "SLA OK" : "DESVIO";
+        fastBadge.className = "badge-status " + (avgFast >= avgFastMeta ? "badge-excelente" : "badge-critico");
+      }
+
+      const strongBadge = document.getElementById("wrStrongStatus");
+      if (strongBadge) {
+        strongBadge.innerText = avgStrong >= avgStrongMeta ? "SLA OK" : "DESVIO";
+        strongBadge.className = "badge-status " + (avgStrong >= avgStrongMeta ? "badge-excelente" : "badge-critico");
+      }
+
+      // Recordes: melhor marca já atingida (não a média) por indicador, em qualquer turno
+      const pickBest = (getValue, higherIsBetter = true) => {
+        let bestRecord = null, bestValue = null;
+        records.forEach(r => {
+          const v = getValue(r);
+          if (v === null || v === undefined || isNaN(v)) return;
+          if (bestValue === null || (higherIsBetter ? v > bestValue : v < bestValue)) {
+            bestValue = v;
+            bestRecord = r;
+          }
+        });
+        return { value: bestValue, record: bestRecord };
+      };
+
+      const recordKpis = [
+        { name: "Checking THP", best: pickBest(r => r.metaOutbound > 0 ? Math.round((r.realOutbound / r.metaOutbound) * 100) : null) },
+        { name: "Fast Start", best: pickBest(r => r.realFastStart) },
+        { name: "Strong Finish", best: pickBest(r => r.realStrongFinish) },
+        { name: "COT Compliance", best: pickBest(r => r.realCot) },
+        { name: "IDLE Compliance", best: pickBest(r => r.idleCompliance !== undefined ? r.idleCompliance : (100 - (r.realIdle || 0))) }
+      ];
+
+      const recTbody = document.getElementById("wrRecordsTableBody");
+      if (recTbody) {
+        recTbody.innerHTML = "";
+        recordKpis.forEach(k => {
+          if (!k.best.record) return;
+          recTbody.innerHTML += `<tr>
+            <td>${k.name}</td>
+            <td><strong style="color: var(--color-excelente);">${k.best.value}%</strong></td>
+            <td>${k.best.record.psName || "-"}</td>
+            <td>${k.best.record.shift}</td>
+            <td>${k.best.record.date}</td>
+          </tr>`;
+        });
+        if (!recTbody.innerHTML) {
+          recTbody.innerHTML = `<tr><td colspan="5" class="empty-state-message">Sem dados suficientes</td></tr>`;
+        }
       }
 
       // Ranking de PS e Turnos
@@ -2899,7 +3021,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
     function saveApiConfig() {
       const apiInput = document.getElementById("configApiUrl");
       configApiUrl = apiInput ? apiInput.value.trim() : "";
-      localStorage.setItem("kronos_config_api_url", configApiUrl);
+      safeStorage.set("kronos_config_api_url", configApiUrl);
       showToast("Configuração de ponte API de dados salva com sucesso.");
       toggleConfigModal();
       checkApiConnection();
@@ -2925,7 +3047,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
       const badge = document.getElementById("connectionBadge");
       if (!configApiUrl) {
         showToast("Modo local ativo.", "warning");
-        const cached = localStorage.getItem("kronos_records");
+        const cached = safeStorage.get("kronos_records");
         records = cached ? JSON.parse(cached) : [];
         loadActiveData();
         renderHistory();
@@ -2951,7 +3073,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
           // Mescla dados locais que ainda não foram sincronizados
           const localOnly = records.filter(local => !data.some(remote => remote.id === local.id));
           records = [...data, ...localOnly];
-          localStorage.setItem("kronos_records", JSON.stringify(records));
+          safeStorage.set("kronos_records", JSON.stringify(records));
           showToast("Dados sincronizados com o servidor central.");
           
           if (badge) {
@@ -2969,7 +3091,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
           console.error("Erro de sincronização:", err);
           showToast("Servidor central off-line. Utilizando cache persistido.", "error");
           
-          const cached = localStorage.getItem("kronos_records");
+          const cached = safeStorage.get("kronos_records");
           records = cached ? JSON.parse(cached) : [];
           
           if (badge) {
