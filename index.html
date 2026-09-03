@@ -755,7 +755,7 @@
     </div>
     <div class="sidebar-footer">
       <div class="conn-status" id="connectionBadge">Conectando...</div>
-      <p>KRONOS Engine v2.2 • BRFPE1</p>
+      <p>KRONOS Engine v2.3 • BRFPE1</p>
       <p style="opacity: 0.5;">Controle do tempo. Domínio da operação.</p>
     </div>
   </aside>
@@ -1585,7 +1585,7 @@
       </div>
       <div class="form-group" style="margin-top: 10px;">
         <label>URL Web App do Script</label>
-        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbzr95B6ua28B1fguJle9t6mQjBr3pSHFyRyfzloqMbRLHzhhuPEq4CYpL6Iezk9nfkF6Q/exec">
+        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbz4hXJFVVNmPY8M8O_P4jHgpVSXG3XdeYSnayfy-57l7yrfH4PHDYqTcq1PAxC7Wdm_Jw/exec">
       </div>
       <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 20px;">Insira a URL obtida ao realizar a implantação de Web App na sua planilha oficial para ativação de ponte.</p>
       <div style="display: flex; gap:12px; justify-content:flex-end;">
@@ -1628,7 +1628,7 @@
  
   <script>
     // ===================================================================
-    // KRONOS FRONT-END — v2.2
+    // KRONOS FRONT-END — v2.3
     // Fonte da verdade dos dados: Google Sheets, via API Google Apps Script.
     // ===================================================================
  
@@ -1650,23 +1650,23 @@
       T2: {
         inicio: "14:30",
         fim: "22:00",
-        horarios: ["14h30", "15h", "16h", "17h", "18h", "19h", "20h", "21h"],
+        horarios: ["14h30", "15h", "16h", "17h", "18h", "19h", "20h", "21h", "22h"],
         area: "Fulfillment Checking",
         metaOutboundTHP: 4500,
-        matrixThpMeta: [100, 500, 600, 700, 700, 650, 650, 600],
-        matrixIdleMeta: [5, 8, 8, 8, 12, 8, 8, 5],
-        matrixCotMeta: [100, 100, 100, 100, 100, 100, 100, 100],
+        matrixThpMeta: [100, 500, 600, 700, 700, 650, 650, 600, 100],
+        matrixIdleMeta: [5, 8, 8, 8, 12, 8, 8, 5, 5],
+        matrixCotMeta: [100, 100, 100, 100, 100, 100, 100, 100, 100],
         timeline: { abertura: "14:30", fast: "15:30", controle: "18:00", finish: "21:00", fechamento: "22:00" }
       },
       T3: {
         inicio: "22:00",
         fim: "06:00",
-        horarios: ["22h", "23h", "00h", "01h", "02h", "03h", "04h", "05h"],
+        horarios: ["22h", "23h", "00h", "01h", "02h", "03h", "04h", "05h", "06h"],
         area: "Fulfillment Checking",
         metaOutboundTHP: 2000,
-        matrixThpMeta: [300, 450, 450, 500, 400, 400, 300, 200],
-        matrixIdleMeta: [10, 10, 12, 12, 15, 10, 10, 10],
-        matrixCotMeta: [100, 98, 98, 100, 100, 95, 95, 98],
+        matrixThpMeta: [300, 450, 450, 500, 400, 400, 300, 200, 100],
+        matrixIdleMeta: [10, 10, 12, 12, 15, 10, 10, 10, 5],
+        matrixCotMeta: [100, 98, 98, 100, 100, 95, 95, 98, 100],
         timeline: { abertura: "22:00", fast: "23:00", controle: "02:00", finish: "05:00", fechamento: "06:00" }
       }
     };
@@ -1752,13 +1752,17 @@
     });
  
     function updateLiveClock() {
-      const now = new Date();
-      const options = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'America/Recife' };
-      const dateStr = now.toLocaleDateString('pt-BR', options);
-      const timeStr = now.toLocaleTimeString('pt-BR', { hour12: false, timeZone: 'America/Recife' });
-      const clockEl = document.getElementById("liveClock");
-      if (clockEl) {
-        clockEl.innerText = `${dateStr} • ${timeStr}`;
+      try {
+        const now = new Date();
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'America/Recife' };
+        const dateStr = now.toLocaleDateString('pt-BR', options);
+        const timeStr = now.toLocaleTimeString('pt-BR', { hour12: false, timeZone: 'America/Recife' });
+        const clockEl = document.getElementById("liveClock");
+        if (clockEl) {
+          clockEl.innerText = `${dateStr} • ${timeStr}`;
+        }
+      } catch (e) {
+        console.error("Erro ao atualizar relógio:", e);
       }
     }
  
@@ -1925,16 +1929,17 @@
       const avgMetaIdle = idleControlHours > 0 ? (totalMetaIdle / idleControlHours) : 0;
       
       // Validação crítica de conformidade de IDLE (Meta corporativa mínima de 95% livre de ociosidade)
+      // Regra: compliance >= 95% => VERDE (bom); compliance < 95% => VERMELHO (desvio).
       const idleComplianceReal = Math.max(0, 100 - avgRealIdle);
       const wtRealIdleEl = document.getElementById("wtRealIdle");
       if (wtRealIdleEl) {
         wtRealIdleEl.innerText = `${idleComplianceReal.toFixed(1)}% (Inat: ${avgRealIdle.toFixed(1)}%)`;
-        if (idleComplianceReal < 95) {
-          wtRealIdleEl.style.color = "var(--color-critico)";
+        if (idleComplianceReal >= 95) {
+          wtRealIdleEl.style.color = "var(--color-excelente)";
           wtRealIdleEl.style.fontWeight = "bold";
         } else {
-          wtRealIdleEl.style.color = "";
-          wtRealIdleEl.style.fontWeight = "";
+          wtRealIdleEl.style.color = "var(--color-critico)";
+          wtRealIdleEl.style.fontWeight = "bold";
         }
       }
  
@@ -2026,7 +2031,7 @@
       updateRowVisuals("wtResCot", "wtImpactCot", evaluateImpact(avgRealCot, avgMetaCot));
       updateRowVisuals("wtResStrong", "wtImpactStrong", evaluateImpact(realStrong, mStrong));
       updateRowVisuals("wtRes5s", "wtImpact5s", evaluateImpact(avg5S, 100));
-      updateRowVisuals("wtResIdle", "wtImpactIdle", evaluateImpact(avgRealIdle, avgMetaIdle, true));
+      updateRowVisuals("wtResIdle", "wtImpactIdle", evaluateImpact(idleComplianceReal, 95));
  
       let calculatedScore = 0;
       calculatedScore += (realThpPerformance * (wThp / 100));
@@ -2041,10 +2046,10 @@
         calculatedScore += Math.max(0, wCot - cotPenalty);
       }
  
-      if (avgRealIdle <= avgMetaIdle) {
+      if (idleComplianceReal >= 95) {
         calculatedScore += wIdle;
       } else {
-        const idlePenalty = (avgRealIdle - avgMetaIdle) * 5;
+        const idlePenalty = ((95 - idleComplianceReal) / 5) * 5;
         calculatedScore += Math.max(0, wIdle - idlePenalty);
       }
  
@@ -2135,16 +2140,19 @@
       }
  
       const getNumVal = id => parseFloat(document.getElementById(id)?.value) || 0;
+      const getTextVal = id => document.getElementById(id)?.value || "";
       const form = document.getElementById("registrarTurnoForm");
       const isUpdate = !!form.dataset.currentRecordId;
       const recordId = form.dataset.currentRecordId || generateUUID();
+ 
+      const areaValue = getTextVal("regArea").trim() || template.area;
  
       const record = {
         id: recordId,
         date: document.getElementById("regDate")?.value || new Date().toISOString().split('T')[0],
         psName: psName,
         shift: selectedShift,
-        area: document.getElementById("regArea")?.value || template.area,
+        area: areaValue,
         metaOutbound: getNumVal("metaOutboundTHP"),
         realOutbound: getNumVal("realOutboundTHP"),
         metaFastStart: getNumVal("metaFastStart"),
@@ -2170,7 +2178,7 @@
           seiso: getNumVal("s5Seiso"),
           shitsuke: getNumVal("s5Shitsuke")
         },
-        notes: document.getElementById("regGeneralNotes")?.value || "",
+        notes: getTextVal("regGeneralNotes"),
         score: live.score,
         classification: live.score >= 95 ? "Elite" : (live.score >= 90 ? "Excelente" : (live.score >= 80 ? "OK" : "Atenção")),
         hourlyTHPMeta: template.matrixThpMeta,
@@ -2179,11 +2187,22 @@
         hourlyIdleReal: matrixIdleReal,
         hourlyCOTMeta: template.matrixCotMeta,
         hourlyCOTReal: matrixCotReal,
-        validationStatus: "PENDING",
-        validatedBy: "",
-        validationDate: "",
-        validationComment: ""
+        validationStatus: isUpdate ? undefined : "PENDING",
+        validatedBy: isUpdate ? undefined : "",
+        validationDate: isUpdate ? undefined : "",
+        validationComment: isUpdate ? undefined : ""
       };
+ 
+      // Em atualização, preserva o status de validação já existente ao invés de resetar.
+      if (isUpdate) {
+        const existing = KronosState.getRecords().find(r => r.id === recordId);
+        if (existing) {
+          record.validationStatus = existing.validationStatus || "PENDING";
+          record.validatedBy = existing.validatedBy || "";
+          record.validationDate = existing.validationDate || "";
+          record.validationComment = existing.validationComment || "";
+        }
+      }
  
       const submitBtn = document.getElementById("btnSubmitTurno");
       if (submitBtn) { submitBtn.disabled = true; submitBtn.innerText = "Gravando..."; }
@@ -2196,14 +2215,15 @@
           updated.push(record);
           KronosState.setRecords(updated);
           showToast("Salvo localmente (sem integração com Google Sheets configurada).", "warning");
+          delete form.dataset.currentRecordId;
+          switchView("dashboard");
         } else {
           await callKronosApi(isUpdate ? "updateRecord" : "createRecord", { method: "POST", data: record });
           showToast("Registro gravado com sucesso no Google Sheets.");
+          delete form.dataset.currentRecordId;
           await syncWithGoogleSheets();
+          switchView("dashboard");
         }
- 
-        delete form.dataset.currentRecordId;
-        switchView("dashboard");
       } catch (err) {
         console.error("Erro ao gravar registro de turno:", err);
         showToast(`Não foi possível salvar o registro. ${err.message === "NO_API_CONFIGURED" ? "" : err.message}`, "error");
@@ -2353,7 +2373,7 @@
           <tr>
             <td>IDLE Compliance (Inat: ${rawIdle}%)</td>
             <td style="text-align: center;">>= 95%</td>
-            <td style="text-align: center; ${complIdle < 95 ? 'color: var(--color-critico); font-weight: bold;' : ''}">${complIdle}%</td>
+            <td style="text-align: center; color: ${complIdle >= 95 ? 'var(--color-excelente)' : 'var(--color-critico)'}; font-weight: bold;">${complIdle}%</td>
             <td style="text-align: center;">${(complIdle - 95).toFixed(1)}%</td>
             <td style="text-align: right;"><span class="badge-status ${complIdle >= 95 ? 'badge-excelente' : 'badge-critico'}">${complIdle >= 95 ? 'SLA OK' : 'DESVIO'}</span></td>
           </tr>
@@ -3313,4 +3333,3 @@ ${active.notes || "Sem observações adicionais gravadas."}
   </script>
 </body>
 </html>
- 
