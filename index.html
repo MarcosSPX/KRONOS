@@ -236,6 +236,7 @@
     .cols-4 { grid-template-columns: repeat(4, 1fr); }
     .cols-3 { grid-template-columns: repeat(3, 1fr); }
     .cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .cols-1 { grid-template-columns: 1fr; }
 
     @media (max-width: 1400px) {
       .cols-4 { grid-template-columns: repeat(2, 1fr); }
@@ -804,7 +805,7 @@
             <div style="font-size: 0.6rem; color: var(--text-muted); text-align: center; margin-top: -4px;">STATUS OPERACIONAL ACTV</div>
           </div>
 
-          <!-- CARD 2: OUTBOUND/CHECKING ATUAL -->
+          <!-- CARD 2: CHECKING ATUAL -->
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 110px;">
             <div class="kronos-card-header">
               <span class="kronos-card-title">CHECKING & OUTBOUND</span>
@@ -851,7 +852,6 @@
         <h3 style="font-family: 'Cinzel', serif; font-size: 0.95rem; letter-spacing: 1px; color: var(--gold-metallic); margin-bottom: 8px; margin-top: 4px;">DETALHAMENTO DO CONTROLE DE CHECKING</h3>
         
         <div class="flow-panel-container">
-          <!-- OUTBOUND FLOW CARD -->
           <div class="flow-card">
             <div>
               <div class="flow-header">CHECKING & OUTBOUND COMMAND CENTER</div>
@@ -892,7 +892,6 @@
         </div>
 
         <div class="grid-layout cols-3">
-          <!-- Left Col: Total Records -->
           <div class="kronos-card" style="display: flex; flex-direction: column; justify-content: space-between;">
             <div class="kronos-card-header">
               <span class="kronos-card-title">Turnos Arquivados</span>
@@ -901,7 +900,6 @@
             <div style="font-size: 0.65rem; color: var(--text-muted);">Banco de dados integrado KRONOS</div>
           </div>
 
-          <!-- Right: Volume Realizado vs Meta (THP) Chart -->
           <div class="kronos-card" style="grid-column: span 2; display: flex; flex-direction: column; justify-content: space-between;">
             <div class="kronos-card-header">
               <span class="kronos-card-title">Volume Realizado vs Meta (THP)</span>
@@ -950,9 +948,9 @@
         <!-- OPERATIONAL TABS -->
         <div class="kronos-card" style="margin-bottom: 16px;">
           <div style="display: flex; gap: 8px; margin-bottom: 8px; border-bottom: 1px solid var(--border-gold); padding-bottom: 6px; align-items: center; justify-content: space-between;">
-            <span class="kronos-card-title">Abas de Fluxo Operacional (Visão Analítica)</span>
+            <span class="kronos-card-title">Aba de Fluxo Operacional (Visão Analítica)</span>
             <div style="display: flex; gap: 6px;">
-              <button class="btn btn-secondary active-tab" style="padding: 4px 10px; font-size: 0.7rem;" id="tabBtnOutbound" onclick="switchOpTab('outbound')">CHECKING & OUTBOUND</button>
+              <button class="btn btn-secondary active-tab" style="padding: 4px 10px; font-size: 0.7rem;" id="tabBtnOutbound">CHECKING & OUTBOUND</button>
             </div>
           </div>
 
@@ -1020,7 +1018,7 @@
               </div>
               <div class="form-group">
                 <label>Turno Operacional</label>
-                <select id="regShift" required onchange="onShiftChange()">
+                <select id="regShift" required onchange="onShiftChange(true)">
                   <option value="T1">T1 - 06h00 às 14h30</option>
                   <option value="T2">T2 - 14h30 às 22h00</option>
                   <option value="T3">T3 - 22h00 às 06h00</option>
@@ -1098,7 +1096,6 @@
           </div>
 
           <div class="grid-layout cols-2">
-            <!-- CONSOLIDATED METRICS METRIC PANEL -->
             <div class="kronos-card">
               <div class="kronos-card-header">
                 <span class="kronos-card-title">Métricas Acumuladas Consolidadas</span>
@@ -1115,7 +1112,6 @@
               </div>
             </div>
 
-            <!-- WEIGHT CONTROLLER AND PENALTIES -->
             <div class="kronos-card">
               <div class="kronos-card-header">
                 <span class="kronos-card-title">Configurações da Pontuação Ponderada</span>
@@ -1147,7 +1143,7 @@
                       <td style="padding: 4px; text-align: center;" id="wtMetaFast">85%</td>
                       <td style="padding: 4px; text-align: center;" id="wtRealFast">0%</td>
                       <td style="padding: 4px;"><input type="number" id="pesoFast" value="15" style="width: 100%; padding: 2px;" oninput="calculateLiveScores()"></td>
-                      <td style="padding: 4px; text-align: center;" id="wtResFast">-</td>
+                      <td style="padding: 4px; text-align: center;" id="wtResThp">-</td>
                       <td style="padding: 4px; text-align: right;" id="wtImpactFast">-</td>
                     </tr>
                     <tr>
@@ -1584,7 +1580,7 @@
       </div>
       <div class="form-group" style="margin-top: 10px;">
         <label>URL Web App do Script</label>
-        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbyYOYAtXKdI6MHnVnZ1-EL3SIUO_ghUxTJemILmwdLPvvyAM6Rn_TWgZPSpGvESRqRz/exec">
+        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbz_bwW_6oKumKnl0vFBqQkduMELkPPGv19L-lF9NKsuArJnWR9tXmwPP8JBrtV_gQQf/exec">
       </div>
       <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 20px;">Insira a URL obtida ao realizar a implantação de Web App na sua planilha oficial para ativação de ponte.</p>
       <div style="display: flex; gap:12px; justify-content:flex-end;">
@@ -1621,7 +1617,7 @@
   </div>
 
   <script>
-    // Configurações e metas de turno padrão corporativas
+    // Configurações globais e templates de turno corporativos
     const turnos = {
       T1: {
         inicio: "06:00",
@@ -1658,43 +1654,48 @@
       }
     };
 
-    // Wrapper seguro de armazenamento: usa localStorage quando disponível,
-    // e cai para memória (mantém os dados durante a sessão) quando o
-    // ambiente onde a página está rodando bloqueia localStorage. Sem isso,
-    // um erro aqui interrompia TODO o script (relógio, sincronização e
-    // gravação de turno paravam de funcionar juntos).
-    const memoryStorageFallback = {};
+    // Estrutura de persistência segura local que mitiga bloqueios do navegador
+    const fallbackMemoryStorage = {};
     const safeStorage = {
       get(key) {
         try {
           return localStorage.getItem(key);
         } catch (e) {
-          return memoryStorageFallback[key] !== undefined ? memoryStorageFallback[key] : null;
+          return fallbackMemoryStorage[key] !== undefined ? fallbackMemoryStorage[key] : null;
         }
       },
       set(key, value) {
         try {
           localStorage.setItem(key, value);
         } catch (e) {
-          memoryStorageFallback[key] = value;
+          fallbackMemoryStorage[key] = value;
         }
       }
     };
 
-    let records = [];
-    let volumeChart = null;
-    let trendScoreChart = null;
-    let trendThpChart = null;
-    let configApiUrl = safeStorage.get("kronos_config_api_url") || "";
-    let activeValidationId = null;
+    // Estado centralizado da aplicação (KRONOS Store)
+    const KronosState = {
+      records: [],
+      configApiUrl: safeStorage.get("kronos_config_api_url") || "",
+      activeValidationId: null,
+      volumeChart: null,
+      trendScoreChart: null,
+      trendThpChart: null,
+
+      setRecords(newRecords) {
+        this.records = newRecords;
+        safeStorage.set("kronos_records", JSON.stringify(newRecords));
+      },
+      getRecords() {
+        return this.records;
+      }
+    };
 
     window.addEventListener("DOMContentLoaded", () => {
-      // Inicia o relógio primeiro e isoladamente: mesmo que outra etapa
-      // de inicialização falhe, hora/data continuam atualizando.
       try {
         setInterval(updateLiveClock, 1000);
         updateLiveClock();
-      } catch (e) { console.error("Falha ao iniciar relógio:", e); }
+      } catch (e) { console.error("Erro ao iniciar relógio:", e); }
 
       try {
         const regDateEl = document.getElementById("regDate");
@@ -1708,30 +1709,30 @@
         const regShiftEl = document.getElementById("regShift");
         if (regShiftEl) regShiftEl.value = autoShift;
 
-        onShiftChange();
-      } catch (e) { console.error("Falha ao preparar formulário de turno:", e); }
+        onShiftChange(true);
+      } catch (e) { console.error("Erro ao inicializar formulários:", e); }
 
-      try { startSystemCountdown(); } catch (e) { console.error("Falha no countdown:", e); }
-      try { checkApiConnection(); } catch (e) { console.error("Falha ao checar conexão:", e); }
+      try { startSystemCountdown(); } catch (e) { console.error("Erro no relógio regressivo:", e); }
+      try { checkApiConnection(); } catch (e) { console.error("Erro ao validar ponte API:", e); }
 
-      // Sincronização inicial com o servidor central de planilhas
-      try { syncWithGoogleSheets(); } catch (e) { console.error("Falha na sincronização inicial:", e); }
+      // Inicializa a sincronização com o banco de dados oficial
+      try { syncWithGoogleSheets(); } catch (e) { console.error("Erro ao sincronizar planilha:", e); }
 
-      // Verifica parâmetros de link externo para validação direta do supervisor
+      // Leitura de link externo para validação rápida do supervisor
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const validateId = urlParams.get('validate');
         if (validateId) {
           setTimeout(() => showValidationModal(validateId), 1500);
         }
-      } catch (e) { console.error("Falha ao ler link de validação:", e); }
+      } catch (e) { console.error("Erro ao verificar parâmetro de validação externo:", e); }
     });
 
     function updateLiveClock() {
       const now = new Date();
-      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      const options = { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'America/Recife' };
       const dateStr = now.toLocaleDateString('pt-BR', options);
-      const timeStr = now.toLocaleTimeString('pt-BR', { hour12: false });
+      const timeStr = now.toLocaleTimeString('pt-BR', { hour12: false, timeZone: 'America/Recife' });
       const clockEl = document.getElementById("liveClock");
       if (clockEl) {
         clockEl.innerText = `${dateStr} • ${timeStr}`;
@@ -1749,16 +1750,41 @@
       return "T3";
     }
 
-    function onShiftChange() {
+    // Gerador de UUID seguro para rastreabilidade de dados
+    function generateUUID() {
+      return 'kr-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    function onShiftChange(initDefaults = true) {
       const regShiftEl = document.getElementById("regShift");
       if (!regShiftEl) return;
       const selectedShift = regShiftEl.value;
       const template = turnos[selectedShift];
       if (!template) return;
 
-      const elementsToUpdate = {
-        regArea: template.area,
-        metaOutboundTHP: template.metaOutboundTHP,
+      if (initDefaults) {
+        const elementsToUpdate = {
+          regArea: template.area,
+          metaOutboundTHP: template.metaOutboundTHP,
+          metaFastStart: 85,
+          realFastStart: "",
+          metaStrongFinish: 85,
+          realStrongFinish: "",
+          regVolPlan: "",
+          regVolReal: "",
+          realOutboundTHP: ""
+        };
+
+        for (const [id, value] of Object.entries(elementsToUpdate)) {
+          const el = document.getElementById(id);
+          if (el) el.value = value;
+        }
+      }
+
+      const labelsToUpdate = {
         tlTimeAbertura: template.timeline.abertura,
         tlTimeFast: template.timeline.fast,
         tlTimeControle: template.timeline.controle,
@@ -1766,19 +1792,16 @@
         tlTimeFechamento: template.timeline.fechamento
       };
 
-      for (const [id, value] of Object.entries(elementsToUpdate)) {
+      for (const [id, value] of Object.entries(labelsToUpdate)) {
         const el = document.getElementById(id);
-        if (el) {
-          if (el.tagName === 'INPUT') el.value = value;
-          else el.innerText = value;
-        }
+        if (el) el.innerText = value;
       }
 
-      renderHourlyMatrixForms(template);
+      renderHourlyMatrixForms(template, initDefaults);
       calculateLiveScores();
     }
 
-    function renderHourlyMatrixForms(template) {
+    function renderHourlyMatrixForms(template, initDefaults = true) {
       const headerRow = document.getElementById("matrixHeaderRow");
       const rows = {
         thpMeta: document.getElementById("thpRowMeta"),
@@ -1802,15 +1825,15 @@
       template.horarios.forEach((hour, i) => {
         headerRow.innerHTML += `<th>${hour}</th>`;
         
-        rows.thpMeta.innerHTML += `<td><input type="number" id="thp_meta_${i}" value="${template.matrixThpMeta[i] || 0}" oninput="calculateLiveScores()"></td>`;
+        rows.thpMeta.innerHTML += `<td><input type="number" id="thp_meta_${i}" value="${initDefaults ? (template.matrixThpMeta[i] || 0) : ''}" oninput="calculateLiveScores()"></td>`;
         rows.thpReal.innerHTML += `<td><input type="number" id="thp_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
         rows.thpPct.innerHTML += `<td id="thp_pct_${i}" class="pct-calc-cell">-</td>`;
 
-        rows.idleMeta.innerHTML += `<td><input type="number" id="idle_meta_${i}" value="${template.matrixIdleMeta[i] || 0}" oninput="calculateLiveScores()"></td>`;
+        rows.idleMeta.innerHTML += `<td><input type="number" id="idle_meta_${i}" value="${initDefaults ? (template.matrixIdleMeta[i] || 0) : ''}" oninput="calculateLiveScores()"></td>`;
         rows.idleReal.innerHTML += `<td><input type="number" id="idle_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
         rows.idlePct.innerHTML += `<td id="idle_pct_${i}" class="pct-calc-cell">-</td>`;
 
-        rows.cotMeta.innerHTML += `<td><input type="number" id="cot_meta_${i}" value="${template.matrixCotMeta[i] || 0}" oninput="calculateLiveScores()"></td>`;
+        rows.cotMeta.innerHTML += `<td><input type="number" id="cot_meta_${i}" value="${initDefaults ? (template.matrixCotMeta[i] || 0) : ''}" oninput="calculateLiveScores()"></td>`;
         rows.cotReal.innerHTML += `<td><input type="number" id="cot_real_${i}" value="" oninput="calculateLiveScores()"></td>`;
         rows.cotPct.innerHTML += `<td id="cot_pct_${i}" class="pct-calc-cell">-</td>`;
       });
@@ -1825,7 +1848,7 @@
 
       const len = template.horarios.length;
       
-      // THP Loop
+      // Processamento e cálculo de volumetria THP
       let totalMetaThp = 0, totalRealThp = 0;
       for (let i = 0; i < len; i++) {
         const metaVal = parseFloat(document.getElementById(`thp_meta_${i}`)?.value) || 0;
@@ -1848,7 +1871,7 @@
       const wtRealThpEl = document.getElementById("wtRealThp");
       if (wtRealThpEl) wtRealThpEl.innerText = `${realThpPerformance}%`;
 
-      // IDLE Loop
+      // Processamento de IDLE (Ociosidade Operacional)
       let totalMetaIdle = 0, totalRealIdle = 0, idleControlHours = 0;
       for (let i = 0; i < len; i++) {
         const metaVal = parseFloat(document.getElementById(`idle_meta_${i}`)?.value) || 0;
@@ -1872,7 +1895,7 @@
       const avgRealIdle = idleControlHours > 0 ? (totalRealIdle / idleControlHours) : 0;
       const avgMetaIdle = idleControlHours > 0 ? (totalMetaIdle / idleControlHours) : 0;
       
-      // Alerta visual de IDLE no formulário baseado no atingimento geral de conformidade (Compliance real precisa ser >= 95%)
+      // Validação crítica de conformidade de IDLE (Meta corporativa mínima de 95% livre de ociosidade)
       const idleComplianceReal = Math.max(0, 100 - avgRealIdle);
       const wtRealIdleEl = document.getElementById("wtRealIdle");
       if (wtRealIdleEl) {
@@ -1886,7 +1909,7 @@
         }
       }
 
-      // COT Loop
+      // Processamento e validação de COT (Cut Off Time)
       let totalMetaCot = 0, totalRealCot = 0, cotHours = 0;
       for (let i = 0; i < len; i++) {
         const metaVal = parseFloat(document.getElementById(`cot_meta_${i}`)?.value) || 0;
@@ -1915,7 +1938,7 @@
       const pOutboundMeta = parseFloat(document.getElementById("metaOutboundTHP")?.value) || 0;
       const pOutboundReal = parseFloat(document.getElementById("realOutboundTHP")?.value) || 0;
 
-      // FAST START & STRONG FINISH METAS E REAIS
+      // Fast Start & Strong Finish
       const mFast = parseFloat(document.getElementById("metaFastStart")?.value) || 85;
       const realFast = parseFloat(document.getElementById("realFastStart")?.value) || 0;
       
@@ -2030,8 +2053,7 @@
       }
 
       const getNumVal = id => parseFloat(document.getElementById(id)?.value) || 0;
-
-      const recordId = document.getElementById("registrarTurnoForm").dataset.currentRecordId || Date.now().toString();
+      const recordId = document.getElementById("registrarTurnoForm").dataset.currentRecordId || generateUUID();
 
       const newRecord = {
         id: recordId,
@@ -2077,15 +2099,13 @@
         validationDate: ""
       };
 
-      // Evita duplicações no banco de dados local
-      records = records.filter(r => r.id !== newRecord.id);
-      records.push(newRecord);
-      safeStorage.set("kronos_records", JSON.stringify(records));
+      const updatedRecords = KronosState.getRecords().filter(r => r.id !== newRecord.id);
+      updatedRecords.push(newRecord);
+      KronosState.setRecords(updatedRecords);
 
       showToast("Gravando e Sincronizando dados...");
       sendToGoogleSheets(newRecord);
       
-      // Limpa estado de edição do formulário
       delete document.getElementById("registrarTurnoForm").dataset.currentRecordId;
       switchView("dashboard");
     }
@@ -2096,7 +2116,7 @@
       delete form.dataset.currentRecordId;
       const regSiteEl = document.getElementById("regSite");
       if (regSiteEl) regSiteEl.value = "BRFPE1";
-      onShiftChange();
+      onShiftChange(true);
     }
 
     function switchView(viewId) {
@@ -2135,15 +2155,16 @@
     function loadActiveData() {
       const headerFilterEl = document.getElementById("headerFilterDate");
       const filterDate = headerFilterEl ? headerFilterEl.value : "";
+      const currentRecords = KronosState.getRecords();
       
-      let active = records.find(r => r.date === filterDate);
-      if (!active && records.length > 0) {
-        active = records[records.length - 1];
+      let active = currentRecords.find(r => r.date === filterDate);
+      if (!active && currentRecords.length > 0) {
+        active = currentRecords[currentRecords.length - 1];
         if (headerFilterEl && active) headerFilterEl.value = active.date;
       }
 
       const kpiTotal = document.getElementById("dashKpiTotal");
-      if (kpiTotal) kpiTotal.innerText = records.length;
+      if (kpiTotal) kpiTotal.innerText = currentRecords.length;
 
       if (active) {
         updateGauge(active.score, active.classification);
@@ -2277,9 +2298,9 @@
       const flowFooterIds = ["outboundUtilVal", "outboundEfVal", "outboundGapStartVal", "outboundGapRealVal"];
       flowFooterIds.forEach(id => { const el = document.getElementById(id); if (el) el.innerText = "-"; });
 
-      if (volumeChart) {
-        volumeChart.destroy();
-        volumeChart = null;
+      if (KronosState.volumeChart) {
+        KronosState.volumeChart.destroy();
+        KronosState.volumeChart = null;
       }
       renderOpTabs();
     }
@@ -2288,9 +2309,9 @@
       const canvasEl = document.getElementById("headerVolumeChart");
       if (!canvasEl) return;
       const ctx = canvasEl.getContext("2d");
-      if (volumeChart) volumeChart.destroy();
+      if (KronosState.volumeChart) KronosState.volumeChart.destroy();
 
-      volumeChart = new Chart(ctx, {
+      KronosState.volumeChart = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: ['Checking Volume (THP)'],
@@ -2322,17 +2343,13 @@
       });
     }
 
-    function switchOpTab(tab) {
-      renderOpTabs();
-    }
-
     function renderOpTabs() {
       const fShift = document.getElementById("tabFilterShift")?.value;
       const fPS = document.getElementById("tabFilterPS")?.value.toLowerCase();
       const fDate = document.getElementById("tabFilterDate")?.value;
       const fArea = document.getElementById("tabFilterArea")?.value.toLowerCase();
 
-      const filtered = records.filter(r => {
+      const filtered = KronosState.getRecords().filter(r => {
         if (fShift && r.shift !== fShift) return false;
         if (fPS && !r.psName.toLowerCase().includes(fPS)) return false;
         if (fDate && r.date !== fDate) return false;
@@ -2375,12 +2392,14 @@
       if (!tbody) return;
       tbody.innerHTML = "";
 
-      if (records.length === 0) {
+      const currentRecords = KronosState.getRecords();
+
+      if (currentRecords.length === 0) {
         tbody.innerHTML = `<tr><td colspan="8" class="empty-state-message">Nenhum registro armazenado no banco corporativo.</td></tr>`;
         return;
       }
 
-      const sorted = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
+      const sorted = [...currentRecords].sort((a, b) => new Date(b.date) - new Date(a.date));
 
       sorted.forEach(r => {
         const tr = document.createElement("tr");
@@ -2407,12 +2426,12 @@
     }
 
     function showValidationModal(id) {
-      const r = records.find(record => record.id === id);
+      const r = KronosState.getRecords().find(record => record.id === id);
       if (!r) {
         showToast("Registro operacional não localizado.", "error");
         return;
       }
-      activeValidationId = id;
+      KronosState.activeValidationId = id;
       document.getElementById("valModalDate").innerText = r.date;
       document.getElementById("valModalShift").innerText = r.shift;
       document.getElementById("valModalPS").innerText = r.psName;
@@ -2424,7 +2443,7 @@
 
     function closeValidationModal() {
       document.getElementById("validationModal").style.display = "none";
-      activeValidationId = null;
+      KronosState.activeValidationId = null;
     }
 
     function confirmSupervisorValidation() {
@@ -2434,17 +2453,17 @@
         return;
       }
 
-      const r = records.find(record => record.id === activeValidationId);
+      const allRecords = KronosState.getRecords();
+      const r = allRecords.find(record => record.id === KronosState.activeValidationId);
       if (r) {
         r.validatedBy = supervisorName;
         r.validationDate = new Date().toISOString().split('T')[0];
-        safeStorage.set("kronos_records", JSON.stringify(records));
+        KronosState.setRecords(allRecords);
         
         showToast("Score de turno homologado e validado com sucesso.");
         sendToGoogleSheets(r);
         closeValidationModal();
         
-        // Remove parâmetro de validação da URL para evitar loops
         if (window.location.search.includes("validate=")) {
           window.history.replaceState({}, document.title, window.location.pathname);
         }
@@ -2465,15 +2484,21 @@
     }
 
     function loadRecordToForm(id) {
-      const record = records.find(r => r.id === id);
+      const record = KronosState.getRecords().find(r => r.id === id);
       if (!record) return;
 
       document.getElementById("registrarTurnoForm").dataset.currentRecordId = record.id;
 
+      // Sincroniza o seletor de turno
+      const regShift = document.getElementById("regShift");
+      if (regShift) regShift.value = record.shift;
+
+      // ExecutaonShiftChange sem templates estáticos
+      onShiftChange(false);
+
       const elementsToUpdate = {
         regDate: record.date,
         regPSName: record.psName || "",
-        regShift: record.shift,
         regArea: record.area || "Checking",
         regVolPlan: record.volPlan !== undefined ? record.volPlan : "",
         regVolReal: record.volReal !== undefined ? record.volReal : "",
@@ -2495,17 +2520,23 @@
         if (el) el.value = val;
       }
 
-      onShiftChange();
-
+      // Restaura a Matriz Operacional Horária do Registro
       const template = turnos[record.shift];
       if (template && template.horarios) {
         template.horarios.forEach((_, i) => {
-          const tReal = document.getElementById(`thp_real_${i}`);
-          const iReal = document.getElementById(`idle_real_${i}`);
-          const cReal = document.getElementById(`cot_real_${i}`);
-          if (tReal) tReal.value = (record.hourlyTHPReal && record.hourlyTHPReal[i] !== undefined) ? record.hourlyTHPReal[i] : "";
-          if (iReal) iReal.value = (record.hourlyIdleReal && record.hourlyIdleReal[i] !== undefined) ? record.hourlyIdleReal[i] : "";
-          if (cReal) cReal.value = (record.hourlyCOTReal && record.hourlyCOTReal[i] !== undefined) ? record.hourlyCOTReal[i] : "";
+          const thpMetaEl = document.getElementById(`thp_meta_${i}`);
+          const thpRealEl = document.getElementById(`thp_real_${i}`);
+          const idleMetaEl = document.getElementById(`idle_meta_${i}`);
+          const idleRealEl = document.getElementById(`idle_real_${i}`);
+          const cotMetaEl = document.getElementById(`cot_meta_${i}`);
+          const cotRealEl = document.getElementById(`cot_real_${i}`);
+
+          if (thpMetaEl) thpMetaEl.value = (record.hourlyTHPMeta && record.hourlyTHPMeta[i] !== undefined) ? record.hourlyTHPMeta[i] : (template.matrixThpMeta[i] || 0);
+          if (thpRealEl) thpRealEl.value = (record.hourlyTHPReal && record.hourlyTHPReal[i] !== undefined) ? record.hourlyTHPReal[i] : "";
+          if (idleMetaEl) idleMetaEl.value = (record.hourlyIdleMeta && record.hourlyIdleMeta[i] !== undefined) ? record.hourlyIdleMeta[i] : (template.matrixIdleMeta[i] || 0);
+          if (idleRealEl) idleRealEl.value = (record.hourlyIdleReal && record.hourlyIdleReal[i] !== undefined) ? record.hourlyIdleReal[i] : "";
+          if (cotMetaEl) cotMetaEl.value = (record.hourlyCOTMeta && record.hourlyCOTMeta[i] !== undefined) ? record.hourlyCOTMeta[i] : (template.matrixCotMeta[i] || 0);
+          if (cotRealEl) cotRealEl.value = (record.hourlyCOTReal && record.hourlyCOTReal[i] !== undefined) ? record.hourlyCOTReal[i] : "";
         });
       }
 
@@ -2516,12 +2547,12 @@
 
     function deleteRecord(id) {
       if (confirm("Confirmar a exclusão permanente deste fechamento operacional no Google Sheets?")) {
-        records = records.filter(r => r.id !== id);
-        safeStorage.set("kronos_records", JSON.stringify(records));
+        const updated = KronosState.getRecords().filter(r => r.id !== id);
+        KronosState.setRecords(updated);
         showToast("Fechamento deletado do repositório local.");
         
-        if (configApiUrl) {
-          fetch(`${configApiUrl}?action=deleteRecord&id=${id}`, { method: "GET", mode: "cors" })
+        if (KronosState.configApiUrl) {
+          fetch(`${KronosState.configApiUrl}?action=deleteRecord&id=${id}`, { method: "GET", mode: "cors" })
             .then(() => { showToast("Sincronizado remoção com a nuvem."); syncWithGoogleSheets(); });
         } else {
           renderHistory();
@@ -2532,8 +2563,9 @@
     function renderRankings() {
       const leadersMap = {};
       const shiftsMap = {};
+      const currentRecords = KronosState.getRecords();
 
-      records.forEach(r => {
+      currentRecords.forEach(r => {
         const psName = r.psName || "Sem PS";
         if (!leadersMap[psName]) leadersMap[psName] = { scoreSum: 0, count: 0 };
         leadersMap[psName].scoreSum += r.score;
@@ -2583,8 +2615,9 @@
 
     function renderWarRoom() {
       const setEl = (id, text) => { const el = document.getElementById(id); if (el) el.innerText = text; };
+      const currentRecords = KronosState.getRecords();
 
-      if (records.length === 0) {
+      if (currentRecords.length === 0) {
         setEl("wrBestKpiName", "-"); setEl("wrBestKpiReal", "-");
         setEl("wrWorstKpiName", "-"); setEl("wrWorstKpiReal", "-");
         setEl("wrOutboundConsolidated", "-"); setEl("wrIdleConsolidated", "-");
@@ -2599,11 +2632,10 @@
         return;
       }
 
-      // NOVO CÁLCULO WAR ROOM: Traz os melhores e piores indicadores de TODOS os turnos de forma agregada e consolidada
       let totalFastSum = 0, totalStrongSum = 0, totalThpPctSum = 0, totalIdleComplianceSum = 0, totalCotSum = 0;
-      let recordCount = records.length;
+      let recordCount = currentRecords.length;
 
-      records.forEach(r => {
+      currentRecords.forEach(r => {
         totalFastSum += (r.realFastStart || 0);
         totalStrongSum += (r.realStrongFinish || 0);
         const thpPerf = r.metaOutbound > 0 ? (r.realOutbound / r.metaOutbound) * 100 : 0;
@@ -2626,7 +2658,6 @@
         { name: "IDLE Compliance", real: avgIdleCompliance }
       ];
 
-      // Ordenação para encontrar o melhor e pior no geral acumulado de todos os turnos
       listKpis.sort((a,b) => b.real - a.real);
       const best = listKpis[0];
       const worst = listKpis[listKpis.length - 1];
@@ -2641,9 +2672,8 @@
       setEl("wrFastActual", `${avgFast}%`);
       setEl("wrStrongActual", `${avgStrong}%`);
 
-      // Meta média (ponderada pelos registros) de Fast Start e Strong Finish
-      const avgFastMeta = Math.round(records.reduce((acc, r) => acc + (r.metaFastStart || 85), 0) / recordCount);
-      const avgStrongMeta = Math.round(records.reduce((acc, r) => acc + (r.metaStrongFinish || 85), 0) / recordCount);
+      const avgFastMeta = Math.round(currentRecords.reduce((acc, r) => acc + (r.metaFastStart || 85), 0) / recordCount);
+      const avgStrongMeta = Math.round(currentRecords.reduce((acc, r) => acc + (r.metaStrongFinish || 85), 0) / recordCount);
       setEl("wrFastMeta", `${avgFastMeta}%`);
       setEl("wrStrongMeta", `${avgStrongMeta}%`);
 
@@ -2659,10 +2689,9 @@
         strongBadge.className = "badge-status " + (avgStrong >= avgStrongMeta ? "badge-excelente" : "badge-critico");
       }
 
-      // Recordes: melhor marca já atingida (não a média) por indicador, em qualquer turno
       const pickBest = (getValue, higherIsBetter = true) => {
         let bestRecord = null, bestValue = null;
-        records.forEach(r => {
+        currentRecords.forEach(r => {
           const v = getValue(r);
           if (v === null || v === undefined || isNaN(v)) return;
           if (bestValue === null || (higherIsBetter ? v > bestValue : v < bestValue)) {
@@ -2699,10 +2728,9 @@
         }
       }
 
-      // Ranking de PS e Turnos
       const leadersMap = {};
       const shiftsMap = {};
-      records.forEach(r => {
+      currentRecords.forEach(r => {
         const psName = r.psName || "Sem PS";
         if (!leadersMap[psName]) leadersMap[psName] = { scoreSum: 0, count: 0 };
         leadersMap[psName].scoreSum += r.score;
@@ -2730,7 +2758,7 @@
         setEl("wrBestPsScore", `${leaderRanking[0].avg}%`);
       }
 
-      const avgGlobal = Math.round(records.reduce((acc, curr) => acc + curr.score, 0) / records.length);
+      const avgGlobal = Math.round(currentRecords.reduce((acc, curr) => acc + curr.score, 0) / currentRecords.length);
       setEl("warRoomTrend", `${avgGlobal}% SLA`);
 
       const psTbody = document.querySelector("#wrPsRankingTable tbody");
@@ -2755,13 +2783,15 @@
       const elThp = document.getElementById("chartTrendTHP");
       if (!elScore || !elThp) return;
 
-      if (records.length === 0) {
+      const currentRecords = KronosState.getRecords();
+
+      if (currentRecords.length === 0) {
         document.getElementById("trendScoreContainer").innerHTML = `<p class="empty-state-message">Sem dados para plotagem de tendências</p>`;
         document.getElementById("trendThpContainer").innerHTML = `<p class="empty-state-message">Sem dados para plotagem de tendências</p>`;
         return;
       }
 
-      const lastSeven = [...records].slice(-7);
+      const lastSeven = [...currentRecords].slice(-7);
       const labels = lastSeven.map(r => `${r.date.substring(8, 10)}/${r.date.substring(5, 7)} (${r.shift})`);
       const scores = lastSeven.map(r => r.score);
       const targets = lastSeven.map(() => 95);
@@ -2769,10 +2799,10 @@
       const realTHPs = lastSeven.map(r => (r.realOutbound || 0));
       const metaTHPs = lastSeven.map(r => (r.metaOutbound || 0));
 
-      if (trendScoreChart) trendScoreChart.destroy();
-      if (trendThpChart) trendThpChart.destroy();
+      if (KronosState.trendScoreChart) KronosState.trendScoreChart.destroy();
+      if (KronosState.trendThpChart) KronosState.trendThpChart.destroy();
 
-      trendScoreChart = new Chart(elScore.getContext("2d"), {
+      KronosState.trendScoreChart = new Chart(elScore.getContext("2d"), {
         type: 'line',
         data: {
           labels: labels,
@@ -2806,7 +2836,7 @@
         }
       });
 
-      trendThpChart = new Chart(elThp.getContext("2d"), {
+      KronosState.trendThpChart = new Chart(elThp.getContext("2d"), {
         type: 'bar',
         data: {
           labels: labels,
@@ -2869,7 +2899,8 @@
     }
 
     function exportCardExecutivo() {
-      const active = records[records.length - 1];
+      const currentRecords = KronosState.getRecords();
+      const active = currentRecords[currentRecords.length - 1];
       if (!active) {
         showToast("Nenhuma medição cadastrada no sistema.", "error");
         return;
@@ -2953,13 +2984,14 @@
     }
 
     function exportToExcel() {
-      if (records.length === 0) {
+      const currentRecords = KronosState.getRecords();
+      if (currentRecords.length === 0) {
         showToast("Nenhum registro disponível para exportação.", "error");
         return;
       }
 
       let csv = "ID;Data;Turno;PS_Responsavel;Area;Checking_Meta;Checking_Real;FastStart_Meta;FastStart_Real;StrongFinish_Meta;StrongFinish_Real;Idle_Media;COT_Media;Score;Classificacao;Supervisor;Resumo_Ocorrencias\n";
-      records.forEach(r => {
+      currentRecords.forEach(r => {
         csv += `${r.id};${r.date};${r.shift};${r.psName || ""};${r.area || "Checking"};${r.metaOutbound || 0};${r.realOutbound || 0};${r.metaFastStart || 85};${r.realFastStart || 0};${r.metaStrongFinish || 85};${r.realStrongFinish || 0};${r.realIdle || 0};${r.realCot || 0};${r.score};${r.classification};${r.validatedBy || ""};"${(r.notes || "").replace(/"/g, '""')}"\n`;
       });
 
@@ -2974,7 +3006,8 @@
     }
 
     function copiarResSummary() {
-      const active = records[records.length - 1];
+      const currentRecords = KronosState.getRecords();
+      const active = currentRecords[currentRecords.length - 1];
       if (!active) {
         showToast("Nenhum fechamento ativo disponível.", "error");
         return;
@@ -3015,13 +3048,14 @@ ${active.notes || "Sem observações adicionais gravadas."}
       if (!m) return;
       m.style.display = m.style.display === "none" || m.style.display === "" ? "grid" : "none";
       const apiInput = document.getElementById("configApiUrl");
-      if (apiInput) apiInput.value = configApiUrl;
+      if (apiInput) apiInput.value = KronosState.configApiUrl;
     }
 
     function saveApiConfig() {
       const apiInput = document.getElementById("configApiUrl");
-      configApiUrl = apiInput ? apiInput.value.trim() : "";
-      safeStorage.set("kronos_config_api_url", configApiUrl);
+      const newUrl = apiInput ? apiInput.value.trim() : "";
+      KronosState.configApiUrl = newUrl;
+      safeStorage.set("kronos_config_api_url", newUrl);
       showToast("Configuração de ponte API de dados salva com sucesso.");
       toggleConfigModal();
       checkApiConnection();
@@ -3031,7 +3065,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
     function checkApiConnection() {
       const badge = document.getElementById("connectionBadge");
       if (badge) {
-        if (configApiUrl) {
+        if (KronosState.configApiUrl) {
           badge.innerText = "Conexão Ativa";
           badge.style.color = "var(--color-excelente)";
           badge.style.borderColor = "rgba(0, 230, 118, 0.2)";
@@ -3045,10 +3079,10 @@ ${active.notes || "Sem observações adicionais gravadas."}
 
     function syncWithGoogleSheets() {
       const badge = document.getElementById("connectionBadge");
-      if (!configApiUrl) {
-        showToast("Modo local ativo.", "warning");
+      if (!KronosState.configApiUrl) {
+        showToast("Modo local ativo.");
         const cached = safeStorage.get("kronos_records");
-        records = cached ? JSON.parse(cached) : [];
+        KronosState.setRecords(cached ? JSON.parse(cached) : []);
         loadActiveData();
         renderHistory();
         renderRankings();
@@ -3064,16 +3098,15 @@ ${active.notes || "Sem observações adicionais gravadas."}
 
       showToast("Sincronizando com Google Sheets...");
       
-      fetch(`${configApiUrl}?action=getRecords`, { method: "GET", mode: "cors" })
+      fetch(`${KronosState.configApiUrl}?action=getRecords`, { method: "GET", mode: "cors" })
         .then(res => {
           if (!res.ok) throw new Error("Erro de comunicação.");
           return res.json();
         })
         .then(data => {
-          // Mescla dados locais que ainda não foram sincronizados
-          const localOnly = records.filter(local => !data.some(remote => remote.id === local.id));
-          records = [...data, ...localOnly];
-          safeStorage.set("kronos_records", JSON.stringify(records));
+          const localOnly = KronosState.getRecords().filter(local => !data.some(remote => remote.id === local.id));
+          const merged = [...data, ...localOnly];
+          KronosState.setRecords(merged);
           showToast("Dados sincronizados com o servidor central.");
           
           if (badge) {
@@ -3089,10 +3122,10 @@ ${active.notes || "Sem observações adicionais gravadas."}
         })
         .catch(err => {
           console.error("Erro de sincronização:", err);
-          showToast("Servidor central off-line. Utilizando cache persistido.", "error");
+          showToast("Servidor central offline. Utilizando cache do navegador.", "error");
           
           const cached = safeStorage.get("kronos_records");
-          records = cached ? JSON.parse(cached) : [];
+          KronosState.setRecords(cached ? JSON.parse(cached) : []);
           
           if (badge) {
             badge.innerText = "Modo Offline";
@@ -3108,13 +3141,13 @@ ${active.notes || "Sem observações adicionais gravadas."}
     }
 
     function sendToGoogleSheets(record) {
-      if (!configApiUrl) {
-        showToast("Salvo localmente no navegador.", "info");
+      if (!KronosState.configApiUrl) {
+        showToast("Salvo localmente no navegador.");
         syncWithGoogleSheets();
         return;
       }
 
-      fetch(configApiUrl, {
+      fetch(KronosState.configApiUrl, {
         method: "POST",
         mode: "cors",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -3131,7 +3164,7 @@ ${active.notes || "Sem observações adicionais gravadas."}
       })
       .catch(err => {
         console.error("Erro ao enviar dados:", err);
-        showToast("Erro de envio. Armazenado localmente para posterior reenvio.", "error");
+        showToast("Erro ao gravar em nuvem. Mantido em cache para reenvio.", "error");
         syncWithGoogleSheets();
       });
     }
