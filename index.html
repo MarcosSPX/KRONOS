@@ -1588,7 +1588,7 @@
       </div>
       <div class="form-group" style="margin-top: 10px;">
         <label>URL Web App do Script</label>
-        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbzSaqkqBooURN0xnpj-jd-0wc_02q7noVhGWK93KVN7nqCRCJ7LyishD8elpEHP3RDszQ/exec">
+        <input type="text" id="configApiUrl" placeholder="https://script.google.com/macros/s/AKfycbwmFlhMCYuz9P4bRzCN1xpjM9EOCuFdjWa3lOCoOzd8_pDwqQFlJcwcyS9PKYsDMWEv/exec">
       </div>
       <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 20px;">Insira a URL obtida ao realizar a implantação de Web App na sua planilha oficial para ativação de ponte. A URL deve terminar em <strong>/exec</strong> (nunca /dev), e a implantação precisa ter sido criada como "Nova implantação" após a última alteração no Code.gs, com acesso "Qualquer pessoa".</p>
       <div style="display: flex; gap:12px; justify-content:flex-end;">
@@ -1645,7 +1645,7 @@
  
   <script>
     // ===================================================================
-    // KRONOS FRONT-END — v2.4
+    // KRONOS FRONT-END — v2.4.1 (correção do badge de conexão aplicada)
     // Fonte da verdade dos dados: Google Sheets, via API Google Apps Script.
     // ===================================================================
  
@@ -3244,13 +3244,19 @@ ${active.notes || "Sem observações adicionais gravadas."}
       syncWithGoogleSheets();
     }
  
+    // ---------------------------------------------------------------------
+    // CORREÇÃO APLICADA: este badge não pode mais afirmar "Conexão Ativa"
+    // apenas porque existe uma URL salva. Ele agora só sinaliza que uma URL
+    // foi configurada; o status real (Ativa / Offline) só é decidido depois
+    // de uma tentativa de sincronização de verdade em syncWithGoogleSheets().
+    // ---------------------------------------------------------------------
     function checkApiConnection() {
       const badge = document.getElementById("connectionBadge");
       if (badge) {
         if (KronosState.configApiUrl) {
-          badge.innerText = "Conexão Ativa";
-          badge.style.color = "var(--color-excelente)";
-          badge.style.borderColor = "rgba(0, 230, 118, 0.2)";
+          badge.innerText = "URL Configurada";
+          badge.style.color = "var(--color-atencao)";
+          badge.style.borderColor = "rgba(255, 235, 59, 0.2)";
         } else {
           badge.innerText = "Modo Local";
           badge.style.color = "var(--color-atencao)";
